@@ -1,0 +1,19 @@
+<nav @navbarInOutTrigger *ngIf="isShown"
+     class="topbar" >
+  <mat-toolbar color="primary" [class.mat-elevation-z8]="true">
+    <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="onMenuClicked()"
+      *ngIf="isHandset$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+    <span>BLOG</span>
+
+    <mat-slide-toggle [checked]="isDarkMode"
+                      (change)="isDarkMode = $event.source.checked"
+                      class="navbar-button">
+    </mat-slide-toggle>
+  </mat-toolbar>
+</nav>

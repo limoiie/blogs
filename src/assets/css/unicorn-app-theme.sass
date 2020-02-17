@@ -1,0 +1,76 @@
+@import '../../../node_modules/@angular/material/theming'
+// Plus imports for other components in your app.
+
+@import '~@angular/material/theming'
+$custom-typography: mat-typography-config($font-family: 'Nunito Sans')
+//@include mat-core($custom-typography);
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($custom-typography)
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$light-app-primary: mat-palette($mat-blue, 800, 600, 900)
+$light-app-accent:  mat-palette($mat-amber, A200, A100, A400)
+
+// The warn palette is optional (defaults to red).
+$light-app-warn:    mat-palette($mat-red)
+
+// Create the theme object (a Sass map containing all of the palettes).
+$light-app-theme: mat-light-theme($light-app-primary, $light-app-accent, $light-app-warn)
+
+$dark-app-primary: mat-palette($mat-blue-gray)
+$dark-app-accent:  mat-palette($mat-pink)
+$dark-app-warn:    mat-palette($mat-deep-orange)
+$dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app-warn)
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($light-app-theme)
+
+.dark-theme
+  @include angular-material-theme($dark-app-theme)
+
+// Customize
+
+// begin: mix link style
+@mixin link-style-norm($theme)
+  $primary: mat-color(map-get($theme, accent), text, 0.75)
+  $foreground: mat-color(map-get($theme, foreground), text)
+  $color-list: #00000000 0%, #00000000 40%, $primary 40%, $primary 100%
+  color: $foreground
+  padding: 2px 0 1px 0
+  text-decoration: none
+  background-image: linear-gradient(to bottom, $color-list)
+  transition: background-position 120ms ease-in-out, padding 120ms ease-in-out
+  background-size: 100% 200%
+  background-position: 0 0
+  word-break: break-word
+
+@mixin link-style-hover($theme)
+  $primary: mat-color(map-get($theme, accent), default, 1)
+  $color-list: #00000000 0%, #00000000 40%, $primary 40%, $primary 100%
+  background-image: linear-gradient(to bottom, $color-list)
+  background-position: 0 100%
+
+@mixin link-style($theme)
+  a
+    @include link-style-norm($theme)
+
+  a:hover
+    @include link-style-hover($theme)
+// end: mix link style
+
+// light customize
+@include link-style($light-app-theme)
+
+// dark customize
+.dark-theme
+  @include link-style($dark-app-theme)
+
+
+$primary-color: mat-color(map-get($light-app-theme, accent), default, 0.5)

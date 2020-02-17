@@ -1,0 +1,6 @@
+<div class="blog-list">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading">
+  </mat-progress-bar>
+  <app-blog-card [blog]="blog" *ngFor="let blog of blogList">
+  </app-blog-card>
+</div>

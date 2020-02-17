@@ -1,0 +1,8 @@
+#goto-top-fab {
+  width: 64px;
+  height: 64px;
+  z-index: 2;
+  right: 32px;
+  bottom: 32px;
+  position: fixed;
+}
