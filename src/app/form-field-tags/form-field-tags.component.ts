@@ -14,7 +14,7 @@ import {ControlValueAccessor, FormBuilder, FormGroup, NgControl} from '@angular/
 import {MatFormFieldControl} from '@angular/material/form-field';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
@@ -22,7 +22,7 @@ import {map, startWith, takeUntil} from 'rxjs/operators';
 import {AutofillMonitor} from '@angular/cdk/text-field';
 
 @Component({
-  selector: 'app-form-field-value',
+  selector: 'app-form-field-tags',
   templateUrl: './form-field-tags.component.html',
   styleUrls: ['./form-field-tags.component.css'],
   providers: [{
@@ -30,17 +30,21 @@ import {AutofillMonitor} from '@angular/cdk/text-field';
     useExisting: FormFieldTagsComponent
   }]
 })
-export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldControl<string[]>,
-  ControlValueAccessor, AfterViewInit {
+export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
+  MatFormFieldControl<string[]>, ControlValueAccessor {
 
   @Input()
   get value() {
-    return this.parts.value.tags;
+    if (this.parts.value.tags == null ||
+      this.parts.value.tags.trim() === '') {
+      return [];
+    }
+    return this.parts.value.tags.split(';');
   }
 
   set value(val) {
     val = val || [];
-    this.parts.setValue({tags: val});
+    this.parts.setValue({tags: val.join(';')});
     this.stateChanges.next();
   }
 
@@ -83,7 +87,7 @@ export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldCo
     private autofillMonitor: AutofillMonitor,
   ) {
     this.parts = fb.group({
-      value: []
+      tags: []
     });
     if (this.ngControl != null) {
       // Setting the value accessor directly (instead of using
@@ -102,6 +106,8 @@ export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldCo
   parts: FormGroup;
 
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
+  @ViewChild('realInput') realInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   filteredTags: Observable<string[]>;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -196,7 +202,8 @@ export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldCo
   writeValue(value: string[] | null): void {
     value = value || [];
 
-    this.parts.setValue(value, {emitEvent: false});
+    this.parts.setValue(
+      {tags: value.join(';')}, {emitEvent: false});
   }
 
   private observeAutofill(ref: ElementRef): Observable<boolean> {
@@ -210,10 +217,13 @@ export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldCo
     const input = event.input;
     const value = event.value.toLowerCase();
 
+    const tags = this.value;
+
     // Add our fruit
     if ((value || '').trim()) {
-      if (this.value.indexOf(value.trim()) === -1) {
-        this.value.push(value.trim());
+      if (tags.indexOf(value.trim()) === -1) {
+        tags.push(value.trim());
+        this.value = tags;
       }
     }
 
@@ -229,16 +239,24 @@ export class FormFieldTagsComponent implements OnInit, OnDestroy, MatFormFieldCo
     const value = tag.toLowerCase();
     const index = this.value.indexOf(value);
 
+    const tags = this.value;
+
     if (index >= 0) {
-      this.value.splice(index, 1);
+      tags.splice(index, 1);
+      this.value = tags;
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     const value = event.option.viewValue.toLowerCase();
-    if (this.value.indexOf(value) === -1) {
-      this.value.push(value);
+
+    const tags = this.value;
+
+    if (tags.indexOf(value) === -1) {
+      tags.push(value);
+      this.value = tags;
     }
+
     this.fruitInput.nativeElement.value = '';
     // this.tagCtrl.setValue(null);
   }

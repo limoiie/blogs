@@ -31,20 +31,15 @@ export class BlogPublishFormComponent implements OnInit {
 
   tagCtrl = this.profileForm.get('tags');
 
-  // tagCtrl = new FormControl();
-  // createTimeCtrl = new FormControl({value: new Date(), disabled: true});
-  // editTimeCtrl = new FormControl({value: new Date(), disabled: true});
-  // folderCtrl = new FormControl('');
   filteredTags: Observable<string[]>;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
 
   @Input() title = '';
   @Input() author = '';
   @Input() abstract = '';
   tags: string[] = [];
 
-  @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  // @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
+  // @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(
     private blogService: BlogService
@@ -62,42 +57,42 @@ export class BlogPublishFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value.toLowerCase();
-
-    // Add our fruit
-    if ((value || '').trim()) {
-      if (this.tags.indexOf(value.trim()) === -1) {
-        this.tags.push(value.trim());
-      }
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-
-    this.tagCtrl.setValue(null);
-  }
-
-  remove(tag: string): void {
-    const value = tag.toLowerCase();
-    const index = this.tags.indexOf(value);
-
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    const value = event.option.viewValue.toLowerCase();
-    if (this.tags.indexOf(value) === -1) {
-      this.tags.push(value);
-    }
-    this.fruitInput.nativeElement.value = '';
-    this.tagCtrl.setValue(null);
-  }
+  // add(event: MatChipInputEvent): void {
+  //   const input = event.input;
+  //   const value = event.value.toLowerCase();
+  //
+  //   // Add our fruit
+  //   if ((value || '').trim()) {
+  //     if (this.tags.indexOf(value.trim()) === -1) {
+  //       this.tags.push(value.trim());
+  //     }
+  //   }
+  //
+  //   // Reset the input value
+  //   if (input) {
+  //     input.value = '';
+  //   }
+  //
+  //   this.tagCtrl.setValue(null);
+  // }
+  //
+  // remove(tag: string): void {
+  //   const value = tag.toLowerCase();
+  //   const index = this.tags.indexOf(value);
+  //
+  //   if (index >= 0) {
+  //     this.tags.splice(index, 1);
+  //   }
+  // }
+  //
+  // selected(event: MatAutocompleteSelectedEvent): void {
+  //   const value = event.option.viewValue.toLowerCase();
+  //   if (this.tags.indexOf(value) === -1) {
+  //     this.tags.push(value);
+  //   }
+  //   this.fruitInput.nativeElement.value = '';
+  //   this.tagCtrl.setValue(null);
+  // }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
