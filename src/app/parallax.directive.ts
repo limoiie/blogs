@@ -18,7 +18,6 @@ export class ParallaxDirective implements AfterViewInit {
   ngAfterViewInit(): void {
     this.scrollbar.verticalScrolled.subscribe(
       ev => {
-        console.log('');
         this.eleRef.nativeElement.style.top =
           (this.initialTop - (ev.target.scrollTop * this.ratio)) + 'px';
       }

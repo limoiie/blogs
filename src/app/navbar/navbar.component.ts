@@ -6,16 +6,16 @@ import {Observable} from 'rxjs';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
+  styleUrls: ['./navbar.component.sass'],
   animations: [
     trigger('navbarInOutTrigger', [
       transition(':enter', [
         style({ transform: 'translateY(-100%)'}),
-        animate('300ms ease-out',
+        animate('200ms ease-out',
           style({ transform: 'translateY(0)'}))
       ]),
       transition(':leave', [
-        animate('300ms ease-out',
+        animate('200ms ease-out',
           style({ transform: 'translateY(-100%)' }))
       ])
     ]),

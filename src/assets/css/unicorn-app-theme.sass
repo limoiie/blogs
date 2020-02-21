@@ -37,6 +37,19 @@ $dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app
 
 // Customize
 
+@function get-color-from-theme($theme, $palette, $hue: default, $opacity: null)
+  $palette: map-get($theme, $palette)
+  @return mat-color($palette, $hue, $opacity)
+
+
+@function light-color($palette, $hue: default, $opacity: null)
+  @return get-color-from-theme($light-app-theme, $palette, $hue, $opacity)
+
+
+@function dark-color($palette, $hue: default, $opacity: null)
+  @return get-color-from-theme($dark-app-theme, $palette, $hue, $opacity)
+
+
 // begin: mix link style
 @mixin link-style-norm($theme)
   $primary: mat-color(map-get($theme, accent), text, 0.75)
@@ -63,7 +76,13 @@ $dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app
 
   a:hover
     @include link-style-hover($theme)
+
+  svg#logo
+    fill: get-color-from-theme($theme, accent)
 // end: mix link style
+
+textarea
+  font-family: 'Nunito Sans', sans-serif
 
 // light customize
 @include link-style($light-app-theme)
@@ -71,6 +90,3 @@ $dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app
 // dark customize
 .dark-theme
   @include link-style($dark-app-theme)
-
-
-$primary-color: mat-color(map-get($light-app-theme, accent), default, 0.5)

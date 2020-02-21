@@ -1,0 +1,12 @@
+{
+  "id": 0,
+  "title": "Bayes Networks",
+  "author": "Li Mo",
+  "description": "# Hello World! \n ## This is a Test MarkDown File~ \n $a^2 = b^2 + c^2$",
+  "createTime": "2019/01/01",
+  "editTime": "2019/01/01",
+  "folder": "study/statistic",
+  "tags": [
+      "Statistic", "Math"
+    ]
+}

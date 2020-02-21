@@ -10,14 +10,26 @@ import {NgScrollbar} from 'ngx-scrollbar';
   animations: [
     trigger('fabInOutTrigger', [
       transition(':enter', [
-        style({ transform: 'scale(0, 0)'}),
+        style({
+          opacity: 0,
+          // transform: 'scale(0, 0)'
+        }),
         animate('300ms ease-out',
-          style({ transform: 'scale(1, 1)'}))
+          style({
+            opacity: 1,
+            // transform: 'scale(1, 1)'
+          }))
       ]),
       transition(':leave', [
-        style({ transform: 'scale(1, 1)'}),
-        animate('200ms ease-in',
-          style({ transform: 'scale(0, 0)' }))
+        style({
+          opacity: 1,
+          // transform: 'scale(1, 1)'
+        }),
+        animate('300ms ease-in',
+          style({
+            opacity: 0,
+            // transform: 'scale(0, 0)'
+          }))
       ])
     ]),
   ]
@@ -30,6 +42,7 @@ export class GotoTopBtnComponent extends ScrollOut implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isShown = false;
   }
 
   gotoTop() {

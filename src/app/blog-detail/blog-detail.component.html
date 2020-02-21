@@ -1,0 +1,59 @@
+<div class="blog">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading">
+  </mat-progress-bar>
+
+  <mat-card appMaterialElevation [defaultElevation]="2"
+            raisedElevation="16" @blogTrigger class="card">
+
+    <mat-card-title>{{ blog.title }}</mat-card-title>
+    <mat-card-subtitle>
+      <!--  create datetime  -->
+      <mat-icon class="icon">event_note</mat-icon>
+      <label>
+        Posted on
+        <time [matTooltip]="'Created on ' + blog.createTime"
+              datetime="2020-02-10T15:32:20+11:00">
+          {{ blog.createTime }}
+        </time>
+      </label>
+
+      <!--  edit datetime  -->
+      <mat-icon class="icon">event_available</mat-icon>
+      <label>
+        Edited on
+        <time [matTooltip]="'Created on ' + blog.editTime"
+              datetime="2020-02-10T15:32:20+11:00">
+          {{ blog.editTime }}
+        </time>
+      </label>
+
+      <!--  folder  -->
+      <mat-icon class="icon">folder_open</mat-icon>
+      <label><a href="#">{{ blog.folder }}</a></label>
+
+      <!--  author  -->
+      <mat-icon class="icon">account_circle</mat-icon>
+      <label>{{ blog.author }}</label>
+    </mat-card-subtitle>
+
+    <!--  introduction  -->
+    <mat-card-content>
+<!--      <markdown [data]="blog.description" katex>-->
+      <markdown *ngIf="markdown === null" [src]="'../assets/blog.fake.md'" katex>
+      </markdown>
+      <markdown *ngIf="markdown !== null" [data]="markdown" katex>
+      </markdown>
+<!--      <p>{{ blog.description }}</p>-->
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a class="read-more" href="#">Next Blog</a>
+    </mat-card-actions>
+
+    <!--  tags  -->
+    <mat-chip-list *ngIf="blog.tags.length > 0">
+      <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+    </mat-chip-list>
+
+  </mat-card>
+</div>

@@ -1,0 +1,47 @@
+<div appWindowHeightTracking heightDiff="-96"
+     fxLayout="row" fxLayoutAlign="none"
+     class="content">
+  <div fxFlex="grow" fxLayout="column">
+    <mat-toolbar class="toolbar">
+      <button color="accent"
+              appMaterialElevation defaultElevation="1"
+              raisedElevation="4"
+              mat-icon-button
+              matTooltip="Publish"
+              matTooltipShowDelay="600"
+              (click)="onPublish()">
+        <mat-icon>publish</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-card fxFlex="grow" fxLayout="column"
+              appMaterialElevation [defaultElevation]="2"
+              raisedElevation="16" class="edit-area card">
+      <ng-scrollbar fxFlex="grow" fxLayout="column">
+        <label for="blog"></label>
+        <mat-card-content>
+          <textarea
+            placeholder="Text Here~"
+            autosize minRows="16" fxFlex="grow" name="blog" id="blog"
+            [(ngModel)]="content" (ngModelChange)="onEdit($event)">
+          </textarea>
+        </mat-card-content>
+      </ng-scrollbar>
+    </mat-card>
+  </div>
+  <div fxFlex="grow" fxLayout="column">
+    <mat-progress-bar mode="indeterminate" *ngIf="loading">
+    </mat-progress-bar>
+    <mat-card fxFlex="grow" fxLayout="column"
+              appMaterialElevation defaultElevation="0"
+              raisedElevation="16" class="preview card">
+      <ng-scrollbar>
+        <!--  preview  -->
+        <mat-card-content>
+          <markdown *ngIf="markdown !== null" [data]="markdown" katex>
+          </markdown>
+            <!--      <p>{{ blog.description }}</p>-->
+        </mat-card-content>
+      </ng-scrollbar>
+    </mat-card>
+  </div>
+</div>

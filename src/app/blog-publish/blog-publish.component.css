@@ -1,0 +1,30 @@
+.content {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.toolbar {
+  background-color: transparent;
+  height: 32px;
+  margin-bottom: 8px;
+}
+
+.toolbar button {
+  width: 40px;
+}
+
+.card {
+  padding: 16px 0 16px 16px;
+  margin: 0 0 0 16px;
+}
+
+mat-card-content {
+  margin-right: 32px;
+}
+
+textarea {
+  outline: none;
+  overflow: hidden;
+  border: none;
+  z-index: 8;
+}

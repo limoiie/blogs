@@ -1,0 +1,27 @@
+<div [formGroup]="parts">
+  <mat-chip-list #chipList aria-label="Fruit selection">
+    <mat-chip *ngFor="let tag of value" [selectable]="true"
+              [removable]="true" (removed)="remove(tag)">
+      <mat-icon class="icon">local_offer</mat-icon>
+      {{tag}}
+      <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+    </mat-chip>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input
+      placeholder="Tags..."
+      #fruitInput
+      formControlName="tags"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="true"
+      (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="selected($event)">
+    <mat-option *ngFor="let tag of filteredTags | async"
+                [value]="tag" class="tag-option">
+      {{ tag }}
+    </mat-option>
+  </mat-autocomplete>
+</div>

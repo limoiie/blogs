@@ -37,8 +37,10 @@ export class MaterialElevationDirective implements OnChanges {
       this.renderer.removeClass(this.element.nativeElement, c);
     });
 
-    // add the given elevation class
-    const newClass = `mat-elevation-z${amount}`;
-    this.renderer.addClass(this.element.nativeElement, newClass);
+    if (amount > 0) {
+      // add the given elevation class
+      const newClass = `mat-elevation-z${amount}`;
+      this.renderer.addClass(this.element.nativeElement, newClass);
+    }
   }
 }

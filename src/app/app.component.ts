@@ -42,19 +42,11 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.scrollEventObserver$.next(
-      ScrollOutDirective.createScrollEventObserver(this.scrollbar)
+      ScrollOutDirective.createScrollEventObserver(
+        this.scrollbar.verticalScrolled
+      )
     );
     this.scrollEventObserver$.complete();
-  }
-
-  onReachTop() {
-    this.navbar.isShown = true;
-    this.gotoTopBtn.isShown = false;
-  }
-
-  onReachBottom() {
-    this.navbar.isShown = true;
-    this.gotoTopBtn.isShown = true;
   }
 
 }

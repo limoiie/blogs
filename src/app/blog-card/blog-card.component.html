@@ -1,9 +1,9 @@
 <mat-card
-  appMaterialElevation [defaultElevation]="2" raisedElevation="16"
+  appMaterialElevation defaultElevation="2" raisedElevation="16"
   @myInsertRemoveTrigger class="card">
 
   <mat-card-title>
-      <a href="#">
+      <a [routerLink]="['/blog', blog.id]">
         {{ blog.title }}
       </a>
   </mat-card-title>

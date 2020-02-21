@@ -24,11 +24,29 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/css/mat-card-cus.sass",
               "src/assets/css/unicorn-app-theme.sass",
-              "src/styles.sass"
+              "src/styles.sass",
+              "./node_modules/prismjs/themes/prism-material-light.css",
+              "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
+              "./node_modules/katex/dist/katex.min.css"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js"
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/marked/lib/marked.js",
+              "./node_modules/prismjs/prism.js",
+              "./node_modules/prismjs/components/prism-javascript.min.js",
+              "./node_modules/prismjs/components/prism-java.min.js",
+              "./node_modules/prismjs/components/prism-kotlin.min.js",
+              "./node_modules/prismjs/components/prism-ocaml.min.js",
+              "./node_modules/prismjs/components/prism-rust.min.js",
+              "./node_modules/prismjs/components/prism-python.min.js",
+              "./node_modules/prismjs/components/prism-css.min.js",
+              "./node_modules/prismjs/components/prism-lisp.min.js",
+              "./node_modules/prismjs/components/prism-latex.min.js",
+              "./node_modules/prismjs/components/prism-shell-session.min.js",
+              "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
+              "./node_modules/katex/dist/katex.min.js"
             ]
           },
           "configurations": {
@@ -91,8 +109,6 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/css/candy-app-theme.sass",
-              "src/styles.css"
             ],
             "scripts": []
           }

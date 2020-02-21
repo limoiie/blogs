@@ -11,7 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
@@ -26,7 +26,22 @@ import {BlogCardComponent} from './blog-card/blog-card.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {NgScrollbarModule} from 'ngx-scrollbar';
 import {NgScrollbarReachedModule} from 'ngx-scrollbar/reached-event';
-import { FitWindowHeightDirective } from './fit-window-height.directive';
+import {WindowHeightTrackingDirective} from './window-height-tracking.directive';
+import {BlogDetailComponent} from './blog-detail/blog-detail.component';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {MarkdownModule, MarkedOptions} from 'ngx-markdown';
+import {markedOptionsFactory} from './markdown-render-custom';
+import { BlogPublishComponent } from './blog-publish/blog-publish.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AutosizeModule} from 'ngx-autosize';
+import { BlogPublishFormComponent } from './blog-publish-form/blog-publish-form.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { FormFieldTagsComponent } from './form-field-tags/form-field-tags.component';
 
 
 @NgModule({
@@ -40,13 +55,20 @@ import { FitWindowHeightDirective } from './fit-window-height.directive';
     MaterialElevationDirective,
     TagComponent,
     BlogCardComponent,
-    FitWindowHeightDirective
+    WindowHeightTrackingDirective,
+    BlogDetailComponent,
+    BlogPublishComponent,
+    BlogPublishFormComponent,
+    FormFieldTagsComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot([
-      {path: '', component: BlogListComponent}
+      {path: '', component: BlogListComponent},
+      {path: 'list', component: BlogListComponent},
+      {path: 'blog/:blogId', component: BlogDetailComponent},
+      {path: 'publish', component: BlogPublishComponent}
     ]),
     HttpClientModule,
     LayoutModule,
@@ -61,7 +83,25 @@ import { FitWindowHeightDirective } from './fit-window-height.directive';
     MatSlideToggleModule,
     MatTooltipModule,
     NgScrollbarModule,
-    NgScrollbarReachedModule
+    NgScrollbarReachedModule,
+    FlexLayoutModule,
+    MarkdownModule.forRoot({
+      loader: HttpClient,
+      markedOptions: {
+        provide: MarkedOptions,
+        useFactory: markedOptionsFactory
+      }
+    }),
+    FormsModule,
+    AutosizeModule,
+    MatAutocompleteModule,
+    MatDialogModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
