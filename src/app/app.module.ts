@@ -59,7 +59,6 @@ import { FormFieldTagsComponent } from './form-field-tags/form-field-tags.compon
     BlogDetailComponent,
     BlogPublishComponent,
     BlogPublishFormComponent,
-    FormFieldTagsComponent,
     FormFieldTagsComponent
   ],
   imports: [

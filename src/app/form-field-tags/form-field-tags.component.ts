@@ -1,6 +1,6 @@
 import {
   AfterViewInit,
-  Component,
+  Component, DoCheck,
   ElementRef,
   HostBinding,
   Input,
@@ -10,7 +10,7 @@ import {
   Self,
   ViewChild
 } from '@angular/core';
-import {ControlValueAccessor, FormBuilder, FormGroup, NgControl} from '@angular/forms';
+import {ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl} from '@angular/forms';
 import {MatFormFieldControl} from '@angular/material/form-field';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -18,8 +18,9 @@ import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/a
 import {MatChipInputEvent} from '@angular/material/chips';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
-import {map, startWith, takeUntil} from 'rxjs/operators';
+import {map, startWith, takeUntil, tap} from 'rxjs/operators';
 import {AutofillMonitor} from '@angular/cdk/text-field';
+import {BlogService} from '../blog.service';
 
 @Component({
   selector: 'app-form-field-tags',
@@ -30,21 +31,17 @@ import {AutofillMonitor} from '@angular/cdk/text-field';
     useExisting: FormFieldTagsComponent
   }]
 })
-export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
+export class FormFieldTagsComponent implements OnInit, DoCheck, AfterViewInit, OnDestroy,
   MatFormFieldControl<string[]>, ControlValueAccessor {
 
   @Input()
   get value() {
-    if (this.parts.value.tags == null ||
-      this.parts.value.tags.trim() === '') {
-      return [];
-    }
-    return this.parts.value.tags.split(';');
+    return this.parts.value.tags || [];
   }
 
   set value(val) {
     val = val || [];
-    this.parts.setValue({tags: val.join(';')});
+    this.parts.setValue({tags: val});
     this.stateChanges.next();
   }
 
@@ -79,14 +76,19 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
     this.stateChanges.next();
   }
 
+  get errorState() {
+    return this.ngControl.errors !== null && this.isTouched;
+  }
+
   constructor(
-    fb: FormBuilder,
+    formBuilder: FormBuilder,
     @Optional() @Self() public ngControl: NgControl,
     private fm: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
     private autofillMonitor: AutofillMonitor,
+    private blogService: BlogService
   ) {
-    this.parts = fb.group({
+    this.parts = formBuilder.group({
       tags: []
     });
     if (this.ngControl != null) {
@@ -99,15 +101,28 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
       this.focused = !!origin;
       this.stateChanges.next();
     });
+
+    this.allTags$ = this.blogService.loadTags().subscribe(
+      (tags: any) => {
+        this.allTags = tags.slice();
+        console.log('Object:', this);
+        console.log('GET TAGS:', this.allTags);
+      }
+    );
+
+    this.filteredTags = this.fakeCtrl.valueChanges.pipe(
+      startWith(null as string),
+      map(x => this._filterCandidateTags(x))
+    );
   }
 
   static nextId = 0;
 
   parts: FormGroup;
 
-  @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
-  @ViewChild('realInput') realInput: ElementRef<HTMLInputElement>;
+  @ViewChild('fruitInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  fakeCtrl = new FormControl('');
 
   filteredTags: Observable<string[]>;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -125,27 +140,39 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
   private _disabled = false;
 
   focused = false;
-  errorState = false;
   controlType = 'tags-input';
   autofilled = false;
+  isTouched = false;
 
+  allTags$;
+  allTags: string[] = [];
 
   @HostBinding('attr.aria-describedby') describedBy = '';
 
   ngOnInit(): void {
   }
 
+  ngDoCheck(): void {
+  }
+
   ngAfterViewInit(): void {
     this.fm.monitor(this.elRef.nativeElement, true)
       .subscribe(focusOrigin => {
-        this.focused = !!focusOrigin;
+        if (this.focused !== !!focusOrigin) {
+          this.focused = !!focusOrigin;
+          this.stateChanges.next();
+        }
       });
+
     combineLatest(
-      this.observeAutofill(this.fruitInput)
+      [this.observeAutofill(this.tagInput)]
     ).pipe(
       map(autofill => autofill.some(autofilled => autofilled)),
       takeUntil(this.destroy),
-    ).subscribe(autofilled => this.autofilled = autofilled);
+    ).subscribe(autofilled => {
+      this.autofilled = autofilled;
+      this.stateChanges.next();
+    });
   }
 
   ngOnDestroy() {
@@ -153,12 +180,12 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
     this.destroy.complete();
     this.stateChanges.complete();
     this.fm.stopMonitoring(this.elRef.nativeElement);
-    this.autofillMonitor.stopMonitoring(this.fruitInput);
+    this.autofillMonitor.stopMonitoring(this.tagInput);
   }
 
   get empty() {
-    const n = this.parts.value;
-    return !n.tags;
+    const tags = this.parts.value.tags;
+    return !tags || tags.length === 0;
   }
 
   @HostBinding('class.floating')
@@ -189,6 +216,10 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
     this.onTouched = onTouched;
   }
 
+  onBlur() {
+    this.isTouched = true;
+  }
+
   setDisabledState(shouldDisable: boolean): void {
     if (shouldDisable) {
       this.parts.disable();
@@ -202,14 +233,14 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
   writeValue(value: string[] | null): void {
     value = value || [];
 
-    this.parts.setValue(
-      {tags: value.join(';')}, {emitEvent: false});
+    this.parts.setValue({tags: value}, {emitEvent: false});
   }
 
   private observeAutofill(ref: ElementRef): Observable<boolean> {
-    return this.autofillMonitor.monitor(ref)
-      .pipe(map(event => event.isAutofilled))
-      .pipe(startWith(false));
+    return this.autofillMonitor.monitor(ref).pipe(
+      map(event => event.isAutofilled),
+      startWith(false)
+    );
   }
 
   // noinspection DuplicatedCode
@@ -231,8 +262,6 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
     if (input) {
       input.value = '';
     }
-
-    // this.tagCtrl.setValue(null);
   }
 
   remove(tag: string): void {
@@ -257,8 +286,20 @@ export class FormFieldTagsComponent implements OnInit, AfterViewInit, OnDestroy,
       this.value = tags;
     }
 
-    this.fruitInput.nativeElement.value = '';
-    // this.tagCtrl.setValue(null);
+    this.tagInput.nativeElement.value = '';
+  }
+
+  private _filterCandidateTags(value: string | null): string[] {
+    if (!!this.allTags === false) {
+      return [];
+    }
+
+    const tags = this.value;
+    const input = (value || '').toLowerCase();
+    return this.allTags
+      .map(tag => tag.toLowerCase())
+      .filter(tag => tag.startsWith(input))
+      .filter(tag => tags.indexOf(tag) === -1);
   }
 
 }

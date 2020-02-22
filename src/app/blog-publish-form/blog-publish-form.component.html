@@ -3,24 +3,24 @@
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" fxLayout="column" class="container">
     <mat-form-field hintLabel="Max 200 characters" appearance="fill">
       <mat-label>Title</mat-label>
-      <input matInput maxlength="200" formControlName="title">
+      <input matInput maxlength="200" formControlName="title" required>
       <mat-hint align="end">{{title?.length || 0}}/200</mat-hint>
     </mat-form-field>
 
     <div fxLayout="row" fxLayoutGap="12px">
       <mat-form-field fxFlex="192px" appearance="fill">
         <mat-label>Author</mat-label>
-        <input matInput formControlName="author">
+        <input matInput formControlName="author" required>
       </mat-form-field>
       <mat-form-field fxFlex="128px" appearance="fill">
         <mat-label>Create Time</mat-label>
-        <input matInput [matDatepicker]="dp1" formControlName="createTime">
+        <input matInput [matDatepicker]="dp1" formControlName="createTime" required>
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
       </mat-form-field>
       <mat-form-field fxFlex="128px" appearance="fill">
         <mat-label>Edit Time</mat-label>
-        <input matInput [matDatepicker]="dp2" formControlName="editTime">
+        <input matInput [matDatepicker]="dp2" formControlName="editTime" required>
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
       </mat-form-field>
@@ -31,7 +31,7 @@
         <mat-label>Folder</mat-label>
         <input matInput placeholder="WorkStuff"
                formControlName="folder"
-               [matAutocomplete]="autoFolder">
+               [matAutocomplete]="autoFolder" required>
         <mat-autocomplete #autoFolder>
           <mat-option *ngFor="let folder of folders$ | async"
                       [value]="folder" class="tag-option">
@@ -43,36 +43,8 @@
 
       <mat-form-field fxFlex="grow" appearance="fill">
         <mat-label>Tags</mat-label>
-        <app-form-field-tags formControlName="tags"></app-form-field-tags>
+        <app-form-field-tags formControlName="tags" required></app-form-field-tags>
       </mat-form-field>
-
-<!--      <mat-form-field fxFlex="grow" appearance="fill">-->
-<!--        <mat-label>Tag List</mat-label>-->
-<!--        <mat-chip-list #chipList aria-label="Fruit selection">-->
-<!--          <mat-chip *ngFor="let tag of tags" [selectable]="true"-->
-<!--                    [removable]="true" (removed)="remove(tag)">-->
-<!--            <mat-icon class="icon">local_offer</mat-icon>-->
-<!--            {{tag}}-->
-<!--            <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>-->
-<!--          </mat-chip>-->
-<!--          <input-->
-<!--            placeholder="Tags..."-->
-<!--            #fruitInput-->
-<!--            formControlName="tags"-->
-<!--            [matAutocomplete]="auto"-->
-<!--            [matChipInputFor]="chipList"-->
-<!--            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"-->
-<!--            [matChipInputAddOnBlur]="true"-->
-<!--            (matChipInputTokenEnd)="add($event)">-->
-<!--        </mat-chip-list>-->
-<!--        <mat-autocomplete #auto="matAutocomplete"-->
-<!--                          (optionSelected)="selected($event)">-->
-<!--          <mat-option *ngFor="let tag of filteredTags | async"-->
-<!--                      [value]="tag" class="tag-option">-->
-<!--            {{ tag }}-->
-<!--          </mat-option>-->
-<!--        </mat-autocomplete>-->
-<!--      </mat-form-field>-->
     </div>
 
     <mat-form-field appearance="fill">
@@ -81,7 +53,7 @@
                 formControlName="abstract"
                 minlength="80" maxlength="200"
                 placeholder="Text Here~"
-                autosize minRows="8"></textarea>
+                autosize minRows="8" required></textarea>
       <!--    <textarea matInput></textarea>-->
       <mat-hint align="end">{{title?.length || 0}}/200</mat-hint>
     </mat-form-field>

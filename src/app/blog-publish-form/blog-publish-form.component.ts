@@ -45,13 +45,13 @@ export class BlogPublishFormComponent implements OnInit {
     private blogService: BlogService
   ) {
     this.folders$ = this.blogService.loadFolders();
-    this.allTags$ = this.blogService.loadTags().pipe(
-      tap((tags: any) => this.allTags = tags)
-    );
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map((fruit: string | null) => fruit ?
-          this._filter(fruit) : this.tags.slice()));
+    // this.allTags$ = this.blogService.loadTags().pipe(
+    //   tap((tags: any) => this.allTags = tags)
+    // );
+    // this.filteredTags = this.tagCtrl.valueChanges.pipe(
+    //     startWith(null),
+    //     map((fruit: string | null) => fruit ?
+    //       this._filter(fruit) : this.tags.slice()));
   }
 
   ngOnInit(): void {

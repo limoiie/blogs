@@ -10,14 +10,13 @@
     <input
       placeholder="Tags..."
       #fruitInput
+      (blur)="onBlur()"
+      [formControl]="fakeCtrl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       [matChipInputAddOnBlur]="true"
       (matChipInputTokenEnd)="add($event)">
-
-    <!--suppress HtmlFormInputWithoutLabel -->
-    <input #realInput formControlName="tags">
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete"
                     (optionSelected)="selected($event)">
