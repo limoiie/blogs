@@ -1,16 +1,18 @@
 <!--suppress HtmlFormInputWithoutLabel -->
 <ng-scrollbar>
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" fxLayout="column" class="container">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()"
+        fxLayout="column" fxLayoutGap="12px" class="container">
     <mat-form-field hintLabel="Max 200 characters" appearance="fill">
       <mat-label>Title</mat-label>
       <input matInput maxlength="200" formControlName="title" required>
       <mat-hint align="end">{{title?.length || 0}}/200</mat-hint>
     </mat-form-field>
 
-    <div fxLayout="row" fxLayoutGap="12px">
+    <div fxLayout="row wrap" fxLayoutGap="12px">
       <mat-form-field fxFlex="192px" appearance="fill">
         <mat-label>Author</mat-label>
         <input matInput formControlName="author" required>
+        <mat-hint align="end">Legal account</mat-hint>
       </mat-form-field>
       <mat-form-field fxFlex="128px" appearance="fill">
         <mat-label>Create Time</mat-label>
@@ -26,7 +28,7 @@
       </mat-form-field>
     </div>
 
-    <div fxLayout="row" fxLayoutGap="12px">
+    <div fxLayout="row wrap" fxLayoutGap="12px">
       <mat-form-field appearance="fill">
         <mat-label>Folder</mat-label>
         <input matInput placeholder="WorkStuff"
@@ -44,6 +46,7 @@
       <mat-form-field fxFlex="grow" appearance="fill">
         <mat-label>Tags</mat-label>
         <app-form-field-tags formControlName="tags" required></app-form-field-tags>
+        <mat-hint align="end">Shorter term is preferable ^</mat-hint>
       </mat-form-field>
     </div>
 
@@ -55,9 +58,15 @@
                 placeholder="Text Here~"
                 autosize minRows="8" required></textarea>
       <!--    <textarea matInput></textarea>-->
-      <mat-hint align="end">{{title?.length || 0}}/200</mat-hint>
+      <mat-error *ngIf="profileForm.controls['abstract'].invalid">
+        You should input at less 80 characters in this field!
+      </mat-error>
+      <mat-hint align="end">{{abstract?.length || 0}}/[80, 200]</mat-hint>
     </mat-form-field>
 
-    <button type="submit" color="accent" mat-raised-button>Submit</button>
+    <button type="submit" color="accent" mat-raised-button
+            [disabled]="!profileForm.valid" >
+      Submit
+    </button>
   </form>
 </ng-scrollbar>
