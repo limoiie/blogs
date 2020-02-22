@@ -18,7 +18,7 @@ import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/a
 import {MatChipInputEvent} from '@angular/material/chips';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
-import {map, startWith, takeUntil, tap} from 'rxjs/operators';
+import {map, startWith, takeUntil} from 'rxjs/operators';
 import {AutofillMonitor} from '@angular/cdk/text-field';
 import {BlogService} from '../blog.service';
 
@@ -103,11 +103,7 @@ export class FormFieldTagsComponent implements OnInit, DoCheck, AfterViewInit, O
     });
 
     this.allTags$ = this.blogService.loadTags().subscribe(
-      (tags: any) => {
-        this.allTags = tags.slice();
-        console.log('Object:', this);
-        console.log('GET TAGS:', this.allTags);
-      }
+      (tags: any) => this.allTags = tags.slice()
     );
 
     this.filteredTags = this.fakeCtrl.valueChanges.pipe(

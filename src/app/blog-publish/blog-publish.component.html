@@ -37,7 +37,7 @@
       <ng-scrollbar>
         <!--  preview  -->
         <mat-card-content>
-          <markdown *ngIf="markdown !== null" [data]="markdown" katex>
+          <markdown #markdown *ngIf="mdContent !== null" [data]="mdContent" katex>
           </markdown>
             <!--      <p>{{ blog.description }}</p>-->
         </mat-card-content>

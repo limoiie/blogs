@@ -1,11 +1,13 @@
 <!--suppress HtmlFormInputWithoutLabel -->
 <ng-scrollbar>
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()"
+  <form [formGroup]="form" (ngSubmit)="onSubmit()"
         fxLayout="column" fxLayoutGap="12px" class="container">
     <mat-form-field hintLabel="Max 200 characters" appearance="fill">
       <mat-label>Title</mat-label>
       <input matInput maxlength="200" formControlName="title" required>
-      <mat-hint align="end">{{title?.length || 0}}/200</mat-hint>
+      <mat-hint align="end">
+        {{form.controls.title.value?.length || 0}}/200
+      </mat-hint>
     </mat-form-field>
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
@@ -52,20 +54,22 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Abstract</mat-label>
-      <textarea fxFlex="grow" matInput
-                formControlName="abstract"
-                minlength="80" maxlength="200"
+      <textarea fxFlex="grow" matInput formControlName="abstract"
+                [minlength]="minAbstractLen" [maxlength]="maxAbstractLen"
                 placeholder="Text Here~"
                 autosize minRows="8" required></textarea>
       <!--    <textarea matInput></textarea>-->
-      <mat-error *ngIf="profileForm.controls['abstract'].invalid">
-        You should input at less 80 characters in this field!
+      <mat-error *ngIf="form.controls.abstract.invalid">
+        {{ getAbstractErrorMessage() }}
       </mat-error>
-      <mat-hint align="end">{{abstract?.length || 0}}/[80, 200]</mat-hint>
+      <mat-hint align="end">
+        {{form.controls.abstract.value?.length || 0}} /
+        [{{minAbstractLen}}, {{maxAbstractLen}}]
+      </mat-hint>
     </mat-form-field>
 
     <button type="submit" color="accent" mat-raised-button
-            [disabled]="!profileForm.valid" >
+            [disabled]="!form.valid" >
       Submit
     </button>
   </form>
