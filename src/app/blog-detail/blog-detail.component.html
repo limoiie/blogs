@@ -38,12 +38,12 @@
 
     <!--  introduction  -->
     <mat-card-content>
-<!--      <markdown [data]="blog.description" katex>-->
-      <markdown *ngIf="markdown === null" [src]="'../assets/blog.fake.md'" katex>
-      </markdown>
-      <markdown *ngIf="markdown !== null" [data]="markdown" katex>
-      </markdown>
-<!--      <p>{{ blog.description }}</p>-->
+      <markdown [data]="blog.mdDocument" katex></markdown>
+      <!--      <markdown *ngIf="markdown === null" [src]="'../assets/blog.fake.md'" katex>-->
+      <!--      </markdown>-->
+      <!--      <markdown *ngIf="markdown !== null" [data]="markdown" katex>-->
+      <!--      </markdown>-->
+      <!--      <p>{{ blog.description }}</p>-->
     </mat-card-content>
 
     <mat-card-actions>

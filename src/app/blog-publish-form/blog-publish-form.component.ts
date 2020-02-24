@@ -1,9 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {BlogService} from '../blog.service';
+import {BlogService, PublishResponse} from '../blog.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {assertNotNull} from '@angular/compiler/src/output/output_ast';
 import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 
 @Component({
@@ -14,15 +14,13 @@ import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
 export class BlogPublishFormComponent implements OnInit {
 
   folders$;
-
   minAbstractLen = 80;
   maxAbstractLen = 400;
-
   form = new FormGroup({
     title: new FormControl(),
-    author: new FormControl({value: null, disabled: true}),
-    createTime: new FormControl({value: null, disabled: true}),
-    editTime: new FormControl({value: null, disabled: true}),
+    author: new FormControl(),
+    createTime: new FormControl(),
+    editTime: new FormControl(),
     folder: new FormControl(),
     tags: new FormControl(),
     abstract: new FormControl(),
@@ -33,13 +31,14 @@ export class BlogPublishFormComponent implements OnInit {
   constructor(
     private blogService: BlogService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<BlogPublishFormComponent>
+    public dialogRef: MatDialogRef<BlogPublishFormComponent>,
+    private snackBar: MatSnackBar
   ) {
     this.folders$ = this.blogService.loadFolders();
 
-    console.assert(this.notEmptyField(data.author));
-    console.assert(this.notEmptyField(data.mdDocument));
-    console.assert(this.notEmptyField(data.htmlDocument));
+    console.assert(BlogPublishFormComponent.notEmptyField(data.author));
+    console.assert(BlogPublishFormComponent.notEmptyField(data.mdDocument));
+    console.assert(BlogPublishFormComponent.notEmptyField(data.htmlDocument));
 
     const ctrls = this.form.controls;
     ctrls.title.setValue(data.title);
@@ -53,11 +52,15 @@ export class BlogPublishFormComponent implements OnInit {
     ctrls.htmlDocument.setValue(data.htmlDocument);
   }
 
+  private static notEmptyField(field: string) {
+    return isNotNullOrUndefined(field) && field.length > 0;
+  }
+
   ngOnInit(): void {
   }
 
   closeDialog() {
-    console.log('form tags: ', this.form.controls.tags.value);
+    // console.log('form tags: ', this.form.controls.tags.value);
     this.dialogRef.close({
       title: this.form.controls.title.value,
       folder: this.form.controls.folder.value,
@@ -65,9 +68,40 @@ export class BlogPublishFormComponent implements OnInit {
     });
   }
 
+  formatDate(date: Date) {
+    const y = date.getFullYear();
+    const m = date.getMonth();
+    const d = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return `${y}/${m}/${d} ${hours}:${minutes}:${seconds}`;
+  }
+
+  packageData(data) {
+    data.tags = data.tags.tags;
+    data.createTime = this.formatDate(data.createTime);
+    data.editTime = this.formatDate(data.editTime);
+    return data;
+  }
+
   onSubmit() {
-    console.log(this.form.value);
-    this.closeDialog();
+    const value = this.packageData(Object.assign({}, this.form.value));
+
+    console.log('send request: ', value);
+    this.blogService.publishBlog(value).subscribe(
+      (data: PublishResponse) => {
+        console.log('received response: ', data);
+        let msg: string;
+        if (data.state === true) {
+          msg = `Publish successfully! New blog id: ${data.blogId}`;
+          this.closeDialog();
+        } else {
+          msg = `Failed to publish, ${data.message} try later`;
+        }
+        this.snackBar.open(msg, 'Ok', {duration: 1500});
+      }
+    );
   }
 
   getAbstractErrorMessage() {
@@ -78,10 +112,6 @@ export class BlogPublishFormComponent implements OnInit {
     if (len > this.maxAbstractLen) {
       return `${len} (> ${this.maxAbstractLen}) characters are too long`;
     }
-  }
-
-  notEmptyField(field: string) {
-    return isNotNullOrUndefined(field) && field.length > 0;
   }
 
 }

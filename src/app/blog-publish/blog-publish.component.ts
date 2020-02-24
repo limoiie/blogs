@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {BlogPublishFormComponent} from '../blog-publish-form/blog-publish-form.component';
 import {MarkdownComponent} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {BlogService} from '../blog.service';
 
 @Component({
   selector: 'app-blog-upload',
@@ -31,6 +32,7 @@ export class BlogPublishComponent implements OnInit {
   @ViewChild('markdown') markdownView: MarkdownComponent;
 
   constructor(
+    private blogService: BlogService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) { }
@@ -76,12 +78,11 @@ export class BlogPublishComponent implements OnInit {
         this.folder = result.folder || this.folder;
         this.tags = result.tags || this.tags;
       }
-      console.log(`Dialog result: ${result}`);
     });
   }
 
   getAuthor() {
-    return 'Li Mo';
+    return 'limo';
   }
 
   getTitle() {
@@ -108,7 +109,7 @@ export class BlogPublishComponent implements OnInit {
     return this.markdownView.element.nativeElement.innerHTML;
   }
 
-  updateTitle(updatedTitle) {
+  updateTitle(updatedTitle: string) {
     // update content editor
     this.content = this.content.trim()
       .replace(/^# .*/, `# ${updatedTitle}`);

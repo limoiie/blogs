@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {animate, style, transition, trigger} from '@angular/animations';
-import {BlogService} from '../blog.service';
+import {ApiResponse, BlogService} from '../blog.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-blog-list',
@@ -13,21 +13,26 @@ export class BlogListComponent implements OnInit {
   loading;
 
   constructor(
-    private blogService: BlogService
+    private blogService: BlogService,
+    private snackBar: MatSnackBar
   ) {
   }
 
   ngOnInit(): void {
     this.loading = true;
     this.blogService
-      .loadBlogList()
+      .getBlogList(1, 10)
       .subscribe(
-        (blogs) => {
-          this.blogList = blogs;
+        (response: ApiResponse) => {
+          if (response.state) {
+            this.blogList = response.data;
+          } else {
+            const errMsg = `Failed to load blog: ${response.message}`;
+            this.snackBar.open(errMsg, 'OK');
+          }
         },
         (err) => {
-          this.loading = false;
-          window.alert('ERROR: ' + err);
+          this.snackBar.open(`Err: ${err}`, 'OK');
         },
         () => {
           this.loading = false;

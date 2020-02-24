@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {BlogService} from '../blog.service';
+import {ApiResponse, BlogService} from '../blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {MarkdownService} from 'ngx-markdown';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-blog-detail',
@@ -28,21 +29,33 @@ export class BlogDetailComponent implements OnInit {
     editTime: '',
     folder: '',
     author: '',
-    description: '',
     tags: []
   };
 
-  @Input() markdown = null;
+  markdown = null;
   constructor(
     private route: ActivatedRoute,
     private mdService: MarkdownService,
-    private blogService: BlogService
+    private blogService: BlogService,
+    private snackBar: MatSnackBar
   ) {
   }
 
   ngOnInit(): void {
     this.loading = true;
     this.route.paramMap.subscribe(params => {
+      const blogId = +params.get('blogId');
+      this.blogService.getBlogDetail(blogId)
+        .subscribe((response: ApiResponse) => {
+          console.log('receive: ', response);
+          if (response.state) {
+            this.blog = response.data;
+          } else {
+            const msg = `Failed to load blog: ${response.message}`;
+            this.snackBar.open(msg, 'Ok');
+          }
+        });
+
       this.blogService.loadBlog(+params.get('blogId'))
         .subscribe((blog: any) => {
           this.blog = blog;

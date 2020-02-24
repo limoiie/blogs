@@ -11,7 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
@@ -31,18 +31,18 @@ import {BlogDetailComponent} from './blog-detail/blog-detail.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MarkdownModule, MarkedOptions} from 'ngx-markdown';
 import {markedOptionsFactory} from './markdown-render-custom';
-import { BlogPublishComponent } from './blog-publish/blog-publish.component';
+import {BlogPublishComponent} from './blog-publish/blog-publish.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AutosizeModule} from 'ngx-autosize';
-import { BlogPublishFormComponent } from './blog-publish-form/blog-publish-form.component';
+import {BlogPublishFormComponent} from './blog-publish-form/blog-publish-form.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import { FormFieldTagsComponent } from './form-field-tags/form-field-tags.component';
-import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {FormFieldTagsComponent} from './form-field-tags/form-field-tags.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -72,6 +72,10 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
       {path: 'publish', component: BlogPublishComponent}
     ]),
     HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFToken',
+    }),
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,

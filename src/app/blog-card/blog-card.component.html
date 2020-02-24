@@ -1,5 +1,6 @@
 <mat-card
   appMaterialElevation defaultElevation="2" raisedElevation="16"
+  *ngIf="blog"
   @myInsertRemoveTrigger class="card">
 
   <mat-card-title>
@@ -39,7 +40,7 @@
 
   <!--  introduction  -->
   <mat-card-content>
-    <p>{{ blog.description }}</p>
+    <p>{{ blog.abstract }}</p>
   </mat-card-content>
 
   <mat-card-actions>
