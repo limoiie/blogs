@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiResponse, BlogService} from '../blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {MarkdownService} from 'ngx-markdown';
+import {MarkdownComponent, MarkdownService} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-blog-detail',
@@ -22,6 +24,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   ]
 })
 export class BlogDetailComponent implements OnInit {
+
+  @ViewChild('toc') toc: TableOfContentComponent;
+  @ViewChild('content') content: MarkdownComponent;
+
   loading = true;
   blog = {
     title: '',
@@ -29,7 +35,8 @@ export class BlogDetailComponent implements OnInit {
     editTime: '',
     folder: '',
     author: '',
-    tags: []
+    tags: [],
+    mdDocument: ''
   };
 
   markdown = null;
@@ -37,7 +44,8 @@ export class BlogDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private mdService: MarkdownService,
     private blogService: BlogService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private ngZone: NgZone
   ) {
   }
 
@@ -50,15 +58,17 @@ export class BlogDetailComponent implements OnInit {
           console.log('receive: ', response);
           if (response.state) {
             this.blog = response.data;
+
+            this.ngZone.onStable.pipe(take(1))
+              .subscribe(() =>
+                this.toc.addHeaders('Content',
+                  this.content.element.nativeElement)
+              );
           } else {
             const msg = `Failed to load blog: ${response.message}`;
             this.snackBar.open(msg, 'Ok');
           }
-        });
 
-      this.blogService.loadBlog(+params.get('blogId'))
-        .subscribe((blog: any) => {
-          this.blog = blog;
           this.loading = false;
         });
     });

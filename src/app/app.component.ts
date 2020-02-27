@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {map, shareReplay} from 'rxjs/operators';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Subject} from 'rxjs';
-import {NgScrollbar} from 'ngx-scrollbar';
-import {ScrollOutDirective} from './scroll-out.directive';
+import {fromEvent, Subject} from 'rxjs';
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component';
 import {NavbarComponent} from './navbar/navbar.component';
+import {MainScrollService} from './main-scroll.service';
 
 @Component({
   selector: 'app-root',
@@ -14,10 +12,7 @@ import {NavbarComponent} from './navbar/navbar.component';
   styleUrls: ['./app.component.sass'],
   animations: []
 })
-export class AppComponent implements AfterViewInit {
-
-  @ViewChild(NgScrollbar)
-  scrollbar;
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(GotoTopBtnComponent)
   gotoTopBtn;
@@ -26,7 +21,8 @@ export class AppComponent implements AfterViewInit {
   navbar;
 
   title = 'blogs';
-  scrollEventObserver$ = new Subject();
+
+  destroy$ = new Subject();
 
   isHandset$ = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -36,17 +32,24 @@ export class AppComponent implements AfterViewInit {
     );
 
   constructor(
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private scrollService: MainScrollService
   ) {
   }
 
+  ngOnInit() {
+  }
+
   ngAfterViewInit(): void {
-    this.scrollEventObserver$.next(
-      ScrollOutDirective.createScrollEventObserver(
-        this.scrollbar.verticalScrolled
-      )
-    );
-    this.scrollEventObserver$.complete();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll($event) {
+    this.scrollService.onScroll($event);
   }
 
 }

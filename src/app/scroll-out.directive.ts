@@ -1,7 +1,8 @@
 import {Directive, Input, OnDestroy, OnInit} from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
-import {debounceTime, filter, map, pairwise, takeUntil, tap} from 'rxjs/operators';
-import { RtlScrollAxisType } from '@angular/cdk/platform';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {RtlScrollAxisType} from '@angular/cdk/platform';
+import {MainScrollService} from './main-scroll.service';
 
 // The target element should extends this base class
 export class ScrollOut {
@@ -10,38 +11,40 @@ export class ScrollOut {
 
 // Check if meet a reach
 class ReachedFunctions {
-  static reachedTop(offset: number, e: any): boolean {
-    return ReachedFunctions.reached(-e.target.scrollTop, 0, offset);
+  static reachedTop(offset: number, target: any): boolean {
+    return ReachedFunctions.reached(-target.scrollTop, 0, offset);
   }
 
-  static reachedBottom(offset: number, e: any): boolean {
-    return ReachedFunctions.reached(e.target.scrollTop + e.target.clientHeight, e.target.scrollHeight, offset);
+  static reachedBottom(offset: number, target: any): boolean {
+    return ReachedFunctions.reached(target.scrollTop + target.clientHeight, target.scrollHeight, offset);
   }
 
-  static reachedStart(offset: number, e: any, direction: 'ltr' | 'rtl', rtlScrollAxisType: RtlScrollAxisType): boolean {
+  // noinspection JSUnusedGlobalSymbols
+  static reachedStart(offset: number, target: any, direction: 'ltr' | 'rtl', rtlScrollAxisType: RtlScrollAxisType): boolean {
     if (direction === 'rtl') {
       if (rtlScrollAxisType === RtlScrollAxisType.NEGATED) {
-        return ReachedFunctions.reached(e.target.scrollLeft, 0, offset);
+        return ReachedFunctions.reached(target.scrollLeft, 0, offset);
       }
       if (rtlScrollAxisType === RtlScrollAxisType.INVERTED) {
-        return ReachedFunctions.reached(-e.target.scrollLeft, 0, offset);
+        return ReachedFunctions.reached(-target.scrollLeft, 0, offset);
       }
-      return ReachedFunctions.reached(e.target.scrollLeft + e.target.clientWidth, e.target.scrollWidth, offset);
+      return ReachedFunctions.reached(target.scrollLeft + target.clientWidth, target.scrollWidth, offset);
     }
-    return ReachedFunctions.reached(-e.target.scrollLeft, 0, offset);
+    return ReachedFunctions.reached(-target.scrollLeft, 0, offset);
   }
 
-  static reachedEnd(offset: number, e: any, direction: 'ltr' | 'rtl', rtlScrollAxisType: RtlScrollAxisType): boolean {
+  // noinspection JSUnusedGlobalSymbols
+  static reachedEnd(offset: number, target: any, direction: 'ltr' | 'rtl', rtlScrollAxisType: RtlScrollAxisType): boolean {
     if (direction === 'rtl') {
       if (rtlScrollAxisType === RtlScrollAxisType.NEGATED) {
-        return ReachedFunctions.reached(-(e.target.scrollLeft - e.target.clientWidth), e.target.scrollWidth, offset);
+        return ReachedFunctions.reached(-(target.scrollLeft - target.clientWidth), target.scrollWidth, offset);
       }
       if (rtlScrollAxisType === RtlScrollAxisType.INVERTED) {
-        return ReachedFunctions.reached(-(e.target.scrollLeft + e.target.clientWidth), e.target.scrollWidth, offset);
+        return ReachedFunctions.reached(-(target.scrollLeft + target.clientWidth), target.scrollWidth, offset);
       }
-      return ReachedFunctions.reached(-e.target.scrollLeft, 0, offset);
+      return ReachedFunctions.reached(-target.scrollLeft, 0, offset);
     }
-    return ReachedFunctions.reached(e.target.scrollLeft + e.target.clientWidth, e.target.scrollWidth, offset);
+    return ReachedFunctions.reached(target.scrollLeft + target.clientWidth, target.scrollWidth, offset);
   }
 
   static reached(currPosition: number, targetPosition: number, offset: number): boolean {
@@ -59,56 +62,41 @@ export class ScrollOutDirective implements OnInit, OnDestroy {
 
   destroy$ = new Subject();
 
-  @Input() scrollEvOb$;
+  @Input() scrolled$;
   @Input() host;
   @Input() resolution = 10;
   @Input() topShow = true;
   @Input() botShow = true;
-  constructor() {
-  }
-
-  // create a common scroll event observer
-  public static createScrollEventObserver(scrollEvent) {
-    const packEv = ev => [ev, ev.target.scrollTop];
-    const packPair = evs => [evs[1][0], evs[1][1] - evs[0][1]];
-
-    return scrollEvent.pipe(
-      debounceTime(10),
-      map(packEv),
-      pairwise(),
-      map(packPair)
-    );
+  constructor(
+    private scrollService: MainScrollService
+  ) {
   }
 
   ngOnInit(): void {
     console.assert(this.host.isShown !== undefined,
       'You should extend ScrollOut for the directed component!');
 
-    this.scrollEvOb$
+    this.scrollService.diffScrolled$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(obs => {
-        obs
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(
-          evInterval => {
-            const ev = evInterval[0];
-            const interval = evInterval[1];
+      .subscribe(
+        eleDelta => {
+          const ele = eleDelta[0];
+          const delta = eleDelta[1];
 
-            // interval is big enough
-            if (Math.abs(interval) > this.resolution) {
-              if (interval > 0 === this.host.isShown) {
-                this.host.isShown = !this.host.isShown;
-              }
+          // interval is big enough
+          if (Math.abs(delta) > this.resolution) {
+            if (delta > 0 === this.host.isShown) {
+              this.host.isShown = !this.host.isShown;
             }
+          }
 
-            if (ReachedFunctions.reachedTop(0, ev)) {
-              this.host.isShown = this.topShow;
-            }
-            if (ReachedFunctions.reachedBottom(0, ev)) {
-              this.host.isShown = this.botShow;
-            }
+          if (ReachedFunctions.reachedTop(0, ele)) {
+            this.host.isShown = this.topShow;
+          }
+          if (ReachedFunctions.reachedBottom(0, ele)) {
+            this.host.isShown = this.botShow;
+          }
         });
-    });
   }
 
   ngOnDestroy(): void {

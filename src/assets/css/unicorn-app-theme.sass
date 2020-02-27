@@ -35,58 +35,14 @@ $dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app
 .dark-theme
   @include angular-material-theme($dark-app-theme)
 
-// Customize
 
-@function get-color-from-theme($theme, $palette, $hue: default, $opacity: null)
-  $palette: map-get($theme, $palette)
-  @return mat-color($palette, $hue, $opacity)
-
-
-@function light-color($palette, $hue: default, $opacity: null)
-  @return get-color-from-theme($light-app-theme, $palette, $hue, $opacity)
-
-
-@function dark-color($palette, $hue: default, $opacity: null)
-  @return get-color-from-theme($dark-app-theme, $palette, $hue, $opacity)
-
-
-// begin: mix link style
-@mixin link-style-norm($theme)
-  $primary: mat-color(map-get($theme, accent), text, 0.75)
-  $foreground: mat-color(map-get($theme, foreground), text)
-  $color-list: #00000000 0%, #00000000 40%, $primary 40%, $primary 100%
-  color: $foreground
-  padding: 2px 0 1px 0
-  text-decoration: none
-  background-image: linear-gradient(to bottom, $color-list)
-  transition: background-position 120ms ease-in-out, padding 120ms ease-in-out
-  background-size: 100% 200%
-  background-position: 0 0
-  word-break: break-word
-
-@mixin link-style-hover($theme)
-  $primary: mat-color(map-get($theme, accent), default, 1)
-  $color-list: #00000000 0%, #00000000 40%, $primary 40%, $primary 100%
-  background-image: linear-gradient(to bottom, $color-list)
-  background-position: 0 100%
-
-@mixin link-style($theme)
-  a
-    @include link-style-norm($theme)
-
-  a:hover
-    @include link-style-hover($theme)
-
-  svg#logo
-    fill: get-color-from-theme($theme, accent)
-// end: mix link style
-
-textarea
-  font-family: 'Nunito Sans', sans-serif
+@import 'src/app-theme'
 
 // light customize
-@include link-style($light-app-theme)
+//@include link-style($light-app-theme)
+@include my-material-app-theme($light-app-theme)
 
 // dark customize
 .dark-theme
-  @include link-style($dark-app-theme)
+  //@include link-style($dark-app-theme)
+  @include my-material-app-theme($dark-app-theme)

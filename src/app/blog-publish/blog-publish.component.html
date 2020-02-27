@@ -1,5 +1,5 @@
 <div appWindowHeightTracking heightDiff="-96"
-     fxLayout="row" fxLayoutAlign="none"
+     fxLayout="row" fxLayoutAlign="none" fxLayoutGap="16px"
      class="content">
   <div fxFlex="grow" fxLayout="column">
     <mat-toolbar class="toolbar">
@@ -31,10 +31,10 @@
   <div fxFlex="grow" fxLayout="column">
     <mat-progress-bar mode="indeterminate" *ngIf="loading">
     </mat-progress-bar>
-    <mat-card fxFlex="grow" fxLayout="column"
+    <mat-card fxFlex="grow"
               appMaterialElevation defaultElevation="0"
               raisedElevation="16" class="preview card">
-      <ng-scrollbar>
+      <ng-scrollbar fxLayout="row">
         <!--  preview  -->
         <mat-card-content>
           <markdown #markdown *ngIf="mdContent !== null" [data]="mdContent" katex>

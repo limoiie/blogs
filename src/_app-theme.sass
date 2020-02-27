@@ -1,0 +1,51 @@
+@import '../node_modules/@angular/material/theming'
+
+@import 'src/app/table-of-content/table-of-content.component-theme'
+
+
+@function get-color-from-theme($theme, $palette, $hue: default, $opacity: null)
+  $palette: map-get($theme, $palette)
+  @return mat-color($palette, $hue, $opacity)
+
+
+@mixin link-style($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $foreground: mat-color(map-get($theme, foreground), text)
+  $color-list: #00000000 0%, #00000000 40%, $primary 40%, $primary 100%
+
+  a
+    color: $foreground
+    padding: 2px 0 1px 0
+    text-decoration: none
+    //background-image: linear-gradient(to bottom, $color-list)
+    //transition: background-position 120ms ease-in-out, padding 120ms ease-in-out
+    //background-size: 100% 200%
+    //background-position: 0 0
+    word-break: break-word
+
+  a:hover
+    color: $primary
+    //background-image: linear-gradient(to bottom, $color-list)
+    //background-position: 0 100%
+
+
+@mixin scrollbar($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.5)
+  $accent: get-color-from-theme($theme, accent)
+  $warn: get-color-from-theme($theme, warn)
+
+
+@mixin my-material-app-theme($theme)
+  $primary: map-get($theme, primary)
+  $accent: map-get($theme, accent)
+  $warn: map-get($theme, warn)
+  $background: map-get($theme, background)
+  $foreground: map-get($theme, foreground)
+  $next-theme: mat-palette($mat-red)
+
+  svg#logo
+    fill: get-color-from-theme($theme, accent)
+
+  @include link-style($theme)
+  @include table-of-contents-theme($theme)

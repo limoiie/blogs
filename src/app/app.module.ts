@@ -43,6 +43,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {FormFieldTagsComponent} from './form-field-tags/form-field-tags.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { TableOfContentComponent } from './table-of-content/table-of-content.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     BlogDetailComponent,
     BlogPublishComponent,
     BlogPublishFormComponent,
-    FormFieldTagsComponent
+    FormFieldTagsComponent,
+    TableOfContentComponent
   ],
   imports: [
     BrowserModule,

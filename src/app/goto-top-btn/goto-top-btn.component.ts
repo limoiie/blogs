@@ -36,7 +36,6 @@ import {NgScrollbar} from 'ngx-scrollbar';
 })
 export class GotoTopBtnComponent extends ScrollOut implements OnInit {
 
-  @Input() scrollbar: NgScrollbar;
   constructor() {
     super();
   }
@@ -46,10 +45,7 @@ export class GotoTopBtnComponent extends ScrollOut implements OnInit {
   }
 
   gotoTop() {
-    this.scrollbar.scrollTo({
-      top: 0,
-      duration: 1000
-    }).then(/* after finishing scrolling */);
+    window.scrollTo({ top: 0, behavior: 'smooth'});
   }
 
 }

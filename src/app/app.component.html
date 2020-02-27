@@ -1,10 +1,7 @@
 <div [class.dark-theme]="navbar.isDarkMode">
   <app-navbar #navbar [isHandset$]="isHandset$"
+              appScrollOut [host]="navbar"
               (menuClicked)="drawer.toggle()">
-<!--    <app-navbar #navbar [isHandset$]="isHandset$"-->
-<!--              (menuClicked)="drawer.toggle()"-->
-<!--              appScrollOut [host]="navbar"-->
-<!--              [scrollEvOb$]="scrollEventObserver$">-->
   </app-navbar>
 
   <mat-sidenav-container class="sidenav-container">
@@ -12,46 +9,29 @@
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
                  [opened]="(isHandset$ | async) === false">
-      <div class="topbar-placeholder"></div>
-      <mat-toolbar>Menu</mat-toolbar>
-      <mat-nav-list>
-        <a mat-list-item href="#">TODO</a>
-      </mat-nav-list>
+      <div class="content">
+        <mat-toolbar>Menu</mat-toolbar>
+        <mat-nav-list>
+          <a mat-list-item href="#">TODO</a>
+        </mat-nav-list>
+      </div>
     </mat-sidenav>
-    <mat-sidenav-content appWindowHeightTracking>
+    <mat-sidenav-content>
       <!-- Parallax background -->
       <mat-card [class.dark-theme]="navbar.isDarkMode"
                 id="parallax-background"></mat-card>
 <!--      <mat-card appParallax [ratio]="0.04" [scrollbar]="scrollContent"-->
 <!--                [class.dark-theme]="navbar.isDarkMode"-->
 <!--                id="parallax-background"></mat-card>-->
-      <!-- Add Content Here -->
-      <ng-scrollbar #scrollContent track="all">
-        <div fxLayout="row" fxFlexAlign="end">
-          <div fxFlex="grow">
-            <div fxLayout="column">
-              <div fxFlex="64px">
-                <!-- navbar-placeholder -->
-              </div>
-              <div fxFlex="grow">
-                <router-outlet></router-outlet>
-              </div>
-            </div>
-          </div>
-          <div fxFlex="17px">
-            <!-- native-scrollbar-placeholder -->
-            <!-- Because the native scrollbar is 17px width and the
-                 ng-scrollbar will shift the 'right|end|bottom' to
-                 -17px. To fill the gap, we need this placeholder -->
-          </div>
-        </div>
-      </ng-scrollbar>
 
-      <app-goto-top-btn #fab [scrollbar]="scrollContent"
-                        appScrollOut [host]="fab" [topShow]="false"
-                        [scrollEvOb$]="scrollEventObserver$">
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+
+      <app-goto-top-btn #fab appScrollOut [host]="fab" [topShow]="false">
       </app-goto-top-btn>
     </mat-sidenav-content>
+
   </mat-sidenav-container>
 
 </div>

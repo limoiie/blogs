@@ -24,7 +24,6 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/css/mat-card-cus.sass",
               "src/assets/css/unicorn-app-theme.sass",
               "src/styles.sass",
               "./node_modules/prismjs/themes/prism-material-light.css",
