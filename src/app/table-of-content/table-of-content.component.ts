@@ -69,7 +69,7 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
   private static isLinkActive(scrollOffset, currentLink: any, nextLink: any): boolean {
     // A link is considered active if the page is scrolled passed the anchor without also
     // being scrolled passed the next link
-    return scrollOffset >= currentLink.top && !(nextLink && nextLink.top < scrollOffset);
+    return scrollOffset >= currentLink.top && !(nextLink && nextLink.top <= scrollOffset);
   }
 
   ngOnInit(): void {
@@ -122,21 +122,26 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** Gets the scroll offset of the scroll container */
-  private getScrollOffset(scrollContainer): number | void {
+  private getScrollOffset(scrollContainer): number {
     const {top} = this.element.nativeElement.getBoundingClientRect();
     if (typeof scrollContainer.scrollTop !== 'undefined') {
       return scrollContainer.scrollTop + top;
     } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
       return scrollContainer.pageYOffset + top;
     }
+    return 0;
   }
 
   /** Update active states */
   private onScroll(ev): void {
-    console.log('target top: ', ev.scrollTop);
-    const offset = this.getScrollOffset(ev);
-    console.log('offset: ', offset);
-    console.log('link ', this.links[0].top);
+    const initOffset = this.links[0].top - 288 + 100;
+    const offset = this.getScrollOffset(ev) + initOffset;
+
+    const tops = this.links.map(link => link.top);
+
+    console.log('tops', tops);
+    console.log('offset', offset);
+
     for (let i = 0; i < this.links.length; i++) {
       this.links[i].active = TableOfContentComponent.isLinkActive(offset,
         this.links[i], this.links[i + 1]);

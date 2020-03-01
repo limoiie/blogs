@@ -2,39 +2,42 @@
   <mat-progress-bar mode="indeterminate" *ngIf="loading">
   </mat-progress-bar>
 
-    <mat-card appMaterialElevation [defaultElevation]="2"
-              raisedElevation="16" @blogTrigger class="card">
+  <div fxLayout="row">
+    <!--  200px for the toc; 48px for the margin of card  -->
+    <mat-card @blogTrigger [defaultElevation]="2" appMaterialElevation
+              class="card" fxFlex="calc(80%-200px)"
+              fxFlex.lt-md="calc(100%-48px)" raisedElevation="16">
 
-      <mat-card-title>{{ blog.title }}</mat-card-title>
-      <mat-card-subtitle>
-        <!--  create datetime  -->
-        <mat-icon class="icon">event_note</mat-icon>
-        <label>
-          Posted on
-          <time [matTooltip]="'Created on ' + blog.createTime"
-                datetime="2020-02-10T15:32:20+11:00">
-            {{ blog.createTime }}
-          </time>
-        </label>
+      <!--      <mat-card-title>{{ blog.title }}</mat-card-title>-->
+      <!--      <mat-card-subtitle>-->
+      <!--        &lt;!&ndash;  create datetime  &ndash;&gt;-->
+      <!--        <mat-icon class="icon">event_note</mat-icon>-->
+      <!--        <label>-->
+      <!--          Posted on-->
+      <!--          <time [matTooltip]="'Created on ' + blog.createTime"-->
+      <!--                datetime="2020-02-10T15:32:20+11:00">-->
+      <!--            {{ blog.createTime }}-->
+      <!--          </time>-->
+      <!--        </label>-->
 
-        <!--  edit datetime  -->
-        <mat-icon class="icon">event_available</mat-icon>
-        <label>
-          Edited on
-          <time [matTooltip]="'Created on ' + blog.editTime"
-                datetime="2020-02-10T15:32:20+11:00">
-            {{ blog.editTime }}
-          </time>
-        </label>
+      <!--        &lt;!&ndash;  edit datetime  &ndash;&gt;-->
+      <!--        <mat-icon class="icon">event_available</mat-icon>-->
+      <!--        <label>-->
+      <!--          Edited on-->
+      <!--          <time [matTooltip]="'Created on ' + blog.editTime"-->
+      <!--                datetime="2020-02-10T15:32:20+11:00">-->
+      <!--            {{ blog.editTime }}-->
+      <!--          </time>-->
+      <!--        </label>-->
 
-        <!--  folder  -->
-        <mat-icon class="icon">folder_open</mat-icon>
-        <label><a href="#">{{ blog.folder }}</a></label>
+      <!--        &lt;!&ndash;  folder  &ndash;&gt;-->
+      <!--        <mat-icon class="icon">folder_open</mat-icon>-->
+      <!--        <label><a href="#">{{ blog.folder }}</a></label>-->
 
-        <!--  author  -->
-        <mat-icon class="icon">account_circle</mat-icon>
-        <label>{{ blog.author }}</label>
-      </mat-card-subtitle>
+      <!--        &lt;!&ndash;  author  &ndash;&gt;-->
+      <!--        <mat-icon class="icon">account_circle</mat-icon>-->
+      <!--        <label>{{ blog.author }}</label>-->
+      <!--      </mat-card-subtitle>-->
 
       <!--  introduction  -->
       <mat-card-content>
@@ -52,9 +55,11 @@
 
     </mat-card>
 
-<!--    <mat-card class="card">-->
-    <app-table-of-content #toc id="toc" fxFlex="240px">
-    </app-table-of-content>
-<!--    </mat-card>-->
-
+    <div fxFlex="200px" fxFlex.lt-md="0"> <!-- placeholder --> </div>
+    <mat-card [defaultElevation]="2" appMaterialElevation class="toc-card"
+              fxFlex="200px" fxFlex.lt-md="0"
+              raisedElevation="16">
+      <app-table-of-content #toc></app-table-of-content>
+    </mat-card>
+  </div>
 </div>
