@@ -7,6 +7,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
 import {take} from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-blog-detail',
   templateUrl: './blog-detail.component.html',
@@ -53,25 +54,29 @@ export class BlogDetailComponent implements OnInit {
     this.loading = true;
     this.route.paramMap.subscribe(params => {
       const blogId = +params.get('blogId');
-      this.blogService.getBlogDetail(blogId)
-        .subscribe((response: ApiResponse) => {
-          console.log('receive: ', response);
-          if (response.state) {
-            this.blog = response.data;
-
-            this.ngZone.onStable.pipe(take(1))
-              .subscribe(() =>
-                this.toc.addHeaders('Content',
-                  this.content.element.nativeElement)
-              );
-          } else {
-            const msg = `Failed to load blog: ${response.message}`;
-            this.snackBar.open(msg, 'Ok');
-          }
-
-          this.loading = false;
-        });
+      this.loadBlogDetail(blogId);
     });
+  }
+
+  loadBlogDetail(blogId: number) {
+    this.blogService.getBlogDetail(blogId)
+      .subscribe((response: ApiResponse) => {
+        console.log('receive: ', response);
+        if (response.state) {
+          this.blog = response.data;
+
+          this.ngZone.onStable.pipe(take(1))
+            .subscribe(() =>
+              this.toc.addHeaders('Content',
+                this.content.element.nativeElement)
+            );
+        } else {
+          const msg = `Failed to load blog: ${response.message}`;
+          this.snackBar.open(msg, 'Ok');
+        }
+
+        this.loading = false;
+      });
   }
 
 }
