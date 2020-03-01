@@ -62,6 +62,7 @@ export class ScrollOutDirective implements OnInit, OnDestroy {
 
   destroy$ = new Subject();
 
+  maxResolution = 100;
   @Input() scrolled$;
   @Input() host;
   @Input() resolution = 10;
@@ -84,7 +85,8 @@ export class ScrollOutDirective implements OnInit, OnDestroy {
           const delta = eleDelta[1];
 
           // interval is big enough
-          if (Math.abs(delta) > this.resolution) {
+          if (Math.abs(delta) > this.resolution &&
+            Math.abs(delta) < this.maxResolution) {
             if (delta > 0 === this.host.isShown) {
               this.host.isShown = !this.host.isShown;
             }

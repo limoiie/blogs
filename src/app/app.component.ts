@@ -1,10 +1,12 @@
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {map, shareReplay} from 'rxjs/operators';
-import {fromEvent, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {MainScrollService} from './main-scroll.service';
+import {MarkdownService} from 'ngx-markdown';
+import {fixMarkdownService} from './markdown-render-custom';
 
 @Component({
   selector: 'app-root',
@@ -33,8 +35,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private scrollService: MainScrollService
+    private scrollService: MainScrollService,
+    private markdownService: MarkdownService,
+    @Inject(PLATFORM_ID) private platform: object
   ) {
+    fixMarkdownService(markdownService);
   }
 
   ngOnInit() {

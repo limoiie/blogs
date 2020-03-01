@@ -17,6 +17,7 @@
     color: $foreground
     padding: 2px 0 1px 0
     text-decoration: none
+    transition: 240ms
     //background-image: linear-gradient(to bottom, $color-list)
     //transition: background-position 120ms ease-in-out, padding 120ms ease-in-out
     //background-size: 100% 200%
@@ -33,7 +34,17 @@
   $primary: get-color-from-theme($theme, primary)
   $primary-trans: get-color-from-theme($theme, primary, 0.5)
   $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.5)
   $warn: get-color-from-theme($theme, warn)
+
+  //::-webkit-scrollbar
+  //  width: 16px
+  //
+  //::-webkit-scrollbar-thumb
+  //  background: $accent-trans
+  //
+  //::-webkit-scrollbar-thumb:hover
+  //  background: $accent
 
 
 @mixin my-material-app-theme($theme)
@@ -47,5 +58,6 @@
   svg#logo
     fill: get-color-from-theme($theme, accent)
 
+  @include scrollbar($theme)
   @include link-style($theme)
   @include table-of-contents-theme($theme)

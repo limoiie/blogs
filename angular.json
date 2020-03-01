@@ -107,8 +107,7 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-            ],
+            "styles": [],
             "scripts": []
           }
         },
@@ -145,5 +144,8 @@
     "@schematics/angular:component": {
       "styleext": "sass"
     }
+  },
+  "cli": {
+    "analytics": "4afe2017-08ce-43ec-b49a-537862d3db5f"
   }
 }
