@@ -1,9 +1,16 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
-import {MainScrollService} from '../main-scroll.service';
+import {MainScrollService} from '../services/main-scroll.service';
 
 interface LinkSection {
   name: string;

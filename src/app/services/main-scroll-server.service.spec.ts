@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { MainScrollService } from './main-scroll.service';
+import {MainScrollService} from './main-scroll.service';
 
 describe('MainScrollServerService', () => {
   let service: MainScrollService;

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiResponse, BlogService} from '../blog.service';
+import {ApiResponse, BlogService} from '../services/blog.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({

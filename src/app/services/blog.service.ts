@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpXsrfTokenExtractor} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {ApiService} from './api.service';
 
 
 export interface PublishResponse {
@@ -25,12 +26,8 @@ export class BlogService {
 
   constructor(
     private http: HttpClient,
-    private httpXsrfTokenExtractor: HttpXsrfTokenExtractor
+    private api: ApiService
   ) {
-  }
-
-  apiGet(url, opt?) {
-    return this.http.get(`${this.restUrl}${url}`, opt);
   }
 
   loadBlogList() {
@@ -49,34 +46,19 @@ export class BlogService {
     return this.http.get('/assets/tags.fake.json');
   }
 
-  addCsrfHeader(opt) {
-    opt = opt || {};
-    opt.headers = opt.headers || {};
-
-    opt.headers['X-CSRFToken'] =
-      this.httpXsrfTokenExtractor.getToken();
-    opt.withCredentials = true;
-    return opt;
-  }
-
-  apiPost(url, data, opt?) {
-    opt = this.addCsrfHeader(opt);
-    return this.http.post(`${this.restUrl}${url}`, data, opt);
-  }
-
   publishBlog(blog): Observable<any> {
     const url = `/blog/publish/`;
-    return this.apiPost(url, blog);
+    return this.api.apiPost(url, blog);
   }
 
   getBlogList(pageNum, pageSize): Observable<any> {
     const url = `/blog/list/${pageNum}/${pageSize}`;
-    return this.apiGet(url);
+    return this.api.apiGet(url);
   }
 
   getBlogDetail(blogId): Observable<any> {
     const url = `/blog/${blogId}/`;
-    return this.apiGet(url);
+    return this.api.apiGet(url);
   }
 
 }

@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {BlogService, PublishResponse} from '../blog.service';
+import {BlogService, PublishResponse} from '../services/blog.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
 import {MatSnackBar} from '@angular/material/snack-bar';

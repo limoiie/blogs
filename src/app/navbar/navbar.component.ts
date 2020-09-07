@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {ScrollOut} from '../scroll-out.directive';
+import {animate, style, transition, trigger} from '@angular/animations';
+import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -23,11 +24,19 @@ import {Observable} from 'rxjs';
 })
 export class NavbarComponent extends ScrollOut implements OnInit {
   isDarkMode = false;
+  isLogin = false;
 
   @Input() isHandset$: Observable<boolean>;
   @Output() menuClicked = new EventEmitter();
-  constructor() {
+
+  constructor(
+    private authService: AuthService,
+  ) {
     super();
+
+    this.authService.currentUser.subscribe(
+      user => this.isLogin = !!user
+    );
   }
 
   ngOnInit(): void {

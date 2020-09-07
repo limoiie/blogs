@@ -1,0 +1,65 @@
+@import './node_modules/@angular/material/theming'
+
+
+@function get-color-from-theme($theme, $palette, $hue: default, $opacity: null)
+  $palette: map-get($theme, $palette)
+  @return mat-color($palette, $hue, $opacity)
+
+
+// reference from https://2019.stateofcss.com/
+@mixin link-style($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.2)
+  $primary-trans-dark: get-color-from-theme($theme, primary, 0.8)
+  $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.5)
+
+  a
+    color: $primary
+    text-decoration: none
+    text-shadow: 0 2px 3px $primary-trans
+    font-weight: 800
+    transition: all .3s ease
+    position: relative
+
+  a:before
+    content: ""
+    position: absolute
+    bottom: 0
+    left: 0
+    right: 0
+    height: 2px
+    background-color: $primary
+    -webkit-transform-origin: bottom right
+    transform-origin: bottom right
+    -webkit-transform: scaleX(0)
+    transform: scaleX(0)
+    //transition: transform .5s ease
+    transition: transform .5s ease, -webkit-transform .5s ease
+    box-shadow: 0 2px 5px $primary-trans
+
+  a:hover
+    position: relative
+    text-shadow: 0 2px 10px $primary-trans-dark
+
+  a:hover:before
+    -webkit-transform-origin: bottom left
+    transform-origin: bottom left
+    -webkit-transform: scaleX(1)
+    transform: scaleX(1)
+
+@mixin scrollbar($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.5)
+  $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.5)
+  $warn: get-color-from-theme($theme, warn)
+
+//::-webkit-scrollbar
+//  width: 16px
+//
+//::-webkit-scrollbar-thumb
+//  background: $accent-trans
+//
+//::-webkit-scrollbar-thumb:hover
+//  background: $accent

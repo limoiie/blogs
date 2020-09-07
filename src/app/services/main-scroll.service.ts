@@ -1,6 +1,6 @@
-import {HostListener, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-import {debounceTime, map, pairwise, tap} from 'rxjs/operators';
+import {debounceTime, map, pairwise} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

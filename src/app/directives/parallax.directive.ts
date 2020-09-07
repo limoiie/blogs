@@ -1,4 +1,4 @@
-import {Directive, Input, ElementRef, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, Input} from '@angular/core';
 
 @Directive({
   selector: '[appParallax]'

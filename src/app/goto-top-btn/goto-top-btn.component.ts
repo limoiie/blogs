@@ -1,7 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ScrollOut} from '../scroll-out.directive';
+import {Component, OnInit} from '@angular/core';
+import {ScrollOut} from '../directives/scroll-out.directive';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {NgScrollbar} from 'ngx-scrollbar';
 
 @Component({
   selector: 'app-goto-top-btn',

@@ -1,4 +1,4 @@
-import { MaterialElevationDirective } from './material-elevation.directive';
+import {MaterialElevationDirective} from './material-elevation.directive';
 
 describe('MaterialElevationDirective', () => {
   it('should create an instance', () => {

@@ -5,7 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {BlogPublishFormComponent} from '../blog-publish-form/blog-publish-form.component';
 import {MarkdownComponent} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {BlogService} from '../blog.service';
+import {BlogService} from '../services/blog.service';
 
 @Component({
   selector: 'app-blog-upload',

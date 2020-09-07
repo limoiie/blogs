@@ -1,6 +1,6 @@
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ApiResponse, BlogService} from '../blog.service';
+import {ApiResponse, BlogService} from '../services/blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {MarkdownComponent, MarkdownService} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';

@@ -1,4 +1,4 @@
-import { ScrollOutDirective } from './scroll-out.directive';
+import {ScrollOutDirective} from './scroll-out.directive';
 
 describe('ScrollOutDirective', () => {
   it('should create an instance', () => {

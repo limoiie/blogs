@@ -4,9 +4,13 @@
   @myInsertRemoveTrigger class="card">
 
   <mat-card-title>
-      <a [routerLink]="['/blog', blog.id]">
-        {{ blog.title }}
-      </a>
+    <a [routerLink]="['/blog', blog.id]">
+      {{ blog.title }}
+    </a>
+    <button *ngIf="authService.currentUser | async" class="title-btn"
+            color="accent" mat-mini-fab>
+      <mat-icon class="icon">edit</mat-icon>
+    </button>
   </mat-card-title>
   <mat-card-subtitle>
     <!--  create datetime  -->

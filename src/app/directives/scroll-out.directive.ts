@@ -2,7 +2,7 @@ import {Directive, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {RtlScrollAxisType} from '@angular/cdk/platform';
-import {MainScrollService} from './main-scroll.service';
+import {MainScrollService} from '../services/main-scroll.service';
 
 // The target element should extends this base class
 export class ScrollOut {

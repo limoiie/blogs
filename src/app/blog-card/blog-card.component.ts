@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-blog-card',
@@ -21,7 +22,9 @@ export class BlogCardComponent implements OnInit {
 
   @Input() blog;
 
-  constructor() {
+  constructor(
+    private authService: AuthService
+  ) {
   }
 
   ngOnInit(): void {

@@ -11,22 +11,26 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
-import {HttpClient, HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpClientXsrfModule
+} from '@angular/common/http';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import {NavbarComponent} from './navbar/navbar.component';
-import {ParallaxDirective} from './parallax.directive';
+import {ParallaxDirective} from './directives/parallax.directive';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component';
-import {ScrollOutDirective} from './scroll-out.directive';
-import {MaterialElevationDirective} from './material-elevation.directive';
+import {ScrollOutDirective} from './directives/scroll-out.directive';
+import {MaterialElevationDirective} from './directives/material-elevation.directive';
 import {TagComponent} from './tag/tag.component';
 import {BlogCardComponent} from './blog-card/blog-card.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {NgScrollbarModule} from 'ngx-scrollbar';
 import {NgScrollbarReachedModule} from 'ngx-scrollbar/reached-event';
-import {WindowHeightTrackingDirective} from './window-height-tracking.directive';
+import {WindowHeightTrackingDirective} from './directives/window-height-tracking.directive';
 import {BlogDetailComponent} from './blog-detail/blog-detail.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MarkdownModule, MarkedOptions} from 'ngx-markdown';
@@ -43,7 +47,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {FormFieldTagsComponent} from './form-field-tags/form-field-tags.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { TableOfContentComponent } from './table-of-content/table-of-content.component';
+import {TableOfContentComponent} from './table-of-content/table-of-content.component';
+import {LoginComponent} from './login/login.component';
 
 
 @NgModule({
@@ -62,7 +67,8 @@ import { TableOfContentComponent } from './table-of-content/table-of-content.com
     BlogPublishComponent,
     BlogPublishFormComponent,
     FormFieldTagsComponent,
-    TableOfContentComponent
+    TableOfContentComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +77,8 @@ import { TableOfContentComponent } from './table-of-content/table-of-content.com
       {path: '', component: BlogListComponent},
       {path: 'list', component: BlogListComponent},
       {path: 'blog/:blogId', component: BlogDetailComponent},
-      {path: 'publish', component: BlogPublishComponent}
+      {path: 'publish', component: BlogPublishComponent},
+      {path: 'login', component: LoginComponent},
     ]),
     HttpClientModule,
     HttpClientXsrfModule.withOptions({

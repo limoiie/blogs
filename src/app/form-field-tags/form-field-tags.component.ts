@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
-  Component, DoCheck,
+  Component,
+  DoCheck,
   ElementRef,
   HostBinding,
   Input,
@@ -10,17 +11,26 @@ import {
   Self,
   ViewChild
 } from '@angular/core';
-import {ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl} from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  NgControl
+} from '@angular/forms';
 import {MatFormFieldControl} from '@angular/material/form-field';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocomplete, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent
+} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
 import {map, startWith, takeUntil} from 'rxjs/operators';
 import {AutofillMonitor} from '@angular/cdk/text-field';
-import {BlogService} from '../blog.service';
+import {BlogService} from '../services/blog.service';
 
 @Component({
   selector: 'app-form-field-tags',
