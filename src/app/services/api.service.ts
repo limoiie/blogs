@@ -6,7 +6,7 @@ import {HttpClient, HttpXsrfTokenExtractor} from '@angular/common/http';
 })
 export class ApiService {
 
-  restUrl = 'http://127.0.0.1:8000';
+  restUrl = '/api';
 
   constructor(
     private http: HttpClient,

@@ -22,8 +22,6 @@ export interface ApiResponse {
 })
 export class BlogService {
 
-  restUrl = 'http://127.0.0.1:8000';
-
   constructor(
     private http: HttpClient,
     private api: ApiService
