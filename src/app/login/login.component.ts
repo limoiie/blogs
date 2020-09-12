@@ -4,6 +4,7 @@ import {AuthService} from '../services/auth.service';
 import {ApiResponse} from '../services/blog.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
+import {ApiService} from '../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import {Router} from '@angular/router';
 export class LoginComponent implements OnInit {
 
   hide = true;
+  csrfToken = '';
   form = new FormGroup({
     username: new FormControl(),
     password: new FormControl(),
@@ -22,10 +24,17 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private snackBar: MatSnackBar,
+    private apiService: ApiService
   ) {
   }
 
   ngOnInit(): void {
+    this.apiService.requestCsrfToken().subscribe(
+      (msg) => {
+        console.log(`Response for CSRFTOKEN Request is: ${msg}`);
+        this.csrfToken = msg;
+      }
+    );
   }
 
   onSubmit() {

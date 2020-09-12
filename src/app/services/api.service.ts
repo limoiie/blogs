@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpXsrfTokenExtractor} from '@angular/common/http';
+import {
+  HttpClient, HttpXsrfTokenExtractor
+} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +18,13 @@ export class ApiService {
 
   apiGet(url, opt?) {
     return this.http.get(`${this.restUrl}${url}`, opt);
+  }
+
+  requestCsrfToken() {
+    return this.http.get('/api/blog/csrftoken/', {
+      observe: 'body',
+      responseType: 'text'
+    });
   }
 
   addCsrfHeader(opt) {
