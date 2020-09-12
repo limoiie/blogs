@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
-import {AuthService} from "../services/auth.service";
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -30,7 +30,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   @Output() menuClicked = new EventEmitter();
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
   ) {
     super();
 

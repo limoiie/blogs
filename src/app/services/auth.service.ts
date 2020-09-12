@@ -36,7 +36,7 @@ export class AuthService {
     // TODO: hash password
     return this.api.apiPost('/blog/auth/', {username, password}).pipe(
       tap((user: any) => {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(this.userKey, JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
       })
