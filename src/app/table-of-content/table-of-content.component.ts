@@ -79,6 +79,16 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     return scrollOffset >= currentLink.top && !(nextLink && nextLink.top <= scrollOffset);
   }
 
+  /** Gets the scroll offset of the scroll container */
+  private static getScrollOffset(scrollContainer): number {
+    if (typeof scrollContainer.scrollTop !== 'undefined') {
+      return scrollContainer.scrollTop;
+    } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
+      return scrollContainer.pageYOffset;
+    }
+    return 0;
+  }
+
   ngOnInit(): void {
     // On init, the sidenav content element doesn't yet exist, so it's not possible
     // to subscribe to its scroll event until next tick (when it does exist).
@@ -130,21 +140,10 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     return links;
   }
 
-  /** Gets the scroll offset of the scroll container */
-  private getScrollOffset(scrollContainer): number {
-    const {top} = this.element.nativeElement.getBoundingClientRect();
-    if (typeof scrollContainer.scrollTop !== 'undefined') {
-      return scrollContainer.scrollTop + top;
-    } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
-      return scrollContainer.pageYOffset + top;
-    }
-    return 0;
-  }
-
   /** Update active states */
   private onScroll(ev): void {
     const initOffset = this.links[0].top;
-    const offset = this.getScrollOffset(ev) + initOffset - 200 - 96;
+    const offset = TableOfContentComponent.getScrollOffset(ev) + initOffset - 96;
     for (let i = 0; i < this.links.length; i++) {
       this.links[i].active = TableOfContentComponent.isLinkActive(offset,
         this.links[i], this.links[i + 1]);
