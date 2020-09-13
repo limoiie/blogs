@@ -5,9 +5,14 @@
   background-color: transparent
   margin: auto
 
+.content
+  max-width: 72em
+  margin: auto
 
-mat-card
-  margin: 24px 24px 48px 24px
+.card
+  min-width: 0
+  max-width: 56em
+  margin: 24px 0 48px auto
   padding-top: 32px
   padding-right: 24px
   padding-left: 48px
@@ -26,8 +31,11 @@ a.read-more
 
 .toc-card
   position: fixed
-  right: 24px
-  // topbar + content padding + card margin
-  top: 64px + 16px + 24px
+  //right: 24px
+  // topbar + content padding + card margin + top offset
+  top: 64px + 16px + 24px + 96px
+  right: calc(50% - 42em)
   padding: 0
-  margin: 0
+  margin-top: 0
+  margin-right: 0
+  margin-bottom: auto
