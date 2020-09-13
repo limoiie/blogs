@@ -1,4 +1,10 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  NgZone,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiResponse, BlogService} from '../services/blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
@@ -29,6 +35,7 @@ export class BlogDetailComponent implements OnInit {
   @ViewChild('toc') toc: TableOfContentComponent;
   @ViewChild('content') content: MarkdownComponent;
 
+  secName = 'Content';
   loading = true;
   blog = {
     title: '',
@@ -61,21 +68,22 @@ export class BlogDetailComponent implements OnInit {
   loadBlogDetail(blogId: number) {
     this.blogService.getBlogDetail(blogId)
       .subscribe((response: ApiResponse) => {
-        console.log('receive: ', response);
         if (response.state) {
           this.blog = response.data;
-
           this.ngZone.onStable.pipe(take(1))
-            .subscribe(() =>
-              this.toc.addHeaders('Content',
-                this.content.element.nativeElement)
-            );
+            .subscribe(() => {
+              this.toc.addHeaders(this.secName,
+                this.content.element.nativeElement);
+              //
+              this.ngZone.run(() => {
+                this.loading = false;
+              });
+            });
         } else {
           const msg = `Failed to load blog: ${response.message}`;
           this.snackBar.open(msg, 'Ok');
+          this.loading = false;
         }
-
-        this.loading = false;
       });
   }
 

@@ -104,17 +104,20 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  resetHeaders() {
-    this.linkSections = [];
-    this.links = [];
+  addHeaders(sectionName: string, docViewerContent: HTMLElement) {
+    const links = this.extractHeaders(docViewerContent);
+    this.linkSections.push({name: sectionName, links});
+    this.links.push(...links);
   }
 
-  addHeaders(sectionName: string, docViewerContent: HTMLElement) {
-    const headers = Array.from<HTMLHeadingElement>(docViewerContent.querySelectorAll('h2, h3'));
+  private extractHeaders(docViewerContent: HTMLElement) {
     const links: Link[] = [];
+    const headers = Array.from<HTMLHeadingElement>(
+      docViewerContent.querySelectorAll('h2, h3'));
     headers.forEach((header) => {
       // remove the 'link' icon name from the inner text
-      const name = header.innerText.trim().replace(/^link/, '');
+      const name = header.innerText.trim()
+        .replace(/^link/, '');
       const {top} = header.getBoundingClientRect();
       links.push({
         name,
@@ -124,8 +127,7 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
         active: false
       });
     });
-    this.linkSections.push({name: sectionName, links});
-    this.links.push(...links);
+    return links;
   }
 
   /** Gets the scroll offset of the scroll container */
