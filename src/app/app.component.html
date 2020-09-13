@@ -1,6 +1,5 @@
 <div [class.dark-theme]="navbar.isDarkMode">
   <app-navbar #navbar [isHandset$]="isHandset$"
-              appScrollOut [host]="navbar"
               (menuClicked)="drawer.toggle()">
   </app-navbar>
 
@@ -18,8 +17,8 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <!-- Parallax background -->
-      <mat-card [class.dark-theme]="navbar.isDarkMode"
-                id="parallax-background"></mat-card>
+<!--      <mat-card [class.dark-theme]="navbar.isDarkMode"-->
+<!--                id="parallax-background"></mat-card>-->
 <!--      <mat-card appParallax [ratio]="0.04" [scrollbar]="scrollContent"-->
 <!--                [class.dark-theme]="navbar.isDarkMode"-->
 <!--                id="parallax-background"></mat-card>-->
