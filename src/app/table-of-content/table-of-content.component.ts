@@ -143,8 +143,8 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
 
   /** Update active states */
   private onScroll(ev): void {
-    const initOffset = this.links[0].top - 288 + 100;
-    const offset = this.getScrollOffset(ev) + initOffset;
+    const initOffset = this.links[0].top;
+    const offset = this.getScrollOffset(ev) + initOffset - 200 - 96;
     for (let i = 0; i < this.links.length; i++) {
       this.links[i].active = TableOfContentComponent.isLinkActive(offset,
         this.links[i], this.links[i + 1]);
