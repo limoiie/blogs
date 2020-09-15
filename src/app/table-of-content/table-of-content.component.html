@@ -2,9 +2,10 @@
   <div class="docs-toc-heading">{{linkSection.name}}</div>
   <nav [attr.aria-label]="linkSection.name + ' Table of Contents'">
     <a [href]="rootUrl + '#' + link.id"
-      *ngFor="let link of linkSection.links; let i = index"
+      *ngFor="let link of linkSection.links"
       class="docs-level-{{link.type}} docs-link"
-      [class.docs-active]="link.active">
+       [class.docs-active]="link.active"
+       [class.docs-inactive]="!link.active">
       {{link.name}}
     </a>
   </nav>
