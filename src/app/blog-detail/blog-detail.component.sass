@@ -45,10 +45,17 @@ a.read-more
 markdown ::ng-deep
   // padding the title for correct anchor in a page with a fixed header
   // see https://stackoverflow.com/a/13117744/11192045
+  a
+    &:hover::before
+      content: "#"
+      font-weight: 400
+      margin-left: -25px
+      position: absolute
+      font-size: 28px
+
   h2, h3
     padding-top: 72px
     margin-top: -72px
 
   h1
-    color: red
-    font-style: oblique
+    font-weight: 1000

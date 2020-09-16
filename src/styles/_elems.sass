@@ -7,7 +7,7 @@
 
 
 // reference from https://2019.stateofcss.com/
-@mixin link-style($theme)
+@mixin underline-extending-link-style($theme)
   $primary: get-color-from-theme($theme, primary)
   $primary-trans: get-color-from-theme($theme, primary, 0.2)
   $primary-trans-dark: get-color-from-theme($theme, primary, 0.8)
@@ -47,6 +47,27 @@
     transform-origin: bottom left
     -webkit-transform: scaleX(1)
     transform: scaleX(1)
+
+
+@mixin link-style($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.2)
+  $primary-trans-dark: get-color-from-theme($theme, primary, 0.8)
+  $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.5)
+  $accent-trans-dark: get-color-from-theme($theme, accent, 0.9)
+
+  a
+    color: $primary
+    text-decoration: none
+    font-weight: 1000
+    transition: all .3s ease
+    position: relative
+
+  a:hover
+    position: relative
+    text-shadow: 5px 5px 10px $primary-trans-dark
+
 
 @mixin scrollbar($theme)
   $primary: get-color-from-theme($theme, primary)
