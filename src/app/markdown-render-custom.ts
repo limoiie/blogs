@@ -1,29 +1,37 @@
-import {MarkdownService, MarkedOptions, MarkedRenderer} from 'ngx-markdown';
+import {MarkdownService, MarkedOptions} from 'ngx-markdown';
 
 import * as marked from 'marked';
 
-
-export function renderHeading(text, level, raw, slugger): string {
+/**
+ * Re-render the header tag
+ *
+ * @param rootUrl Page url
+ * @param text Text inside the header tag
+ * @param level Header level
+ * @param raw The raw header source text
+ * @param slugger A [[`Slugger`]] that can convert a text into a legal id
+ */
+export function renderHeading(rootUrl, text, level, raw, slugger): string {
   const header = `h${level}`;
   if (level === 2 || level === 3) {
     const id = slugger.slug(text);
-    return `<${header} id=\"${id}\">${text}</${header}>`;
+    return `<${header} id=\"${id}\"><a href=\"${rootUrl}#${id}\">${text}</a></${header}>`;
   }
   return `<${header}>${text}</${header}>`;
 }
 
 
 export function markedOptionsFactory(): MarkedOptions {
-  const renderer = new MarkedRenderer();
+  // const renderer = new MarkedRenderer();
   // custom render style
   // renderer.blockquote = (text: string) => {
   //   return '<blockquote class="blockquote"><p>' + text + '</p></blockquote>';
   // };
 
-  renderer.heading = renderHeading;
+  // renderer.heading = renderHeading;
 
   return {
-    renderer,
+    // renderer,
     gfm: true,
     breaks: false,
     headerIds: true,

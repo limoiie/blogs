@@ -4,13 +4,14 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ApiResponse, BlogService} from '../services/blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {MarkdownComponent, MarkdownService} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
 import {take} from 'rxjs/operators';
+import {renderHeading} from '../markdown-render-custom';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class BlogDetailComponent implements OnInit {
   markdown = null;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private mdService: MarkdownService,
     private blogService: BlogService,
     private snackBar: MatSnackBar,
@@ -62,6 +64,9 @@ export class BlogDetailComponent implements OnInit {
       const blogId = +params.get('blogId');
       this.loadBlogDetail(blogId);
     });
+    this.mdService.renderer.heading = (text, level, raw, slugger) => {
+      return renderHeading(this.router.url, text, level, raw, slugger);
+    };
   }
 
   loadBlogDetail(blogId: number) {
