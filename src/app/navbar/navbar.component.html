@@ -1,5 +1,6 @@
 <nav @navbarInOutTrigger *ngIf="isShown" class="topbar" >
-  <mat-toolbar fxLayout="row" color="primary"
+  <mat-toolbar fxLayout="row"
+               [class.mat-primary]="!isDarkMode"
                [class.mat-elevation-z8]="true">
     <button
       type="button"
