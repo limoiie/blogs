@@ -1,4 +1,4 @@
-<div [class.dark-theme]="navbar.isDarkMode">
+<div [class.dark-theme]="navbar.isDarkMode" class="mat-body">
   <app-navbar #navbar [isHandset$]="isHandset$"
               (menuClicked)="drawer.toggle()">
   </app-navbar>
@@ -9,21 +9,21 @@
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
                  [opened]="(isHandset$ | async) === false">
       <div class="content">
-        <mat-toolbar>Menu</mat-toolbar>
         <mat-nav-list>
           <a mat-list-item href="#">TODO</a>
         </mat-nav-list>
       </div>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content class="mat-drawer-container">
       <!-- Parallax background -->
-      <mat-card [class.dark-theme]="navbar.isDarkMode"
-                id="parallax-background"></mat-card>
+<!--      <div [class.dark-theme]="navbar.isDarkMode"-->
+<!--           class="mat-drawer-container"-->
+<!--                id="parallax-background"></div>-->
 <!--      <mat-card appParallax [ratio]="0.04" [scrollbar]="scrollContent"-->
 <!--                [class.dark-theme]="navbar.isDarkMode"-->
 <!--                id="parallax-background"></mat-card>-->
 
-      <div class="content">
+      <div class="content mat-drawer-container">
         <router-outlet></router-outlet>
       </div>
 
