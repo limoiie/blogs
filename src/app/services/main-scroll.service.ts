@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {debounceTime, map, pairwise} from 'rxjs/operators';
 
 @Injectable({
@@ -8,18 +8,28 @@ import {debounceTime, map, pairwise} from 'rxjs/operators';
 export class MainScrollService {
 
   private scrolled = new Subject();
-  private readonly diffScrolled;
+  private readonly diffScrolled: Observable<[Element, number]>;
+  private readonly pureScrolled: Observable<[Element, number]>;
 
   constructor() {
-    this.diffScrolled = this.scrolled
+    this.pureScrolled = this.scrolled
       .pipe(
-        map((ele: any) => [ele, ele.scrollTop]),
-        debounceTime(10), pairwise(),
+        map((ele: Element) => [ele, ele.scrollTop])
+      );
+
+    this.diffScrolled = this.pureScrolled
+      .pipe(
+        debounceTime(10),
+        pairwise(),
         map((pair: any) => {
           const [[, prevTop], [currEle, currTop]] = pair;
           return [currEle, currTop - prevTop];
         })
       );
+  }
+
+  get pureScrolled$() {
+    return this.pureScrolled;
   }
 
   get diffScrolled$() {

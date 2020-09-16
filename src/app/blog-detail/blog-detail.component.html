@@ -22,8 +22,8 @@
 
     </mat-card>
 
-    <div fxFlex="200px" fxFlex.lt-md="0"> <!-- placeholder --> </div>
-    <div fxFlex="200px" class="toc-card">
+<!--    <div fxFlex="200px" fxFlex.lt-md="0"> &lt;!&ndash; placeholder &ndash;&gt; </div>-->
+    <div fxFlex="200px" appSticky [whereSticky]="120" class="toc-card">
       <app-table-of-content #toc></app-table-of-content>
     </div>
   </div>

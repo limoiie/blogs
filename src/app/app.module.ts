@@ -49,6 +49,7 @@ import {FormFieldTagsComponent} from './form-field-tags/form-field-tags.componen
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {TableOfContentComponent} from './table-of-content/table-of-content.component';
 import {LoginComponent} from './login/login.component';
+import { StickyDirective } from './directives/sticky.directive';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import {LoginComponent} from './login/login.component';
     BlogPublishFormComponent,
     FormFieldTagsComponent,
     TableOfContentComponent,
-    LoginComponent
+    LoginComponent,
+    StickyDirective
   ],
   imports: [
     BrowserModule,

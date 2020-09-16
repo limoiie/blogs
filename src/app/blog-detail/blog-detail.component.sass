@@ -30,15 +30,13 @@ a.read-more
   font-size: 16px
 
 .toc-card
-  position: fixed
+  position: sticky
+  top: 200px
   //right: 24px
   // topbar + content padding + card margin + top offset
-  top: 64px + 16px + 24px + 96px
-  right: calc(50% - 42em)
-  padding: 0
-  margin-top: 0
-  margin-right: 0
-  margin-bottom: auto
+  //top: 64px + 16px + 24px + 96px
+  //right: calc(50% - 42em)
+  margin: 24px auto auto 16px
 
 // using ::ng-deep to break through the ViewEncapsulation
 // see https://github.com/jfcere/ngx-markdown/issues/56#issuecomment-373722506

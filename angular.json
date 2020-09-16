@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/css/unicorn-app-theme.sass",
+              "src/assets/css/app-theme-palette.sass",
               "src/styles.sass",
               "./node_modules/prismjs/themes/prism-tomorrow.css",
               "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
