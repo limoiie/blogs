@@ -27,7 +27,6 @@ export class StickyDirective {
     this.scrollService.pureScrolled$.subscribe(
       ([, scrollOffset]) => {
         if (!this.initAbsTop) {
-          console.log(`${this.eleRef.nativeElement.top}`);
           this.initAbsTop = this.eleRef.nativeElement.getBoundingClientRect().top + scrollOffset;
         }
         // console.log(`NE TOP: ${this.eleRef.nativeElement.getBoundingClientRect().top}`);

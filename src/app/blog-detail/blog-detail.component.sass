@@ -1,4 +1,5 @@
 @import "src/styles/mat-card-cus"
+@import "src/styles/markdown-cus"
 
 
 .blog
@@ -17,6 +18,10 @@
   padding-right: 24px
   padding-left: 48px
 
+.toc
+  top: 64px
+  margin: 128px auto auto 16px
+  padding-top: 32px
 
 mat-card-title
   text-align: center
@@ -28,32 +33,3 @@ mat-card-subtitle
 
 a.read-more
   font-size: 16px
-
-.toc-card
-  position: sticky
-  top: 200px
-  //right: 24px
-  // topbar + content padding + card margin + top offset
-  //top: 64px + 16px + 24px + 96px
-  //right: calc(50% - 42em)
-  margin: 24px auto auto 16px
-
-// using ::ng-deep to break through the ViewEncapsulation
-// see https://github.com/jfcere/ngx-markdown/issues/56#issuecomment-373722506
-markdown ::ng-deep
-  // padding the title for correct anchor in a page with a fixed header
-  // see https://stackoverflow.com/a/13117744/11192045
-  a
-    &:hover::before
-      content: "#"
-      font-weight: 400
-      margin-left: -25px
-      position: absolute
-      font-size: 28px
-
-  h2, h3
-    padding-top: 72px
-    margin-top: -72px
-
-  h1
-    font-weight: 1000
