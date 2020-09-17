@@ -3,8 +3,10 @@
               (menuClicked)="drawer.toggle()">
   </app-navbar>
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport
+  <!-- unset overflow so that the its child can be sticky -->
+  <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
+  <mat-sidenav-container style="overflow: unset">
+    <mat-sidenav #drawer fixedInViewport
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
                  [opened]="(isHandset$ | async) === false">
@@ -14,7 +16,9 @@
         </mat-nav-list>
       </div>
     </mat-sidenav>
-    <mat-sidenav-content class="mat-drawer-container">
+    <!-- unset overflow so that the its child can be sticky -->
+    <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
+    <mat-sidenav-content style="overflow: unset">
       <!-- Parallax background -->
 <!--      <div [class.dark-theme]="navbar.isDarkMode"-->
 <!--           class="mat-drawer-container"-->
@@ -23,7 +27,7 @@
 <!--                [class.dark-theme]="navbar.isDarkMode"-->
 <!--                id="parallax-background"></mat-card>-->
 
-      <div class="content mat-drawer-container">
+      <div class="content">
         <router-outlet></router-outlet>
       </div>
 
