@@ -8,12 +8,17 @@ import {MainScrollService} from '../services/main-scroll.service';
   selector: '[appSticky]'
 })
 export class StickyDirective {
-  initialTop = -1;
+  initAbsTop = undefined;
 
   /**
    * The minimum relative top where the target elem should be sticky
    */
-  @Input() whereSticky = 100;
+  @Input() whereSticky: number;
+
+  /**
+   * The initial top of the target elem
+   */
+  @Input() initTop = 200;
   constructor(
     private eleRef: ElementRef,
     private scrollService: MainScrollService
@@ -21,25 +26,28 @@ export class StickyDirective {
     // this.initialTop = eleRef.nativeElement.getBoundingClientRect().top;
     this.scrollService.pureScrolled$.subscribe(
       ([, scrollOffset]) => {
-        if (this.initialTop === -1) {
-          this.initialTop = this.eleRef.nativeElement.getBoundingClientRect().top + scrollOffset;
+        if (!this.initAbsTop) {
+          console.log(`${this.eleRef.nativeElement.top}`);
+          this.initAbsTop = this.eleRef.nativeElement.getBoundingClientRect().top + scrollOffset;
         }
+        // console.log(`NE TOP: ${this.eleRef.nativeElement.getBoundingClientRect().top}`);
         //
         //                                 -------------     -----
-        //                                 |           |  scrollTop
+        //                                 |           |  scrollOffset
         // ----+-----------+---------------+-----------+-------------- top-bar
         //     |           |     ^         |           |       ^
-        //     |           |     .         |           |  initTop - scrollTop
-        //     |           |  initTop      |           |       v
+        //     |           |     .         |           |  initAbsTop - scrollOffset
+        //     |           |  initAbsTop   |           |       v
         //     |           |     .         |       === |     -----
-        //     |           |     v         |           |  scrollTop
+        //     |           |     v         |           |  scrollOffset
         //     |        ===|   -----       |           |     -----
         //     |           |
 
-        // this.initialTop = eleRef.nativeElement.getBoundingClientRect().top;
-        if (this.initialTop - scrollOffset <= this.whereSticky) {
-          this.eleRef.nativeElement.style.top = this.whereSticky + scrollOffset + 'px';
+        let adjustTop = this.initTop;
+        if (this.initAbsTop - scrollOffset <= this.whereSticky) {
+          adjustTop += scrollOffset - (this.initAbsTop - this.whereSticky);
         }
+        this.eleRef.nativeElement.style.top = adjustTop + 'px';
       }
     );
   }
