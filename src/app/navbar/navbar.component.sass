@@ -1,3 +1,13 @@
+#logo
+  font-family: "JetBrains Mono", "Fira Code", monospace
+  margin-left: 32px
+
+
+mat-toolbar-row
+  width: 1080px + 16px + 16px
+  margin: auto
+
+
 .topbar
   position: fixed
   top: 0
@@ -6,10 +16,9 @@
 
 
 .navbar-button
-  margin: 8px 8px 8px 4px
+  text-align: center
+  margin: 8px
+  transition: transform .3s ease, -webkit-transform .3s ease
 
-
-svg#logo
-  width: 96px
-  height: 32px
-  margin-bottom: 4px
+  &:hover
+    transform: translateY(-4px)
