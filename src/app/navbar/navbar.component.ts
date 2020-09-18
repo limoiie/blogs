@@ -3,6 +3,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
+import {MatRadioChange} from '@angular/material/radio';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +27,14 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   isDarkMode = false;
   isLogin = false;
 
+  activeThemeIdx = 0;
+  themes: string[] = [
+    'Deep Purple & Amber',
+    'Indigo & Pink',
+    'Pink & Blue-grey',
+    'Purple & Green'
+  ];
+
   @Input() isHandset$: Observable<boolean>;
   @Output() menuClicked = new EventEmitter();
 
@@ -44,6 +53,10 @@ export class NavbarComponent extends ScrollOut implements OnInit {
 
   onMenuClicked() {
     this.menuClicked.emit();
+  }
+
+  onThemeChanged(event: MatRadioChange) {
+    this.activeThemeIdx = event.value;
   }
 
 }

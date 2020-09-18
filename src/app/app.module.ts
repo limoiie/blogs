@@ -50,6 +50,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {TableOfContentComponent} from './table-of-content/table-of-content.component';
 import {LoginComponent} from './login/login.component';
 import { StickyDirective } from './directives/sticky.directive';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -98,6 +100,7 @@ import { StickyDirective } from './directives/sticky.directive';
     MatChipsModule,
     MatSlideToggleModule,
     MatTooltipModule,
+    MatMenuModule,
     NgScrollbarModule,
     NgScrollbarReachedModule,
     FlexLayoutModule,
@@ -117,6 +120,7 @@ import { StickyDirective } from './directives/sticky.directive';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatRadioModule,
     ReactiveFormsModule,
     MatSnackBarModule
   ],

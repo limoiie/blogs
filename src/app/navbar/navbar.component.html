@@ -53,6 +53,30 @@
 
       <button
         mat-icon-button
+        [matMenuTriggerFor]="themesMenu"
+        type="button"
+        aria-label="Palette"
+        class="navbar-button"
+        matTooltip="Palette">
+        <mat-icon aria-label="Palette">
+          palette
+        </mat-icon>
+      </button>
+      <mat-menu #themesMenu
+                name="matMenu" ngDefaultControl
+                [(ngModel)]="activeThemeIdx">
+        <mat-radio-group fxLayout="column" aria-label="Select an option"
+                         (change)="onThemeChanged($event)">
+          <mat-radio-button
+            *ngFor="let theme of themes" [value]="themes.indexOf(theme)"
+            class="radio-button">
+            {{theme}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </mat-menu>
+
+      <button
+        mat-icon-button
         type="button"
         (click)="isDarkMode = !isDarkMode"
         aria-label="Light toggle"
