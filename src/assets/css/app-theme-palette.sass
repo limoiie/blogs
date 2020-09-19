@@ -12,70 +12,44 @@ $custom-typography: mat-typography-config($font-family: 'Nunito Sans')
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$light-app-primary: mat-palette($mat-blue, 800, 600, 900)
-$light-app-accent:  mat-palette($mat-amber, 500, 400, 700)
-// The warn palette is optional (defaults to red).
-$light-app-warn: mat-palette($mat-red)
+$light-app-primary: mat-palette($mat-blue)
+$light-app-accent:  mat-palette($mat-amber)
+$light-app-warn: mat-palette($mat-red)  // The warn palette is optional (defaults to red).
 // Create the theme object (a Sass map containing all of the palettes).
 $light-app-theme: mat-light-theme($light-app-primary, $light-app-accent, $light-app-warn)
 $dark-app-theme: mat-dark-theme($light-app-primary, $light-app-accent, $light-app-warn)
 
-
-$purple-green-app-primary: mat-palette($mat-purple, 800, 600, 900)
-$purple-green-app-accent:  mat-palette($mat-green, 500, 400, 700)
-// The warn palette is optional (defaults to red).
-$purple-green-app-warn: mat-palette($mat-red)
-// Create the theme object (a Sass map containing all of the palettes).
-$purple-green-app-theme: mat-light-theme($purple-green-app-primary, $purple-green-app-accent, $purple-green-app-warn)
-$purple-green-dark-app-theme: mat-dark-theme($purple-green-app-primary, $purple-green-app-accent, $purple-green-app-warn)
-
-
-//$dark-app-primary: mat-palette($mat-blue-gray)
-//$dark-app-accent: mat-palette($mat-pink)
-//$dark-app-warn: mat-palette($mat-deep-orange)
-//$dark-app-theme:   mat-dark-theme($dark-app-primary, $dark-app-accent, $dark-app-warn)
-
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
+
 @include angular-material-theme($light-app-theme)
+
+.dark-theme
+  @include angular-material-theme($dark-app-theme)
 
 
 @import 'src/app-theme'
 
 
-.theme0
-  // Include theme styles for core and each component used in your app.
-  // Alternatively, you can import and @include the theme mixins for each component
-  // that you are using.
-  @include angular-material-theme($light-app-theme)
+@mixin make_theme($primary, $accent, $warn, $class)
+  $light-primary: mat-palette($primary, 800, 600, 900)
+  $light-accent: mat-palette($accent, 500, 400, 700)
+  $light-warn: mat-palette($warn)
 
-  // light customize
-  //@include link-style($light-app-theme)
-  @include my-material-app-theme($light-app-theme)
+  $light-theme: mat-light-theme($light-primary, $light-accent, $light-warn)
+  $dark-theme: mat-dark-theme($light-primary, $light-accent, $light-warn)
 
-  // dark customize
-.theme0.dark-theme
-  @include angular-material-theme($dark-app-theme)
+  .#{$class}
+    @include angular-material-theme($light-theme)
+    @include my-material-app-theme($light-theme)
 
-  //@include link-style($dark-app-theme)
-  @include my-material-app-theme($dark-app-theme)
+  .#{$class}.dark-theme
+    @include angular-material-theme($dark-theme)
+    @include my-material-app-theme($dark-theme)
 
 
-.theme1
-  // Include theme styles for core and each component used in your app.
-  // Alternatively, you can import and @include the theme mixins for each component
-  // that you are using.
-  @include angular-material-theme($purple-green-app-theme)
-
-  // light customize
-  //@include link-style($light-app-theme)
-  @include my-material-app-theme($purple-green-app-theme)
-
-  // dark customize
-.theme1.dark-theme
-  @include angular-material-theme($purple-green-dark-app-theme)
-
-  //@include link-style($dark-app-theme)
-  @include my-material-app-theme($purple-green-dark-app-theme)
+@include make_theme($mat-deep-purple, $mat-amber, $mat-red, theme0)
+@include make_theme($mat-indigo, $mat-pink, $mat-red, theme1)
+@include make_theme($mat-pink, $mat-blue-gray, $mat-red, theme2)
+@include make_theme($mat-purple, $mat-green, $mat-red, theme3)
