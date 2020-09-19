@@ -26,7 +26,7 @@
             "styles": [
               "src/assets/css/app-theme-palette.sass",
               "src/styles.sass",
-              "./node_modules/prismjs/themes/prism-tomorrow.css",
+              "./node_modules/prismjs/themes/prism-duotone-dark.css",
               "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
               "./node_modules/katex/dist/katex.min.css"
             ],

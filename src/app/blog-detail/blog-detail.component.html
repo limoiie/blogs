@@ -4,7 +4,7 @@
 
   <div class="page-body" fxLayout="row">
     <!--  200px for the toc; 48px for the margin of card  -->
-    <mat-card @blogTrigger class="blog-body" fxFlex="calc(100%-16em)"> <!-- full - len(toc) -->
+    <div @blogTrigger class="blog-body" fxFlex="calc(100%-16em)"> <!-- full - len(toc) -->
 
       <!--  introduction  -->
       <mat-card-content>
@@ -20,7 +20,7 @@
         <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
       </mat-chip-list>
 
-    </mat-card>
+    </div>
 
     <app-table-of-content #toc class="toc" fxFlex="16em"></app-table-of-content>
   </div>
