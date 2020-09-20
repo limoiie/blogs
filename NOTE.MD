@@ -10,11 +10,11 @@
 
 ## Customize MD font
 
-now at assets/css/app-theme-palette.sass
+now at styles/app-theme-palette.sass
 
 ## Customize link style
 
-now at assets/css/app-theme-palette.sass
+now at styles/app-theme-palette.sass
 
 ## Used Plugins
 

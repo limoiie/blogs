@@ -1,0 +1,25 @@
+@import '~@angular/material/theming'
+
+
+@function get-color-from-theme($theme, $palette, $hue: default, $opacity: null)
+  $palette: map-get($theme, $palette)
+  @return mat-color($palette, $hue, $opacity)
+
+
+@mixin markdown($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.5)
+  $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.3)
+  $warn: get-color-from-theme($theme, warn)
+
+  markdown
+    blockquote
+      background-color: $accent-trans
+      margin: 16px 0 16px 0
+      padding: 16px 0 16px 48px
+      border-radius: 4px
+      border-left: 4px solid $accent
+
+      p
+        margin: 0

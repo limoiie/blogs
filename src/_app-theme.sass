@@ -2,7 +2,9 @@
 
 @import 'src/app/table-of-content/table-of-content.component-theme'
 @import 'src/app/blog-detail/blog-detail.component-theme'
-@import 'styles/elems'
+
+@import 'styles/theme/elems'
+@import 'styles/theme/markdown'
 
 
 @mixin my-material-app-theme($theme)
@@ -13,3 +15,4 @@
   @include link-style($theme)
   @include table-of-contents-theme($theme)
   @include blog-detail-theme($theme)
+  @include markdown($theme)

@@ -1,39 +1,136 @@
 <div appWindowHeightTracking heightDiff="-96"
      fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="none" fxLayoutGap="16px"
      class="content">
-  <div fxFlex="grow" fxLayout="column">
-    <mat-toolbar class="toolbar">
-      <button color="accent"
-              appMaterialElevation defaultElevation="1"
-              raisedElevation="4"
-              mat-icon-button
-              matTooltip="Publish"
-              matTooltipShowDelay="600"
-              (click)="onPublish()">
-        <mat-icon>publish</mat-icon>
-      </button>
-    </mat-toolbar>
+  <div id="editor" fxFlex="grow" fxLayout="column">
+    <mat-card class="toolbar mat-card"
+                 appMaterialElevation [defaultElevation]="1"
+                 raisedElevation="4">
+      <mat-toolbar-row fxLayout="row">
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Format Bold"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'bold')">
+          <mat-icon>format_bold</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Format Italic"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'italic')">
+          <mat-icon>format_italic</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Format Underline"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'underline')">
+          <mat-icon>format_underline</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Format Clear"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'strikthrough')">
+          <mat-icon>strikethrough_s</mat-icon>
+        </button>
+
+        <!--    gap    -->
+        <mat-divider [vertical]="true"></mat-divider>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Format Quote"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'quote')">
+          <mat-icon>format_quote</mat-icon>
+        </button>
+
+        <!--    gap    -->
+        <mat-divider [vertical]="true"></mat-divider>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Insert Code"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'code')">
+          <mat-icon>code</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Highlight"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'highlight')">
+          <mat-icon>highlight</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Insert Latex"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'latex')">
+          <mat-icon>functions</mat-icon>
+        </button>
+
+        <!--    gap    -->
+        <mat-divider [vertical]="true"></mat-divider>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Insert Image"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'image')">
+          <mat-icon>insert_photo</mat-icon>
+        </button>
+
+        <button color="accent"
+                mat-icon-button
+                matTooltip="Insert Link"
+                matTooltipShowDelay="600"
+                (mousedown)="onEditAction($event, 'link')">
+          <mat-icon>insert_link</mat-icon>
+        </button>
+
+        <!--    gap    -->
+        <div fxFlex="grow"></div>
+
+        <button color="accent"
+                mat-mini-fab
+                matTooltip="Publish"
+                matTooltipShowDelay="600"
+                (click)="onPublish()">
+          <mat-icon>publish</mat-icon>
+        </button>
+
+      </mat-toolbar-row>
+    </mat-card>
     <mat-card fxFlex="grow" fxLayout="column"
-              appMaterialElevation [defaultElevation]="2"
-              raisedElevation="16" class="edit-area card">
+              class="edit-area card">
       <ng-scrollbar fxFlex="grow" fxLayout="column">
-        <label for="blog"></label>
-        <mat-card-content>
-          <textarea
-            placeholder="Text Here~"
-            autosize minRows="16" fxFlex="grow" name="blog" id="blog"
-            [(ngModel)]="content" (ngModelChange)="onEdit($event)">
-          </textarea>
+        <label for="edit-area"></label>
+        <mat-card-content fxLayout="row">
+          <mat-form-field fxFlex="grow">
+            <textarea
+              matInput
+              placeholder="Text Here~"
+              autosize minRows="16" fxFlex="grow" name="blog" id="edit-area"
+              [(ngModel)]="content" (ngModelChange)="onEdit($event)">
+            </textarea>
+          </mat-form-field>
         </mat-card-content>
       </ng-scrollbar>
     </mat-card>
   </div>
-  <div fxFlex="grow" fxLayout="column">
+  <div id="preview" fxFlex="grow" fxLayout="column">
     <mat-progress-bar mode="indeterminate" *ngIf="loading">
     </mat-progress-bar>
     <mat-card fxFlex="grow"
-              appMaterialElevation defaultElevation="0"
-              raisedElevation="16" class="preview card">
+              class="preview card">
       <ng-scrollbar fxLayout="row">
         <!--  preview  -->
         <mat-card-content>

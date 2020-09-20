@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/css/app-theme-palette.sass",
+              "src/styles/app-theme-palette.sass",
               "src/styles.sass",
               "./node_modules/prismjs/themes/prism-vsc-dark-plus.css",
               "./node_modules/prismjs/plugins/toolbar/prism-toolbar.css",

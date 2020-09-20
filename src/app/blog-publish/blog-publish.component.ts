@@ -7,10 +7,15 @@ import {MarkdownComponent} from 'ngx-markdown';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {BlogService} from '../services/blog.service';
 
+
+export type EditAction =
+  'bold' | 'italic' | 'underline' | 'strikthrough' | 'highlight' | 'quote' |
+  'code' | 'latex' | 'image' | 'link';
+
 @Component({
   selector: 'app-blog-upload',
   templateUrl: './blog-publish.component.html',
-  styleUrls: ['./blog-publish.component.css']
+  styleUrls: ['./blog-publish.component.sass']
 })
 export class BlogPublishComponent implements OnInit {
   loading = false;
@@ -118,4 +123,81 @@ export class BlogPublishComponent implements OnInit {
     this.onEdit(this.content);
   }
 
+  onEditAction(event, action: EditAction) {
+    // prevent losing the focus on textarea
+    event.preventDefault();
+    const editArea = document.getElementById('edit-area');
+    switch (action) {
+      case 'bold':
+        this.content = insertTextAtCursor(editArea, '**', '**');
+        break;
+      case 'italic':
+        this.content = insertTextAtCursor(editArea, '*', '*');
+        break;
+      case 'underline':
+        this.content = insertTextAtCursor(editArea, '<u>', '</u>');
+        break;
+      case 'strikthrough':
+        this.content = insertTextAtCursor(editArea, '~~', '~~');
+        break;
+      case 'highlight':
+        this.content = insertTextAtCursor(editArea, '`', '`');
+        break;
+      case 'quote':
+        this.content = insertTextBeforeLine(editArea, '> ');
+        break;
+      case 'code':
+        this.content = insertTextAtCursor(editArea, '\n```\n', '\n```');
+        break;
+      case 'latex':
+        this.content = insertTextAtCursor(editArea, '$', '$');
+        break;
+      case 'image':
+        this.content = insertTextAtCursor(editArea, '![]()');
+        break;
+      case 'link':
+        this.content = insertTextAtCursor(editArea, '[]()');
+        break;
+    }
+
+    this.onEdit(this.content);
+  }
+}
+
+function insertTextAtCursor(textarea, left, right: string = '') {
+  const val = textarea.value;
+  if (typeof textarea.selectionStart === 'number'
+    && typeof textarea.selectionEnd === 'number') {
+    const prev = val.slice(0, textarea.selectionStart);
+    const post = val.slice(textarea.selectionEnd);
+    const selected = val.slice(textarea.selectionStart, textarea.selectionEnd);
+
+    textarea.value = prev + left + selected + right + post;
+    textarea.selectionStart = textarea.selectionEnd
+      = textarea.selectionStart + left.length + selected.length + right.length;
+  } else {
+    console.error('cannot insert text into textarea!');
+  }
+  return textarea.value;
+}
+
+function insertTextBeforeLine(textarea, txt) {
+  const val = textarea.value;
+  if (typeof textarea.selectionStart === 'number'
+    && typeof textarea.selectionEnd === 'number') {
+    const prev: string = val.slice(0, textarea.selectionStart);
+    const post: string = val.slice(textarea.selectionEnd);
+    const selected: string = val.slice(textarea.selectionStart, textarea.selectionEnd);
+
+    const inserted = Array.from(selected.split('\n'))
+      .map((line) => txt + line + '\n')
+      .reduce((p, c) => p + c);
+
+    textarea.value = prev + inserted + post;
+    textarea.selectionStart = textarea.selectionEnd
+      = textarea.selectionStart + inserted.length;
+  } else {
+    console.error('cannot insert text into textarea!');
+  }
+  return textarea.value;
 }
