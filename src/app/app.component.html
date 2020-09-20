@@ -11,7 +11,7 @@
   <!-- unset overflow so that the its child can be sticky -->
   <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
   <!--suppress HtmlUnknownAttribute -->
-  <mat-sidenav-container style="overflow: unset" fullscreen>
+  <mat-sidenav-container style="overflow: unset">
     <mat-sidenav #drawer fixedInViewport
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
