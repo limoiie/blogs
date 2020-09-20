@@ -4,6 +4,7 @@ import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import {MatRadioChange} from '@angular/material/radio';
+import {ProgressBarService} from '../services/progress-bar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -40,6 +41,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public progressBarService: ProgressBarService
   ) {
     super();
 

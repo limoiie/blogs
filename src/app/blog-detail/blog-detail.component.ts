@@ -12,6 +12,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
 import {take} from 'rxjs/operators';
 import {renderHeading} from '../markdown-render-custom';
+import {ProgressBarService} from '../services/progress-bar.service';
 
 
 @Component({
@@ -36,7 +37,6 @@ export class BlogDetailComponent implements OnInit {
   @ViewChild('content') content: MarkdownComponent;
 
   secName = 'Content';
-  loading = true;
   blog = {
     title: '',
     createTime: '',
@@ -53,13 +53,14 @@ export class BlogDetailComponent implements OnInit {
     private router: Router,
     private mdService: MarkdownService,
     private blogService: BlogService,
+    private progressBarService: ProgressBarService,
     private snackBar: MatSnackBar,
     private ngZone: NgZone
   ) {
   }
 
   ngOnInit(): void {
-    this.loading = true;
+    this.progressBarService.loading = true;
     this.route.paramMap.subscribe(params => {
       const blogId = +params.get('blogId');
       this.loadBlogDetail(blogId);
@@ -80,13 +81,13 @@ export class BlogDetailComponent implements OnInit {
                 this.content.element.nativeElement);
               //
               this.ngZone.run(() => {
-                this.loading = false;
+                this.progressBarService.loading = false;
               });
             });
         } else {
           const msg = `Failed to load blog: ${response.message}`;
           this.snackBar.open(msg, 'Ok');
-          this.loading = false;
+          this.progressBarService.loading = false;
         }
       });
   }
