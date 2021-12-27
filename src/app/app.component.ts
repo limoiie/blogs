@@ -9,6 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {MatSidenavContent} from "@angular/material/sidenav";
 import {map, shareReplay} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component';
@@ -31,6 +32,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(NavbarComponent)
   navbar;
+
+  @ViewChild(MatSidenavContent)
+  matSidenavContent: MatSidenavContent;
 
   title = 'blogs';
 
@@ -57,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.fulfillScreen(null)
   }
 
   ngOnDestroy(): void {
@@ -66,6 +71,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('window:scroll', ['$event'])
   onScroll($event) {
     this.scrollService.onScroll($event);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.fulfillScreen(event)
+  }
+
+  private fulfillScreen(event) {
+    const height = event ? event.target.innerHeight : window.innerHeight
+    this.matSidenavContent.getElementRef().nativeElement.style.minHeight = height + 'px'
   }
 
 }

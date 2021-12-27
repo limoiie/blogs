@@ -15,7 +15,7 @@
     <mat-sidenav #drawer fixedInViewport
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
-                 [opened]="(isHandset$ | async) === false">
+                 [opened]="false">
       <div class="content">
         <mat-nav-list>
           <a mat-list-item href="#">TODO</a>

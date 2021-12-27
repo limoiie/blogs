@@ -9,8 +9,10 @@
   <mat-toolbar fxLayout="row" [class.mat-primary]="!isDarkMode"
                [class.mat-elevation-z8]="true">
     <mat-toolbar-row>
+      <!-- The side-drawer is disabled. Enable it once found an use-case -->
       <button
         type="button"
+        style="display: none"
         aria-label="Toggle sidenav"
         mat-icon-button
         (click)="onMenuClicked()">
@@ -90,8 +92,8 @@
         class="navbar-button"
         matTooltip="light toggle">
         <mat-icon aria-label="Light toggle">
-          <img *ngIf="isDarkMode" src="assets/img/icon-light-on.svg" alt="Light on"/>
-          <img *ngIf="!isDarkMode" src="assets/img/icon-light-off.svg" alt="Light off"/>
+          <img *ngIf="!isDarkMode" src="assets/img/icon-light-on.svg" alt="Light on">
+          <img *ngIf="isDarkMode" src="assets/img/icon-light-off.svg" alt="Light off">
         </mat-icon>
       </button>
 
@@ -102,7 +104,7 @@
         matTooltip="Github"
         href="https://github.com/limoiie/blogs">
         <!--      <mat-icon aria-label="Github">-->
-        <img src="assets/img/icon-github.svg" alt="Github"/>
+        <img src="assets/img/icon-github.svg" alt="Github">
         <!--      </mat-icon>-->
       </a>
     </mat-toolbar-row>

@@ -5,7 +5,7 @@ markdown ::ng-deep
   // see https://stackoverflow.com/a/13117744/11192045
   a
     &:hover::before
-      content: "#"
+      content: "¶"
       font-weight: 400
       margin-left: -25px
       position: absolute
@@ -13,6 +13,7 @@ markdown ::ng-deep
 
   pre
     border-radius: 4px
+    margin: 0 0 1em 0
     transition-duration: 200ms
 
     &:hover
@@ -21,6 +22,9 @@ markdown ::ng-deep
   h2, h3
     padding-top: 72px
     margin-top: -72px
+
+    a
+      font-weight: bold
 
   h2
     font-size: 24px
@@ -41,3 +45,6 @@ markdown ::ng-deep
       color: black
       background-color: rgba(244,244,244,.75)
       padding: 4px
+
+    button
+      cursor: pointer

@@ -24,6 +24,7 @@ export class BlogListComponent implements OnInit {
       .getBlogList(1, 10)
       .subscribe(
         (response: ApiResponse) => {
+          console.log(`response.data is ${JSON.stringify(response.data)}`);
           if (response.state) {
             this.blogList = response.data;
           } else {
