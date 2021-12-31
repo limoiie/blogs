@@ -63,7 +63,7 @@ export class BlogListComponent implements OnInit, AfterViewInit {
       .getBlogList(pageIndex, pageSize)
       .subscribe(
         (response: ApiResponse) => {
-          console.log(`response.data is ${JSON.stringify(response.data['page'])}`);
+          // console.log(`response.data is ${JSON.stringify(response.data['page'])}`);
           if (response.state) {
             this.blogList = response.data['page'];
             this.paginator.length = response.data['count'];

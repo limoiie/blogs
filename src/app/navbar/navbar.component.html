@@ -71,11 +71,10 @@
           palette
         </mat-icon>
       </button>
-      <mat-menu #themesMenu
-                name="matMenu" ngDefaultControl
-                [(ngModel)]="activeThemeIdx">
+      <mat-menu #themesMenu ngDefaultControl>
         <mat-radio-group fxLayout="column" aria-label="Select an option"
-                         (change)="onThemeChanged($event)">
+                         (change)="onThemeChanged($event)"
+                         [(ngModel)]="activeThemeIdx">
           <mat-radio-button
             *ngFor="let theme of themes" [value]="themes.indexOf(theme)"
             class="radio-button">
@@ -88,10 +87,10 @@
         mat-icon-button
         type="button"
         (click)="toggleDarkMode()"
-        aria-label="Light toggle"
+        aria-label="Toggle light"
         class="navbar-button"
-        matTooltip="light toggle">
-        <mat-icon aria-label="Light toggle">
+        matTooltip="Light">
+        <mat-icon aria-label="Toggle light">
           <img *ngIf="!isDarkMode" src="assets/img/icon-light-on.svg" alt="Light on">
           <img *ngIf="isDarkMode" src="assets/img/icon-light-off.svg" alt="Light off">
         </mat-icon>

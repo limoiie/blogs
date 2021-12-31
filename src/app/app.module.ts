@@ -1,6 +1,7 @@
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {CookieService} from "ngx-cookie-service";
 
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -126,7 +127,7 @@ import {MatRadioModule} from '@angular/material/radio';
         MatSnackBarModule,
         MatPaginatorModule
     ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

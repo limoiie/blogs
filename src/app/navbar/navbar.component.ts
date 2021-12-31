@@ -1,5 +1,7 @@
+import {stringify} from "@angular/compiler/src/util";
 import {Component, EventEmitter, Input, NgZone, OnInit, Output} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {CookieService} from "ngx-cookie-service";
 import {delay, take} from "rxjs/operators";
 import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
@@ -43,6 +45,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   constructor(
     public authService: AuthService,
     public progressBarService: ProgressBarService,
+    private cookieService: CookieService,
     private ngZone: NgZone,
   ) {
     super();
@@ -53,7 +56,12 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   ngOnInit(): void {
-    this.syncPrismTheme();
+    this.ngZone.onStable.pipe(
+      take(1)
+    ).subscribe(() => {
+      this.loadStateFromCookie();
+      this.syncPrismTheme();
+    })
   }
 
   onMenuClicked() {
@@ -61,7 +69,8 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   onThemeChanged(event: MatRadioChange) {
-    this.activeThemeIdx = event.value;
+    // this.activeThemeIdx = event.value;
+    this.dumpStateToCookie();
   }
 
   toggleDarkMode() {
@@ -72,6 +81,8 @@ export class NavbarComponent extends ScrollOut implements OnInit {
     ).subscribe(() => {
       this.syncPrismTheme()
     })
+
+    this.dumpStateToCookie();
   }
 
   private syncPrismTheme() {
@@ -93,6 +104,16 @@ export class NavbarComponent extends ScrollOut implements OnInit {
       const head = document.getElementsByTagName('head')[0];
       head.appendChild(themeLink);
     }
+  }
+
+  private dumpStateToCookie() {
+    this.cookieService.set('dark-mode', String(this.isDarkMode));
+    this.cookieService.set('theme-index', String(this.activeThemeIdx));
+  }
+
+  private loadStateFromCookie() {
+    this.isDarkMode = Boolean(this.cookieService.get('dark-mode') || false);
+    this.activeThemeIdx = Number(this.cookieService.get('theme-index') || 0);
   }
 
 }
