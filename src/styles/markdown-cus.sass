@@ -3,13 +3,14 @@
 markdown ::ng-deep
   // padding the title for correct anchor in a page with a fixed header
   // see https://stackoverflow.com/a/13117744/11192045
-  a
-    &:hover::before
-      content: "¶"
-      font-weight: 400
-      margin-left: -25px
-      position: absolute
-      font-size: 28px
+  h2, h3
+    a
+      &:hover::before
+        content: "¶"
+        font-weight: 400
+        margin-left: -25px
+        position: absolute
+        font-size: 28px
 
   pre
     border-radius: 4px
@@ -24,7 +25,7 @@ markdown ::ng-deep
     margin-top: -72px
 
     a
-      font-weight: bold
+      font-weight: bold!important
 
   h2
     font-size: 24px

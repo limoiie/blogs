@@ -68,6 +68,24 @@
     text-shadow: 5px 5px 10px $accent-trans-dark
 
 
+@mixin code-style($theme)
+  $primary: get-color-from-theme($theme, primary)
+  $primary-trans: get-color-from-theme($theme, primary, 0.2)
+  $primary-trans-dark: get-color-from-theme($theme, primary, 0.8)
+  $accent: get-color-from-theme($theme, accent)
+  $accent-trans: get-color-from-theme($theme, accent, 0.2)
+  $accent-trans-dark: get-color-from-theme($theme, accent, 0.9)
+
+  code
+    font-family: "JetBrains Mono", "Fira Code", monospace!important
+
+  p
+    code
+      background: $accent-trans
+      padding: 3px
+      border-radius: 5px
+
+
 @mixin scrollbar($theme)
   $primary: get-color-from-theme($theme, primary)
   $primary-trans: get-color-from-theme($theme, primary, 0.5)
