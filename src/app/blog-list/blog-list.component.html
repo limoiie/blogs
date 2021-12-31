@@ -2,10 +2,12 @@
   <mat-progress-bar mode="indeterminate" *ngIf="loading">
   </mat-progress-bar>
   <div fxLayout="column">
-    <app-blog-card [blog]="blog" *ngFor="let blog of blogList">
+    <app-blog-card [blog]="blog" *ngFor="let blog of blogList; let blogIndex = index"
+                   [@blogListTrigger]="{value: true, params: {myTime: 400 + 100 * blogIndex + 'ms'}}">
     </app-blog-card>
     <mat-paginator
       class="blog-list"
+      [@blogListTrigger]="{value: true, params: {myTime: '400ms'}}"
       [showFirstLastButtons]="true"
       [pageSize]="10"
       [pageSizeOptions]="[10, 25, 50]"

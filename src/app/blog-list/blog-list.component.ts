@@ -8,7 +8,17 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   selector: 'app-blog-list',
   templateUrl: './blog-list.component.html',
   styleUrls: ['./blog-list.component.sass'],
-  animations: []
+  animations: [
+    trigger('blogListTrigger', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(24px)' }),
+        animate('{{ myTime }} ease-in-out', style({opacity: 1, transform: 'translateY(0)'})),
+      ]),
+      transition(':leave', [
+        animate('400ms ease-in-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class BlogListComponent implements OnInit, AfterViewInit {
   blogList;
