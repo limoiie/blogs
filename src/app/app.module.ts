@@ -1,3 +1,4 @@
+import {MatPaginatorModule} from "@angular/material/paginator";
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
@@ -74,56 +75,57 @@ import {MatRadioModule} from '@angular/material/radio';
     LoginComponent,
     StickyDirective
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot([
-      {path: '', component: BlogListComponent},
-      {path: 'list', component: BlogListComponent},
-      {path: 'blog/:blogId', component: BlogDetailComponent},
-      {path: 'publish', component: BlogPublishComponent},
-      {path: 'login', component: LoginComponent},
-    ]),
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'csrftoken',
-      headerName: 'X-CSRFToken',
-    }),
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatProgressBarModule,
-    MatCardModule,
-    MatChipsModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatMenuModule,
-    NgScrollbarModule,
-    NgScrollbarReachedModule,
-    FlexLayoutModule,
-    MarkdownModule.forRoot({
-      loader: HttpClient,
-      markedOptions: {
-        provide: MarkedOptions,
-        useFactory: markedOptionsFactory
-      }
-    }),
-    FormsModule,
-    AutosizeModule,
-    MatAutocompleteModule,
-    MatDialogModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    MatSnackBarModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([
+            {path: '', component: BlogListComponent},
+            {path: 'list', component: BlogListComponent},
+            {path: 'blog/:blogId', component: BlogDetailComponent},
+            {path: 'publish', component: BlogPublishComponent},
+            {path: 'login', component: LoginComponent},
+        ]),
+        HttpClientModule,
+        HttpClientXsrfModule.withOptions({
+            cookieName: 'csrftoken',
+            headerName: 'X-CSRFToken',
+        }),
+        LayoutModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatIconModule,
+        MatListModule,
+        MatProgressBarModule,
+        MatCardModule,
+        MatChipsModule,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        MatMenuModule,
+        NgScrollbarModule,
+        NgScrollbarReachedModule,
+        FlexLayoutModule,
+        MarkdownModule.forRoot({
+            loader: HttpClient,
+            markedOptions: {
+                provide: MarkedOptions,
+                useFactory: markedOptionsFactory
+            }
+        }),
+        FormsModule,
+        AutosizeModule,
+        MatAutocompleteModule,
+        MatDialogModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatRadioModule,
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatPaginatorModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

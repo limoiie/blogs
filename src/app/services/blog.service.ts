@@ -22,6 +22,9 @@ export interface ApiResponse {
 })
 export class BlogService {
 
+  private pageIndex: number = 0;
+  private pageSize: number = 10;
+
   constructor(
     private http: HttpClient,
     private api: ApiService
@@ -59,4 +62,24 @@ export class BlogService {
     return this.api.apiGet(url);
   }
 
+  countBlogs(): Observable<any> {
+    const url = `/blog/count/`;
+    return this.api.apiGet(url);
+  }
+
+  readPageIndex(): number {
+    return this.pageIndex
+  }
+
+  readPageSize(): number {
+    return this.pageSize
+  }
+
+  writePageIndex(pageIndex: number) {
+    this.pageIndex = pageIndex
+  }
+
+  writePageSize(pageSize: number) {
+    this.pageSize = pageSize
+  }
 }

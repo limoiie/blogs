@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {animate, style, transition, trigger} from "@angular/animations";
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {ApiResponse, BlogService} from '../services/blog.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -8,9 +10,12 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   styleUrls: ['./blog-list.component.sass'],
   animations: []
 })
-export class BlogListComponent implements OnInit {
+export class BlogListComponent implements OnInit, AfterViewInit {
   blogList;
   loading;
+
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator;
 
   constructor(
     private blogService: BlogService,
@@ -19,14 +24,39 @@ export class BlogListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loading = true;
+    // this.loading = true;
+  }
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe((ev: PageEvent) => {
+      this.loading = true;
+      this.blogService.writePageIndex(ev.pageIndex);
+      this.blogService.writePageSize(ev.pageSize);
+
+      this._loadBlogs(ev.pageIndex, ev.pageSize, true);
+    });
+
+    this.blogService.countBlogs().subscribe((response: ApiResponse) => {
+      this.paginator.length = response.data;
+      this.paginator.pageIndex = this.blogService.readPageIndex()
+      this.paginator.pageSize = this.blogService.readPageSize()
+      this._loadBlogs(this.blogService.readPageIndex(), this.blogService.readPageSize());
+    });
+  }
+
+  _loadBlogs(pageIndex: number, pageSize: number, scrollToTop: boolean = false) {
+    if (scrollToTop) {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
     this.blogService
-      .getBlogList(1, 10)
+      .getBlogList(pageIndex, pageSize)
       .subscribe(
         (response: ApiResponse) => {
-          console.log(`response.data is ${JSON.stringify(response.data)}`);
+          console.log(`response.data is ${JSON.stringify(response.data['page'])}`);
           if (response.state) {
-            this.blogList = response.data;
+            this.blogList = response.data['page'];
+            this.paginator.length = response.data['count'];
           } else {
             const errMsg = `Failed to load blog: ${response.message}`;
             this.snackBar.open(errMsg, 'OK');
@@ -38,6 +68,6 @@ export class BlogListComponent implements OnInit {
         () => {
           this.loading = false;
         }
-      );
+      )
   }
 }
