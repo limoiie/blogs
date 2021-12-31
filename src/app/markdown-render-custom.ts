@@ -48,7 +48,7 @@ export function markedOptionsFactory(): MarkedOptions {
 // these properties.
 export function fixMarkdownService(service: MarkdownService) {
   const options = service.options;
-  service.compile = (md, dh = false, mo = options) => {
+  service.compile = (md, dh = false, emojify = null, mo = options) => {
     const trimmed = trimIndentation(md);
     const decoded = dh ? decodeHtml(trimmed) : trimmed;
     return marked.parse(decoded, mo);
