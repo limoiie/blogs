@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, OnInit, Output} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {delay, take} from "rxjs/operators";
 import {ScrollOut} from '../directives/scroll-out.directive';
 import {Observable} from 'rxjs';
 import {AuthService} from '../services/auth.service';
@@ -41,7 +42,8 @@ export class NavbarComponent extends ScrollOut implements OnInit {
 
   constructor(
     public authService: AuthService,
-    public progressBarService: ProgressBarService
+    public progressBarService: ProgressBarService,
+    private ngZone: NgZone,
   ) {
     super();
 
@@ -51,6 +53,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   ngOnInit(): void {
+    this.syncPrismTheme();
   }
 
   onMenuClicked() {
@@ -59,6 +62,37 @@ export class NavbarComponent extends ScrollOut implements OnInit {
 
   onThemeChanged(event: MatRadioChange) {
     this.activeThemeIdx = event.value;
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    this.ngZone.onStable.pipe(
+      take(1),
+      delay(200),
+    ).subscribe(() => {
+      this.syncPrismTheme()
+    })
+  }
+
+  private syncPrismTheme() {
+    NavbarComponent.loadPrismTheme(this.isDarkMode ?
+      'assets/prism-theme/prism-one-light.css' : 'assets/prism-theme/prism-one-dark.css');
+  }
+
+  private static loadPrismTheme(bundleStyleName: string) {
+    const prismThemeId = 'prism-theme';
+    let themeLink = document.getElementById(prismThemeId) as HTMLLinkElement;
+    if (themeLink) {
+      themeLink.href = bundleStyleName;
+    } else {
+      const themeLink = document.createElement('link');
+      themeLink.id = prismThemeId;
+      themeLink.rel = 'stylesheet';
+      themeLink.href = `${bundleStyleName}`;
+
+      const head = document.getElementsByTagName('head')[0];
+      head.appendChild(themeLink);
+    }
   }
 
 }
