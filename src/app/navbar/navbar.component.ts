@@ -1,4 +1,3 @@
-import {stringify} from "@angular/compiler/src/util";
 import {Component, EventEmitter, Input, NgZone, OnInit, Output} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {CookieService} from "ngx-cookie-service";
@@ -112,7 +111,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   private loadStateFromCookie() {
-    this.isDarkMode = Boolean(this.cookieService.get('dark-mode') || false);
+    this.isDarkMode = this.cookieService.get('dark-mode') == 'true';
     this.activeThemeIdx = Number(this.cookieService.get('theme-index') || 0);
   }
 
