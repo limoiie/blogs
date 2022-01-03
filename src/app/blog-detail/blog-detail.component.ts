@@ -1,18 +1,17 @@
-import {
-  Component,
-  NgZone,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ApiResponse, BlogService} from '../services/blog.service';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {MarkdownComponent, MarkdownService} from 'ngx-markdown';
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
-import {take} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MarkdownService} from 'ngx-markdown';
+import {first} from 'rxjs/operators';
 import {renderHeading} from '../markdown-render-custom';
+import {ApiResponse, BlogService} from '../services/blog.service';
 import {ProgressBarService} from '../services/progress-bar.service';
+import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
+
+declare let Prism: {
+  highlightAllUnder: (element: Element | Document) => void;
+}
 
 
 @Component({
@@ -34,7 +33,7 @@ import {ProgressBarService} from '../services/progress-bar.service';
 export class BlogDetailComponent implements OnInit {
 
   @ViewChild('toc') toc: TableOfContentComponent;
-  @ViewChild('content') content: MarkdownComponent;
+  @ViewChild('content') content: ElementRef;
 
   secName = 'Content';
   blog = {
@@ -44,10 +43,12 @@ export class BlogDetailComponent implements OnInit {
     folder: '',
     author: '',
     tags: [],
-    mdDocument: ''
+    mdDocument: '',
+    htmlDocument: '',
   };
 
   markdown = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -75,14 +76,14 @@ export class BlogDetailComponent implements OnInit {
       .subscribe((response: ApiResponse) => {
         if (response.state) {
           this.blog = response.data;
-          this.ngZone.onStable.pipe(take(1))
+          this.ngZone.onStable.pipe(first())
             .subscribe(() => {
               this.toc.addHeaders(this.secName,
-                this.content.element.nativeElement);
-              //
+                this.content.nativeElement);
               this.ngZone.run(() => {
                 this.progressBarService.loading = false;
               });
+              Prism.highlightAllUnder(this.content.nativeElement);
             });
         } else {
           const msg = `Failed to load blog: ${response.message}`;

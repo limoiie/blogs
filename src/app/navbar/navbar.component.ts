@@ -85,7 +85,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   private syncPrismTheme() {
-    NavbarComponent.loadPrismTheme(this.isDarkMode ?
+    NavbarComponent.loadPrismTheme(!this.isDarkMode ?
       'assets/prism-theme/prism-one-light.css' : 'assets/prism-theme/prism-one-dark.css');
   }
 

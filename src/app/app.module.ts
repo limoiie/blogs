@@ -27,6 +27,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component';
 import {ScrollOutDirective} from './directives/scroll-out.directive';
 import {MaterialElevationDirective} from './directives/material-elevation.directive';
+import {SafeHtmlPipe} from "./pipes/safe-html.pipe";
 import {TagComponent} from './tag/tag.component';
 import {BlogCardComponent} from './blog-card/blog-card.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -74,7 +75,8 @@ import {MatRadioModule} from '@angular/material/radio';
     FormFieldTagsComponent,
     TableOfContentComponent,
     LoginComponent,
-    StickyDirective
+    StickyDirective,
+    SafeHtmlPipe,
   ],
     imports: [
         BrowserModule,
