@@ -3,48 +3,49 @@
   *ngIf="blog"
   @myInsertRemoveTrigger class="card">
 
+  <mat-card-subtitle>
+    on <label>{{blog.createTime.split(' ')[0]}}</label>
+    in <label><a href="#">{{ blog.folder }}</a></label>
+  </mat-card-subtitle>
+
   <mat-card-title>
     <a [routerLink]="['/blog', blog.id]">
       {{ blog.title }}
     </a>
-    <button *ngIf="authService.currentUser | async" class="title-btn"
-            color="accent" mat-mini-fab>
-      <mat-icon class="icon">edit</mat-icon>
-    </button>
+<!--    <button *ngIf="authService.currentUser | async" class="title-btn"-->
+<!--            color="accent" mat-mini-fab>-->
+<!--      <mat-icon class="icon">edit</mat-icon>-->
+<!--    </button>-->
   </mat-card-title>
-  <mat-card-subtitle>
-    <!--  create datetime  -->
-    <mat-icon class="icon">event_note</mat-icon>
-    <label>
-      Posted on
-      <time [matTooltip]="'Created on ' + blog.createTime"
-            datetime="2020-02-10T15:32:20+11:00">
-        {{ blog.createTime }}
-      </time>
-    </label>
+<!--  <mat-card-subtitle>-->
+<!--    &lt;!&ndash;  create datetime  &ndash;&gt;-->
+<!--    <mat-icon class="icon">event_note</mat-icon>-->
+<!--    <label>-->
+<!--      Posted on-->
+<!--      <time [matTooltip]="'Created on ' + blog.createTime"-->
+<!--            datetime="2020-02-10T15:32:20+11:00">-->
+<!--        {{ blog.createTime }}-->
+<!--      </time>-->
+<!--    </label>-->
 
-    <!--  edit datetime  -->
-    <mat-icon class="icon">event_available</mat-icon>
-    <label>
-      Edited on
-      <time [matTooltip]="'Created on ' + blog.editTime"
-            datetime="2020-02-10T15:32:20+11:00">
-        {{ blog.editTime }}
-      </time>
-    </label>
+<!--    &lt;!&ndash;  edit datetime  &ndash;&gt;-->
+<!--    <mat-icon class="icon">event_available</mat-icon>-->
+<!--    <label>-->
+<!--      Edited on-->
+<!--      <time [matTooltip]="'Created on ' + blog.editTime"-->
+<!--            datetime="2020-02-10T15:32:20+11:00">-->
+<!--        {{ blog.editTime }}-->
+<!--      </time>-->
+<!--    </label>-->
 
-    <!--  folder  -->
-    <mat-icon class="icon">folder_open</mat-icon>
-    <label><a href="#">{{ blog.folder }}</a></label>
-
-    <!--  author  -->
-    <mat-icon class="icon">account_circle</mat-icon>
-    <label>{{ blog.author }}</label>
-  </mat-card-subtitle>
+<!--    &lt;!&ndash;  author  &ndash;&gt;-->
+<!--    <mat-icon class="icon">account_circle</mat-icon>-->
+<!--    <label>{{ blog.author }}</label>-->
+<!--  </mat-card-subtitle>-->
 
   <!--  introduction  -->
   <mat-card-content>
-    <p>{{ blog.abstract }}</p>
+    <div [innerHTML]="blog.abstract"></div>
   </mat-card-content>
 
   <mat-card-actions>
