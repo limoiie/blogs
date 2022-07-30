@@ -2,14 +2,14 @@
 
 
 .title-btn
-  width: 32px
-  height: 32px
+  width: 18px
+  height: 18px
 
   .icon
-    margin-bottom: 10px
     width: 18px
     height: 18px
     font-size: 18px
+    margin-bottom: 48px
 
 
 mat-card
@@ -20,12 +20,27 @@ mat-card
   padding-left: 24px
 
   mat-card-title
+    height: 32px
+    display: flex
+    justify-content: space-between
+
     a
       font-weight: bolder!important
+
+    .blog-action-bar
+      opacity: 0
+      transform: translateY(-8px)
+      transition: opacity 400ms ease-in-out, transform 200ms ease-in-out
 
   mat-card-subtitle
     label
       font-style: italic
+
+mat-card:hover
+  mat-card-title
+    .blog-action-bar
+      opacity: 1
+      transform: translateY(0)
 
 
 a.read-more

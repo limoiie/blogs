@@ -5,18 +5,19 @@
 
   <!-- title -->
   <mat-card-title>
-    <a [routerLink]="['/blog', blog.id]">
-      {{ blog.title }}
-    </a>
-    <button *ngIf="authService.currentUser | async" class="title-btn"
-            color="accent" mat-icon-button>
-      <mat-icon class="icon">edit</mat-icon>
-    </button>
+    <a [routerLink]="['/blog', blog.id]">{{ blog.title }}</a>
+    <div class="blog-action-bar">
+      <button *ngIf="authService.currentUser | async" class="title-btn"
+              color="accent" mat-icon-button>
+        <mat-icon class="icon">edit</mat-icon>
+      </button>
+    </div>
   </mat-card-title>
 
   <!-- labels -->
   <mat-card-subtitle>
-    <mat-icon fontSet="mso">edit</mat-icon><label>{{blog.createTime * 1000 | date: 'fullDate' }}</label>
+    <mat-icon fontSet="mso">edit</mat-icon>
+    <label>{{blog.createTime * 1000 | date: 'fullDate' }}</label>
     <mat-icon fontSet="mso">folder</mat-icon>
     <label><a href="#">{{ blog.folder }}</a></label>
   </mat-card-subtitle>
