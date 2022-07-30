@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {delay} from 'rxjs/operators';
+import {BlogAbbrev} from '../beans/blog-abbrev';
 import {AuthService} from '../services/auth.service';
 
 @Component({
@@ -13,14 +15,14 @@ import {AuthService} from '../services/auth.service';
         animate('200ms', style({opacity: 1})),
       ]),
       transition(':leave', [
-        animate('200ms', style({opacity: 0}))
+        animate('40ms', style({opacity: 0}))
       ])
     ]),
   ]
 })
 export class BlogCardComponent implements OnInit {
 
-  @Input() blog;
+  @Input() blog: BlogAbbrev
 
   constructor(
     public authService: AuthService

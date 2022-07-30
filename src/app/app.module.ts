@@ -11,7 +11,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconModule} from '@angular/material/icon';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {
   HttpClient,
@@ -86,7 +86,6 @@ import {MatRadioModule} from '@angular/material/radio';
             {path: 'list', component: BlogListComponent},
             {path: 'blog/:blogId', component: BlogDetailComponent},
             {path: 'publish', component: BlogPublishComponent},
-            {path: 'login', component: LoginComponent},
         ]),
         HttpClientModule,
         HttpClientXsrfModule.withOptions({
@@ -133,4 +132,7 @@ import {MatRadioModule} from '@angular/material/radio';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(matIconRegistry: MatIconRegistry) {
+    matIconRegistry.registerFontClassAlias('mso', 'material-symbols-outlined')
+  }
 }

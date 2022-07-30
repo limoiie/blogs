@@ -3,13 +3,14 @@
   </mat-progress-bar>
   <div fxLayout="column">
     <app-blog-card [blog]="blog" *ngFor="let blog of blogList; let blogIndex = index"
-                   [@blogListTrigger]="{value: true, params: {myTime: 400 + 100 * blogIndex + 'ms'}}">
+                   [@blogListTrigger]="{value: true, params: {myTime: 400 + 50 * blogIndex + 'ms'}}">
     </app-blog-card>
+
     <mat-paginator
       [@blogListTrigger]="{value: true, params: {myTime: '400ms'}}"
       [showFirstLastButtons]="true"
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 25, 50]"
+      [pageSize]="15"
+      [pageSizeOptions]="[10, 15, 20, 25, 50]"
       aria-label="Select Page">
     </mat-paginator>
   </div>

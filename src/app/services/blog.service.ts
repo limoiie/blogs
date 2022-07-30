@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {ApiService} from './api.service';
+import {Injectable} from '@angular/core'
+import {HttpClient} from '@angular/common/http'
+import {Observable} from 'rxjs'
+import {ApiService} from './api.service'
 
 
 export interface PublishResponse {
-  state: boolean;
-  message: string;
-  blogId: number;
+  state: boolean
+  message: string
+  blogId: number
 }
 
 export interface ApiResponse {
-  state: boolean;
-  message: string;
-  data: any;
+  state: boolean
+  message: string
+  data: any
 }
 
 
@@ -22,8 +22,8 @@ export interface ApiResponse {
 })
 export class BlogService {
 
-  private pageIndex: number = 0;
-  private pageSize: number = 10;
+  private pageIndex: number = 0
+  private pageSize: number = 15
 
   constructor(
     private http: HttpClient,

@@ -36,29 +36,19 @@
         class="navbar-button"
         matTooltip="upload blog"
         [routerLink]="['/publish']">
-        <mat-icon aria-label="Upload icon">cloud_upload</mat-icon>
+        <mat-icon fontSet="mso">cloud_upload</mat-icon>
       </button>
 
       <button
-        (click)="authService.logout()"
-        *ngIf="isLogin"
-        aria-label="Logout"
-        class="navbar-button"
+        (click)="isLogin ? logout() : login()"
         mat-icon-button
-        matTooltip="logout"
+        aria-label="Login"
+        class="navbar-button"
+        [matTooltip]="isLogin ? 'logout' : 'login'"
         type="button">
-        <mat-icon class="mat-18">exit_to_app</mat-icon>
+        <mat-icon *ngIf="!isLogin">login</mat-icon>
+        <mat-icon *ngIf="isLogin">logout</mat-icon>
       </button>
-
-      <!--    <button-->
-      <!--      *ngIf="!isLogin"-->
-      <!--      [routerLink]="['/login']"-->
-      <!--      aria-label="Login"-->
-      <!--      class="navbar-button"-->
-      <!--      mat-stroked-button-->
-      <!--      type="button">-->
-      <!--      Sign-->
-      <!--    </button>-->
 
       <button
         mat-icon-button
@@ -67,9 +57,7 @@
         aria-label="Palette"
         class="navbar-button"
         matTooltip="Palette">
-        <mat-icon aria-label="Palette">
-          palette
-        </mat-icon>
+        <mat-icon>palette</mat-icon>
       </button>
       <mat-menu #themesMenu ngDefaultControl>
         <mat-radio-group fxLayout="column" aria-label="Select an option"
