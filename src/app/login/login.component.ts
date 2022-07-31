@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core'
 import {FormControl, FormGroup} from '@angular/forms'
 import {MatDialogRef} from '@angular/material/dialog'
 import {AuthService} from '../services/auth.service'
-import {ApiResponse} from '../services/blog.service'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {Router} from '@angular/router'
 import {ApiService} from '../services/api.service'
@@ -42,14 +41,12 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     const value = Object.assign({}, this.form.value)
     this.authService.logIn(value.username, value.password)
-      .subscribe((response: ApiResponse) => {
-        if (response.state) {
+      .subscribe({
+        next: (_user) => {
           this.dialogRef.close(true)
           this.router.navigate(['']).then()
-        } else {
-          const msg = `Failed to login: ${response.message}`
-          this.snackBar.open(msg, '', {duration: 3000})
-        }
+        },
+        error: err => this.snackBar.open(`Failed to login: ${err}`, 'Ok')
       })
   }
 }

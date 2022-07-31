@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core'
 import {MatSnackBar} from '@angular/material/snack-bar'
+import {ApiResponse, extractData} from "./api-response";
 import {ApiService} from './api.service'
-import {tap} from 'rxjs/operators'
+import {map, tap} from 'rxjs/operators'
 import {BehaviorSubject, Observable} from 'rxjs'
 
 export class User {
@@ -20,7 +21,6 @@ export class AuthService {
   public currentUser: Observable<User>
   private currentUserSubject: BehaviorSubject<User>
   private userKey = 'currentUser'
-  private prevUser: User = null
 
   constructor(
     private api: ApiService,
@@ -37,12 +37,12 @@ export class AuthService {
 
   logIn(username, password) {
     // TODO: hash password
-    return this.api.apiPost('/blog/auth/', {username, password}).pipe(
-      tap((user: any) => {
+    return this.api.apiPost<ApiResponse<User>>('/blog/auth/', {username, password}).pipe(
+      map((response) => extractData(response)),
+      tap((user: User) => {
         this.matSnackBar.open(`Hello, ${user.name}~`, 'Ok', {duration: 2000})
         localStorage.setItem(this.userKey, JSON.stringify(user))
         this.currentUserSubject.next(user)
-        return user
       })
     )
   }
@@ -52,4 +52,5 @@ export class AuthService {
     localStorage.removeItem(this.userKey)
     this.currentUserSubject.next(null)
   }
+
 }

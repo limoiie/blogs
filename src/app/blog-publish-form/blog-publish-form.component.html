@@ -2,27 +2,32 @@
 <ng-scrollbar>
   <form [formGroup]="form" (ngSubmit)="onSubmit()"
         fxLayout="column" fxLayoutGap="12px" class="container">
-    <mat-form-field hintLabel="Max 200 characters" appearance="fill">
+    <mat-form-field *ngIf="form.controls.title as control" hintLabel="Max 200 characters" appearance="fill">
       <mat-label>Title</mat-label>
-      <input matInput maxlength="200" formControlName="title" required>
+      <input matInput [maxlength]="this.maxTitleLen" formControlName="title" required>
       <mat-hint align="end">
         {{form.controls.title.value?.length || 0}}/200
       </mat-hint>
+      <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
     </mat-form-field>
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
-      <mat-form-field fxFlex="192px" appearance="fill">
+      <!--   Author   -->
+      <mat-form-field *ngIf="form.controls.author as control" fxFlex="42%" appearance="fill">
         <mat-label>Author</mat-label>
         <input matInput formControlName="author" required>
         <mat-hint align="end">Legal account</mat-hint>
+        <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
       </mat-form-field>
-      <mat-form-field fxFlex="128px" appearance="fill">
+      <!--   Create Time   -->
+      <mat-form-field fxFlex="24%" appearance="fill">
         <mat-label>Create Time</mat-label>
         <input matInput [matDatepicker]="dp1" formControlName="createTime" required>
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
       </mat-form-field>
-      <mat-form-field fxFlex="128px" appearance="fill">
+      <!--   Edit Time   -->
+      <mat-form-field fxFlex="24%" appearance="fill">
         <mat-label>Edit Time</mat-label>
         <input matInput [matDatepicker]="dp2" formControlName="editTime" required>
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
@@ -31,7 +36,8 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
-      <mat-form-field appearance="fill">
+      <!--   Folder   -->
+      <mat-form-field *ngIf="form.controls.folder as control" fxFlex="320px" appearance="fill">
         <mat-label>Folder</mat-label>
         <input matInput placeholder="WorkStuff"
                formControlName="folder"
@@ -42,30 +48,45 @@
             {{ folder }}
           </mat-option>
         </mat-autocomplete>
-        <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+        <mat-hint align="end">Folder path ^</mat-hint>
+        <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
       </mat-form-field>
-
-      <mat-form-field fxFlex="grow" appearance="fill">
-        <mat-label>Tags</mat-label>
-        <app-form-field-tags formControlName="tags" required></app-form-field-tags>
-        <mat-hint align="end">Shorter term is preferable ^</mat-hint>
+      <!--   Visibility   -->
+      <mat-form-field *ngIf="form.controls.visibility as control" fxFlex="180px" floatLabel="always">
+        <mat-label>Visibility</mat-label>
+        <mat-slide-toggle #toggleVisibility formControlName="visibility">
+          Being {{toggleVisibility.checked ? "visible" : "invisible"}}
+        </mat-slide-toggle>
+        <textarea matInput hidden></textarea>
+        <mat-hint align="start">Whether visible to visitors</mat-hint>
+        <mat-icon *ngIf="toggleVisibility.checked" matSuffix fontSet="mso">visibility</mat-icon>
+        <mat-icon *ngIf="!toggleVisibility.checked" matSuffix fontSet="mso">visibility_off</mat-icon>
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="fill">
+    <div fxLayout="row wrap" fxLayoutGap="12px">
+      <!--   Tags   -->
+      <mat-form-field *ngIf="form.controls.tags as control" fxFlex="grow" appearance="fill">
+        <mat-label>Tags</mat-label>
+        <app-form-field-tags formControlName="tags"></app-form-field-tags>
+        <mat-hint align="end">Shorter term is preferable ^</mat-hint>
+        <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!--   Abstract   -->
+    <mat-form-field *ngIf="form.controls.abstract as control" appearance="fill">
       <mat-label>Abstract</mat-label>
       <textarea fxFlex="grow" matInput formControlName="abstract"
                 [minlength]="minAbstractLen" [maxlength]="maxAbstractLen"
                 placeholder="Text Here~"
                 autosize minRows="8" required></textarea>
       <!--    <textarea matInput></textarea>-->
-      <mat-error *ngIf="form.controls.abstract.invalid">
-        {{ getAbstractErrorMessage() }}
-      </mat-error>
       <mat-hint align="end">
-        {{form.controls.abstract.value?.length || 0}} /
+        {{control.value?.length || 0}} /
         [{{minAbstractLen}}, {{maxAbstractLen}}]
       </mat-hint>
+      <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
     </mat-form-field>
 
     <button type="submit" color="accent" mat-raised-button

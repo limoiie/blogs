@@ -1,20 +1,10 @@
-import {Injectable} from '@angular/core'
 import {HttpClient} from '@angular/common/http'
+import {Injectable} from '@angular/core'
 import {Observable} from 'rxjs'
+import {map} from "rxjs/operators"
+import {BlogAbbrev} from "../beans/blog-abbrev";
+import {ApiResponse, extractData} from "./api-response";
 import {ApiService} from './api.service'
-
-
-export interface PublishResponse {
-  state: boolean
-  message: string
-  blogId: number
-}
-
-export interface ApiResponse {
-  state: boolean
-  message: string
-  data: any
-}
 
 
 @Injectable({
@@ -31,40 +21,46 @@ export class BlogService {
   ) {
   }
 
+  // noinspection JSUnusedGlobalSymbols
   loadBlogList() {
-    return this.http.get('/assets/blog-list.fake.json');
+    return this.http.get('/assets/blog-list.fake.json')
   }
 
-  loadBlog(id) {
-    return this.http.get('/assets/blog.fake.json');
+  // noinspection JSUnusedGlobalSymbols
+  loadBlog(_id) {
+    return this.http.get('/assets/blog.fake.json')
   }
 
   loadFolders() {
-    return this.http.get('/assets/folders.fake.json');
+    return this.http.get<string[]>('/assets/folders.fake.json')
   }
 
   loadTags() {
-    return this.http.get('/assets/tags.fake.json');
+    return this.http.get('/assets/tags.fake.json')
   }
 
   publishBlog(blog): Observable<any> {
-    const url = `/blog/publish/`;
-    return this.api.apiPost(url, blog);
+    return this.api.apiPost<ApiResponse>(`/blog/publish/`, blog).pipe(
+      map(response => extractData(response))
+    )
   }
 
   getBlogList(pageNum, pageSize): Observable<any> {
-    const url = `/blog/list/${pageNum}/${pageSize}`;
-    return this.api.apiGet(url);
+    return this.api.apiGet<ApiResponse>(`/blog/list/${pageNum}/${pageSize}`).pipe(
+      map(response => extractData(response))
+    )
   }
 
-  getBlogDetail(blogId): Observable<any> {
-    const url = `/blog/${blogId}/`;
-    return this.api.apiGet(url);
+  getBlogDetail(blogId): Observable<BlogAbbrev> {
+    return this.api.apiGet<ApiResponse<BlogAbbrev>>(`/blog/${blogId}/`).pipe(
+      map(response => extractData(response))
+    )
   }
 
-  countBlogs(): Observable<any> {
-    const url = `/blog/count/`;
-    return this.api.apiGet(url);
+  countBlogs(): Observable<number> {
+    return this.api.apiGet<ApiResponse<number>>(`/blog/count/`).pipe(
+      map(response => extractData(response))
+    )
   }
 
   readPageIndex(): number {

@@ -1,9 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import {BlogService, PublishResponse} from '../services/blog.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {Component, Inject, OnInit} from '@angular/core'
+import {FormControl, FormGroup, Validators} from '@angular/forms'
+import {Observable} from "rxjs";
+import {BlogAbbrev} from "../beans/blog-abbrev";
+import {BlogService} from '../services/blog.service'
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
+import {MatSnackBar} from '@angular/material/snack-bar'
 
 
 @Component({
@@ -13,105 +14,66 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class BlogPublishFormComponent implements OnInit {
 
-  folders$;
-  minAbstractLen = 80;
-  maxAbstractLen = 400;
-  form = new FormGroup({
-    title: new FormControl(),
-    author: new FormControl(),
-    createTime: new FormControl(),
-    editTime: new FormControl(),
-    folder: new FormControl(),
-    tags: new FormControl(),
-    abstract: new FormControl(),
-    mdDocument: new FormControl(),
-    htmlDocument: new FormControl()
-  });
+  folders$: Observable<string[]>
+
+  form: FormGroup
+
+  maxTitleLen: number = 200
+  minAbstractLen: number = 80
+  maxAbstractLen: number = 400
 
   constructor(
-    private blogService: BlogService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: BlogAbbrev,
     public dialogRef: MatDialogRef<BlogPublishFormComponent>,
+    private blogService: BlogService,
     private snackBar: MatSnackBar
   ) {
-    this.folders$ = this.blogService.loadFolders();
-
-    console.assert(BlogPublishFormComponent.notEmptyField(data.author));
-    console.assert(BlogPublishFormComponent.notEmptyField(data.mdDocument));
-    console.assert(BlogPublishFormComponent.notEmptyField(data.htmlDocument));
-
-    const ctrls = this.form.controls;
-    ctrls.title.setValue(data.title);
-    ctrls.author.setValue(data.author);
-    ctrls.createTime.setValue(data.createTime || new Date());
-    ctrls.editTime.setValue(data.editTime || new Date());
-    ctrls.folder.setValue(data.folder || '');
-    ctrls.tags.setValue(data.tags || []);
-    ctrls.abstract.setValue(data.abstract || '');
-    ctrls.mdDocument.setValue(data.mdDocument);
-    ctrls.htmlDocument.setValue(data.htmlDocument);
-  }
-
-  private static notEmptyField(field: string) {
-    return isNotNullOrUndefined(field) && field.length > 0;
+    this.folders$ = this.blogService.loadFolders()
+    this.form = new FormGroup({
+      id: new FormControl(data.id),
+      title: new FormControl(data.title, [Validators.required, Validators.maxLength(this.maxTitleLen)]),
+      author: new FormControl(data.author),
+      createTime: new FormControl(data.createTime ? new Date(data.createTime) : new Date()),
+      editTime: new FormControl(data.editTime ? new Date(data.editTime) : new Date()),
+      folder: new FormControl(data.folder || ''),
+      tags: new FormControl([...data.tags] || []),
+      visibility: new FormControl(data.visibility),
+      abstract: new FormControl(data.abstract || '', [
+        Validators.required, Validators.minLength(this.minAbstractLen), Validators.maxLength(this.maxAbstractLen)]),
+      mdDocument: new FormControl(data.mdDocument),
+      htmlDocument: new FormControl(data.htmlDocument)
+    })
   }
 
   ngOnInit(): void {
   }
 
-  closeDialog() {
-    // console.log('form tags: ', this.form.controls.tags.value);
-    this.dialogRef.close({
-      title: this.form.controls.title.value,
-      folder: this.form.controls.folder.value,
-      tags: this.form.controls.tags.value.tags
-    });
-  }
-
-  formatDate(date: Date) {
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    const d = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    return `${y}/${m}/${d} ${hours}:${minutes}:${seconds}`;
-  }
-
-  packageData(data) {
-    data.tags = data.tags.tags;
-    data.createTime = this.formatDate(data.createTime);
-    data.editTime = this.formatDate(data.editTime);
-    return data;
+  closeDialog(updated) {
+    // console.log('form tags: ', this.form.controls.tags.value)
+    this.dialogRef.close(updated)
   }
 
   onSubmit() {
-    const value = this.packageData(Object.assign({}, this.form.value));
-
-    console.log('send request: ', value);
-    this.blogService.publishBlog(value).subscribe(
-      (data: PublishResponse) => {
-        console.log('received response: ', data);
-        let msg: string;
-        if (data.state === true) {
-          msg = `Publish successfully! New blog id: ${data.blogId}`;
-          this.closeDialog();
-        } else {
-          msg = `Failed to publish, ${data.message} try later`;
-        }
-        this.snackBar.open(msg, 'Ok', {duration: 1500});
-      }
-    );
+    const value = this.packageData(Object.assign({}, this.form.value))
+    this.blogService.publishBlog(value).subscribe({
+      next: (blogId: string) => {
+        this.snackBar.open(`Succeed to publish: ${blogId}`, 'Ok', {duration: 5000})
+        this.closeDialog({
+          title: this.form.controls.title.value,
+          folder: this.form.controls.folder.value,
+          tags: this.form.controls.tags.value.tags,
+          visibility: this.form.controls.visibility.value,
+        })
+      },
+      error: err => this.snackBar.open(`Failed to publish: ${err}`, 'Ok')
+    })
   }
 
-  getAbstractErrorMessage() {
-    const len = this.form.controls.abstract.value.length;
-    if (len < this.minAbstractLen) {
-      return `${len} (< ${this.minAbstractLen}) characters are too short`;
-    }
-    if (len > this.maxAbstractLen) {
-      return `${len} (> ${this.maxAbstractLen}) characters are too long`;
-    }
+  private packageData(data) {
+    data.tags = data.tags.tags
+    data.createTime = (data.createTime as Date).getTime()
+    data.editTime = (data.editTime as Date).getTime()
+    return data
   }
 
 }

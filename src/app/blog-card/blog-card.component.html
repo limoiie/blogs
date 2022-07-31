@@ -1,15 +1,22 @@
 <mat-card
-  appMaterialElevation defaultElevation="2" raisedElevation="16"
   *ngIf="blog"
+  appMaterialElevation defaultElevation="1" raisedElevation="8"
   @myInsertRemoveTrigger class="card">
 
   <!-- title -->
   <mat-card-title>
-    <a [routerLink]="['/blog', blog.id]">{{ blog.title }}</a>
-    <div class="blog-action-bar">
-      <button *ngIf="authService.currentUser | async" class="title-btn"
-              color="accent" mat-icon-button>
-        <mat-icon class="icon">edit</mat-icon>
+    <div class="title">
+      <a [routerLink]="['/blog', blog.id]">{{ blog.title }}</a>
+      <div *ngIf="(authService.currentUser | async)">
+        <mat-icon *ngIf="blog.visibility" class="icon" fontSet="mso">visibility</mat-icon>
+        <mat-icon *ngIf="!blog.visibility" class="icon" fontSet="mso">visibility_off</mat-icon>
+      </div>
+    </div>
+
+    <!--  author's action bar  -->
+    <div *ngIf="authService.currentUser | async" class="blog-action-bar">
+      <button mat-icon-button class="title-btn" color="accent" (click)="onEdit()">
+        <mat-icon class="icon" fontSet="mso">edit</mat-icon>
       </button>
     </div>
   </mat-card-title>
@@ -17,7 +24,7 @@
   <!-- labels -->
   <mat-card-subtitle>
     <mat-icon fontSet="mso">edit</mat-icon>
-    <label>{{blog.createTime * 1000 | date: 'fullDate' }}</label>
+    <label>{{blog.createTime | date: 'fullDate' }}</label>
     <mat-icon fontSet="mso">folder</mat-icon>
     <label><a href="#">{{ blog.folder }}</a></label>
   </mat-card-subtitle>

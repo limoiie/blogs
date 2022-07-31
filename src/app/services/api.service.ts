@@ -1,14 +1,15 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from '@angular/core'
 import {
-  HttpClient, HttpXsrfTokenExtractor
-} from '@angular/common/http';
+  HttpClient, HttpHeaders, HttpParams, HttpXsrfTokenExtractor
+} from '@angular/common/http'
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  restUrl = '/api';
+  restUrl = '/api'
 
   constructor(
     private http: HttpClient,
@@ -16,30 +17,52 @@ export class ApiService {
   ) {
   }
 
-  apiGet(url, opt?) {
-    return this.http.get(`${this.restUrl}${url}`, opt);
+  apiGet<T>(url, opt?: {
+    headers?: HttpHeaders | {
+      [header: string]: string | string[];
+    };
+    observe?: 'body';
+    params?: HttpParams | {
+      [param: string]: string | string[];
+    };
+    reportProgress?: boolean;
+    responseType?: 'json';
+    withCredentials?: boolean;
+  }): Observable<T> {
+    return this.http.get<T>(`${this.restUrl}${url}`, opt)
+  }
+
+  apiPost<T>(url: string, data: any | null, opt?: {
+    headers?: HttpHeaders | {
+      [header: string]: string | string[];
+    };
+    observe?: 'body';
+    params?: HttpParams | {
+      [param: string]: string | string[];
+    };
+    reportProgress?: boolean;
+    responseType?: 'json';
+    withCredentials?: boolean;
+  }): Observable<T> {
+    return this.http.post<T>(`${this.restUrl}${url}`, data, {
+      ...this.addCsrfHeader(opt)
+    })
   }
 
   requestCsrfToken() {
     return this.http.get('/api/blog/csrftoken/', {
       observe: 'body',
       responseType: 'text'
-    });
+    })
   }
 
-  addCsrfHeader(opt) {
-    opt = opt || {};
-    opt.headers = opt.headers || {};
+  private addCsrfHeader(opt): object {
+    opt = opt || {}
+    opt.headers = opt.headers || {}
 
     opt.headers['X-CSRFToken'] =
-      this.httpXsrfTokenExtractor.getToken();
-    opt.withCredentials = true;
-    return opt;
+      this.httpXsrfTokenExtractor.getToken()
+    opt.withCredentials = true
+    return opt
   }
-
-  apiPost(url, data, opt?) {
-    opt = this.addCsrfHeader(opt);
-    return this.http.post(`${this.restUrl}${url}`, data, opt);
-  }
-
 }

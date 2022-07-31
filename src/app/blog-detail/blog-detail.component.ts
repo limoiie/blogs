@@ -1,16 +1,17 @@
-import {animate, style, transition, trigger} from '@angular/animations';
-import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MarkdownService} from 'ngx-markdown';
-import {first} from 'rxjs/operators';
-import {renderHeading} from '../markdown-render-custom';
-import {ApiResponse, BlogService} from '../services/blog.service';
-import {ProgressBarService} from '../services/progress-bar.service';
-import {TableOfContentComponent} from '../table-of-content/table-of-content.component';
+import {animate, style, transition, trigger} from '@angular/animations'
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core'
+import {MatSnackBar} from '@angular/material/snack-bar'
+import {ActivatedRoute, Router} from '@angular/router'
+import {MarkdownService} from 'ngx-markdown'
+import {first} from 'rxjs/operators'
+import {BlogAbbrev} from "../beans/blog-abbrev"
+import {renderHeading} from '../markdown-render-custom'
+import {BlogService} from '../services/blog.service'
+import {ProgressBarService} from '../services/progress-bar.service'
+import {TableOfContentComponent} from '../table-of-content/table-of-content.component'
 
 declare let Prism: {
-  highlightAllUnder: (element: Element | Document) => void;
+  highlightAllUnder: (element: Element | Document) => void
 }
 
 
@@ -32,22 +33,25 @@ declare let Prism: {
 })
 export class BlogDetailComponent implements OnInit {
 
-  @ViewChild('toc') toc: TableOfContentComponent;
-  @ViewChild('content') content: ElementRef;
+  @ViewChild('toc') toc: TableOfContentComponent
+  @ViewChild('content') content: ElementRef
 
-  secName = 'Content';
-  blog = {
+  secName = 'Content'
+  blog: BlogAbbrev = {
+    id: '',
     title: '',
-    createTime: '',
-    editTime: '',
-    folder: '',
-    author: '',
+    abstract: "",
+    author: "",
+    createTime: 0,
+    editTime: 0,
+    folder: "",
+    htmlDocument: "",
+    mdDocument: "",
     tags: [],
-    mdDocument: '',
-    htmlDocument: '',
-  };
+    visibility: false,
+  }
 
-  markdown = null;
+  markdown = null
 
   constructor(
     private route: ActivatedRoute,
@@ -61,36 +65,33 @@ export class BlogDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.progressBarService.loading = true;
+    this.progressBarService.loading = true
     this.route.paramMap.subscribe(params => {
-      const blogId = +params.get('blogId');
-      this.loadBlogDetail(blogId);
-    });
+      const blogId = +params.get('blogId')
+      this.loadBlogDetail(blogId)
+    })
     this.mdService.renderer.heading = (text, level, raw, slugger) => {
-      return renderHeading(this.router.url, text, level, raw, slugger);
-    };
+      return renderHeading(this.router.url, text, level, raw, slugger)
+    }
   }
 
   loadBlogDetail(blogId: number) {
     this.blogService.getBlogDetail(blogId)
-      .subscribe((response: ApiResponse) => {
-        if (response.state) {
-          this.blog = response.data;
+      .subscribe({
+        next: (blog: BlogAbbrev) => {
+          this.blog = blog
           this.ngZone.onStable.pipe(first())
             .subscribe(() => {
-              this.toc.addHeaders(this.secName,
-                this.content.nativeElement);
-              this.ngZone.run(() => {
-                this.progressBarService.loading = false;
-              });
-              Prism.highlightAllUnder(this.content.nativeElement);
-            });
-        } else {
-          const msg = `Failed to load blog: ${response.message}`;
-          this.snackBar.open(msg, 'Ok');
-          this.progressBarService.loading = false;
+              this.toc.addHeaders(this.secName, this.content.nativeElement)
+              this.ngZone.run(() => this.progressBarService.loading = false)
+              Prism.highlightAllUnder(this.content.nativeElement)
+            })
+        },
+        error: err => {
+          this.snackBar.open(`Failed to load blog: ${err}`, 'Ok')
+          this.progressBarService.loading = false
         }
-      });
+      })
   }
 
 }

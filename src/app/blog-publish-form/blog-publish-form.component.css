@@ -1,4 +1,8 @@
 .container {
   margin-right: 16px;
 }
-/**/
+
+mat-form-field mat-slide-toggle {
+  height: 28px;
+  align-items: baseline;
+}
