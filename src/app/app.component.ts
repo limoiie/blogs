@@ -1,6 +1,5 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout'
 import {
-  AfterViewInit,
   Component,
   HostListener,
   Inject,
@@ -17,6 +16,7 @@ import {fixMarkdownService} from './markdown-render-custom'
 import {NavbarComponent} from './navbar/navbar.component'
 import {AuthService} from './services/auth.service'
 import {MainScrollService} from './services/main-scroll.service'
+import {ConcreteEvent} from './utils/concrete-event'
 
 @Component({
   selector: 'app-root',
@@ -24,7 +24,7 @@ import {MainScrollService} from './services/main-scroll.service'
   styleUrls: ['./app.component.sass'],
   animations: []
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AppComponent implements OnDestroy {
   @ViewChild(GotoTopBtnComponent)
     gotoTopBtn!: GotoTopBtnComponent
 
@@ -53,27 +53,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     fixMarkdownService(markdownService)
   }
 
-  ngAfterViewInit(): void {
-    this.fulfillScreen(null)
-  }
-
   ngOnDestroy(): void {
     this.destroy$.complete()
   }
 
   @HostListener('window:scroll', ['$event'])
-  onScroll($event: any) {
+  onScroll($event: ConcreteEvent<Document>) {
     this.scrollService.onScroll($event)
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize($event: any) {
+  onResize($event: ConcreteEvent<Window>) {
     this.fulfillScreen($event)
   }
 
-  private fulfillScreen($event: any) {
-    const height = $event ? $event.target.innerHeight : window.innerHeight
-    this.matSidenavContent.getElementRef().nativeElement.style.minHeight =
-      height + 'px'
+  private fulfillScreen($event: ConcreteEvent<Window>) {
+    const height = $event ? $event.target?.innerHeight : window.innerHeight
+    const matSideNav = this.matSidenavContent.getElementRef().nativeElement
+    matSideNav.style.minHeight = height + 'px'
   }
 }

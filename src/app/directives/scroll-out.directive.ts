@@ -4,18 +4,18 @@ import {takeUntil} from 'rxjs/operators'
 import {RtlScrollAxisType} from '@angular/cdk/platform'
 import {MainScrollService} from '../services/main-scroll.service'
 
-// The target element should extends this base class
+// The target element should extend this base class
 export class ScrollOut {
   isShown = true
 }
 
 // Check if meet a reach
 class ReachedFunctions {
-  static reachedTop(offset: number, target: any): boolean {
+  static reachedTop(offset: number, target: Element): boolean {
     return ReachedFunctions.reached(-target.scrollTop, 0, offset)
   }
 
-  static reachedBottom(offset: number, target: any): boolean {
+  static reachedBottom(offset: number, target: Element): boolean {
     return ReachedFunctions.reached(
       target.scrollTop + target.clientHeight,
       target.scrollHeight,
@@ -26,7 +26,7 @@ class ReachedFunctions {
   // noinspection JSUnusedGlobalSymbols
   static reachedStart(
     offset: number,
-    target: any,
+    target: Element,
     direction: 'ltr' | 'rtl',
     rtlScrollAxisType: RtlScrollAxisType
   ): boolean {
@@ -49,7 +49,7 @@ class ReachedFunctions {
   // noinspection JSUnusedGlobalSymbols
   static reachedEnd(
     offset: number,
-    target: any,
+    target: Element,
     direction: 'ltr' | 'rtl',
     rtlScrollAxisType: RtlScrollAxisType
   ): boolean {

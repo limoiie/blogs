@@ -8,8 +8,8 @@ import {
   OnInit
 } from '@angular/core'
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
-import {Subject} from 'rxjs'
-import {takeUntil} from 'rxjs/operators'
+import {EMPTY, mergeMap, of, Subject} from 'rxjs'
+import {map, takeUntil} from 'rxjs/operators'
 import {MainScrollService} from '../services/main-scroll.service'
 
 interface LinkSection {
@@ -20,16 +20,12 @@ interface LinkSection {
 interface Link {
   /* id of the section*/
   id: string
-
   /* header type h3/h4 */
   type: string
-
   /* If the anchor is in view of the page */
   active: boolean
-
   /* name of the anchor */
   name: string
-
   /* top offset px of the anchor */
   top: number
 }
@@ -39,9 +35,7 @@ interface Link {
   templateUrl: './table-of-content.component.html',
   styleUrls: ['./table-of-content.component.sass']
 })
-export class TableOfContentComponent
-implements OnInit, AfterViewInit, OnDestroy
-{
+export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy {
   linkSections: LinkSection[] = []
   links: Link[] = []
   rootUrl = this.router.url.split('#')[0]
@@ -78,8 +72,8 @@ implements OnInit, AfterViewInit, OnDestroy
 
   private static isLinkActive(
     scrollOffset: number,
-    currentLink: any,
-    nextLink: any
+    currentLink: Link,
+    nextLink: Link
   ): boolean {
     // A link is considered active if the page is scrolled passed the anchor without also
     // being scrolled passed the next link
@@ -90,7 +84,7 @@ implements OnInit, AfterViewInit, OnDestroy
   }
 
   /** Gets the scroll offset of the scroll container */
-  private static getScrollOffset(scrollContainer: any): number {
+  private static getScrollOffset(scrollContainer: {scrollTop?: number, pageYOffset?: number}): number {
     if (typeof scrollContainer.scrollTop !== 'undefined') {
       return scrollContainer.scrollTop
     } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
@@ -104,8 +98,12 @@ implements OnInit, AfterViewInit, OnDestroy
     // to subscribe to its scroll event until next tick (when it does exist).
     Promise.resolve().then(() => {
       this.scrollService.scrolled$
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe((elem) => this.onScroll(elem))
+        .pipe(
+          takeUntil(this.destroyed$),
+          map(event => event.target.scrollingElement),
+          mergeMap(elem => elem !== null ? of(elem) : EMPTY)
+        )
+        .subscribe(elem => this.onScroll(elem))
     })
   }
 
@@ -118,10 +116,7 @@ implements OnInit, AfterViewInit, OnDestroy
   }
 
   updateScrollPosition(): void {
-    const target = document.getElementById(this.urlFragment)
-    if (target) {
-      target.scrollIntoView()
-    }
+    document.getElementById(this.urlFragment)?.scrollIntoView()
   }
 
   addHeaders(sectionName: string, docViewerContent: HTMLElement) {
