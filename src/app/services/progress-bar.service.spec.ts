@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing'
 
-import { ProgressBarService } from './progress-bar.service';
+import {ProgressBarService} from './progress-bar.service'
 
 describe('ProgressBarService', () => {
-  let service: ProgressBarService;
+  let service: ProgressBarService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ProgressBarService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(ProgressBarService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

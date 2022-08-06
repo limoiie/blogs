@@ -3,8 +3,8 @@
      class="content">
   <div id="editor" fxFlex="grow" fxLayout="column">
     <mat-card class="toolbar mat-card"
-                 appMaterialElevation [defaultElevation]="1"
-                 raisedElevation="4">
+              appMaterialElevation [defaultElevation]="1"
+              [raisedElevation]="4">
       <mat-toolbar-row fxLayout="row">
 
         <button color="accent"
@@ -118,7 +118,7 @@
             <textarea
               matInput
               placeholder="Text Here~"
-              autosize minRows="16" fxFlex="grow" name="blog" id="edit-area"
+              autosize [minRows]="16" fxFlex="grow" name="blog" id="edit-area"
               [(ngModel)]="content" (ngModelChange)="onEdit($event)">
             </textarea>
           </mat-form-field>
@@ -136,7 +136,7 @@
         <mat-card-content>
           <markdown #markdown *ngIf="mdContent !== null" [data]="mdContent" katex>
           </markdown>
-            <!--      <p>{{ blog.description }}</p>-->
+          <!--      <p>{{ blog.description }}</p>-->
         </mat-card-content>
       </ng-scrollbar>
     </mat-card>

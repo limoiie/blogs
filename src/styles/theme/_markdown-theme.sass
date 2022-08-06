@@ -1,0 +1,30 @@
+@use 'sass:map'
+@use 'src/@angular-material' as mat
+
+@mixin color($color-config)
+  $primary-palette: map.get($color-config, primary)
+  $accent-palette: map.get($color-config, accent)
+  $warn-palette: map.get($color-config, warn)
+  $background-palette: map.get($color-config, background)
+  $foreground-palette: map.get($color-config, foreground)
+  $is-dark-theme: map.get($color-config, is-dark)
+
+  $primary: mat.color($primary-palette)
+  $primary-trans: mat.color($primary-palette, default, 0.2)
+  $primary-trans-dark: mat.color($primary-palette, default, 0.8)
+  $accent: mat.color($accent-palette)
+  $accent-trans: mat.color($accent-palette, default, 0.5)
+  $accent-trans-dark: mat.color($accent-palette, default, 0.9)
+  $warn: mat.color($warn-palette)
+  $foreground: map.get($foreground-palette, base)
+
+  .document
+    blockquote
+      background-color: $accent-trans
+      margin: 16px 0 16px 0
+      padding: 16px 0 16px 48px
+      border-radius: 4px
+      border-left: 4px solid $accent
+
+      p
+        margin: 0

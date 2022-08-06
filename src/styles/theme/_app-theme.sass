@@ -1,19 +1,32 @@
-@import '../../../node_modules/@angular/material/theming'
+@use 'sass:map'
+@use 'src/@angular-material' as mat
 
-@import '../../app/table-of-content/table-of-content.component-theme'
-@import '../../app/blog-detail/blog-detail.component-theme'
+@use 'code-theme'
+@use 'link-theme'
+@use 'markdown-theme'
+@use 'scrollbar-theme'
 
-@import 'elems'
-@import 'document'
+@use 'src/app/table-of-content/table-of-content.component-theme'
+@use 'src/app/blog-detail/blog-detail.component-theme'
 
+@mixin color($theme)
+  $color-config: mat.get-color-config($theme)
 
-@mixin my-material-app-theme($theme)
-  svg#logo
-    fill: get-color-from-theme($theme, accent)
+  @if $color-config != null
+    @include code-theme.color($color-config)
+    @include link-theme.color($color-config)
+    @include markdown-theme.color($color-config)
+    @include scrollbar-theme.color($color-config)
+    // app components
+    @include table-of-content.color($color-config)
+    @include blog-detail.color($color-config)
 
-  @include scrollbar($theme)
-  @include link-style($theme)
-  @include code-style($theme)
-  @include table-of-contents-theme($theme)
-  @include blog-detail-theme($theme)
-  @include markdown($theme)
+@mixin typography($theme)
+  $typography-config: mat.get-typography-config($theme)
+
+  @if $typography-config != null
+    // app components
+
+@mixin theme($theme)
+  @include color($theme)
+  @include typography($theme)

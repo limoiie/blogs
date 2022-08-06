@@ -1,9 +1,10 @@
 import {animate, style, transition, trigger} from '@angular/animations'
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core'
+import {Component, OnInit, ViewChild} from '@angular/core'
 import {MatPaginator, PageEvent} from '@angular/material/paginator'
-import {BlogAbbrev} from '../beans/blog-abbrev'
-import {BlogService} from '../services/blog.service'
 import {MatSnackBar} from '@angular/material/snack-bar'
+import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
+import {WithAbstractBlog} from '../beans/blog'
+import {BlogService} from '../services/blog.service'
 
 @Component({
   selector: 'app-blog-list',
@@ -11,65 +12,59 @@ import {MatSnackBar} from '@angular/material/snack-bar'
   styleUrls: ['./blog-list.component.sass'],
   animations: [
     trigger('blogListTrigger', [
-      transition(':enter', [
-        style({opacity: 0, transform: 'translateY(24px)'}),
-        animate('{{ myTime }} ease-in-out', style({opacity: 1, transform: 'translateY(0)'})),
-      ], {delay: '3s'}),
-      transition(':leave', [
-        animate('100ms ease-in-out', style({opacity: 0}))
-      ])
+      transition(
+        ':enter',
+        [
+          style({opacity: 0, transform: 'translateY(24px)'}),
+          animate(
+            '{{ myTime }} ease-in-out',
+            style({opacity: 1, transform: 'translateY(0)'})
+          )
+        ],
+        {delay: '300ms'}
+      ),
+      transition(':leave', [animate('300ms ease-in-out', style({opacity: 0}))])
     ])
   ]
 })
-export class BlogListComponent implements OnInit, AfterViewInit {
-  blogList: BlogAbbrev[]
-  loading: boolean
+export class BlogListComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator
 
-  @ViewChild(MatPaginator)
-  paginator: MatPaginator
+  loading = false
+  blogsPager: PagedResourceCollection<WithAbstractBlog> | undefined
+  blogsInPage: WithAbstractBlog[] = []
+  nTotalBlogs = 0
 
-  constructor(
-    private blogService: BlogService,
-    private snackBar: MatSnackBar
-  ) {
+  constructor(private blogService: BlogService, private snackBar: MatSnackBar) {
+    this._loadBlogs(this.blogService.pageIndex, this.blogService.pageSize)
   }
 
   ngOnInit(): void {
-    // this.loading = true
+    //  nothing to do
   }
 
-  ngAfterViewInit() {
-    this.paginator.page.subscribe((ev: PageEvent) => {
-      this.loading = true
-      this.blogService.writePageIndex(ev.pageIndex)
-      this.blogService.writePageSize(ev.pageSize)
-
-      this._loadBlogs(ev.pageIndex, ev.pageSize, true)
-    })
-
-    this.blogService.countBlogs().subscribe(count => {
-      this.paginator.length = count
-      this.paginator.pageIndex = this.blogService.readPageIndex()
-      this.paginator.pageSize = this.blogService.readPageSize()
-      this._loadBlogs(this.blogService.readPageIndex(), this.blogService.readPageSize())
-    })
+  onPageOptionChanged(ev$: PageEvent) {
+    this._loadBlogs(ev$.pageIndex, ev$.pageSize, true)
   }
 
-  _loadBlogs(pageIndex: number, pageSize: number, scrollToTop: boolean = false) {
+  _loadBlogs(pageIndex: number, pageSize: number, scrollToTop = false) {
+    this.loading = true
+
     if (scrollToTop) {
       window.scrollTo({top: 0, behavior: 'smooth'})
     }
 
-    this.blogService
-      .getBlogList(pageIndex, pageSize)
-      .subscribe({
-          next: (data: { page, count }) => {
-            this.blogList = data.page
-            this.paginator.length = data.count
-          },
-          error: (err) => this.snackBar.open(`Err: ${err}`, 'OK'),
-          complete: () => this.loading = false
-        }
-      )
+    this.blogService.getBlogList(pageIndex, pageSize).subscribe({
+      next: (data) => {
+        this.blogsPager = data
+        this.blogsInPage = data.resources
+        this.nTotalBlogs = data.totalElements
+      },
+      error: (err) => {
+        this.loading = false
+        this.snackBar.open(`Err: ${err}`, 'OK')
+      },
+      complete: () => (this.loading = false)
+    })
   }
 }

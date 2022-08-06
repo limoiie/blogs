@@ -1,13 +1,13 @@
-@import './node_modules/@angular/material/theming'
+@use 'sass:map'
+@use 'src/@angular-material' as mat
 
-
-@mixin blog-detail-theme($theme)
-  $primary: map-get($theme, primary)
-  $accent: map-get($theme, accent)
-  $warn: map-get($theme, warn)
-  $background: map-get($theme, background)
-  $foreground: map-get($theme, foreground)
-  $is-dark-theme: map-get($theme, is-dark)
+@mixin color($color-config)
+  $primary-palette: map.get($color-config, primary)
+  $accent-palette: map.get($color-config, accent)
+  $warn-palette: map.get($color-config, warn)
+  $background-palette: map.get($color-config, background)
+  $foreground-palette: map.get($color-config, foreground)
+  $is-dark-theme: map.get($color-config, is-dark)
 
   // using ::ng-deep to break through the ViewEncapsulation
   // see https://github.com/jfcere/ngx-markdown/issues/56#issuecomment-373722506
@@ -16,4 +16,4 @@
     // see https://stackoverflow.com/a/13117744/11192045
     a
       &::before
-        color: mat-color($accent, if($is-dark-theme, 200, default))
+        color: mat.color($accent-palette, if($is-dark-theme, 200, default))

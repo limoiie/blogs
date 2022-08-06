@@ -2,18 +2,18 @@
 <ng-scrollbar>
   <form [formGroup]="form" (ngSubmit)="onSubmit()"
         fxLayout="column" fxLayoutGap="12px" class="container">
-    <mat-form-field *ngIf="form.controls.title as control" hintLabel="Max 200 characters" appearance="fill">
+    <mat-form-field *ngIf="form.controls['title'] as control" hintLabel="Max 200 characters" appearance="fill">
       <mat-label>Title</mat-label>
       <input matInput [maxlength]="this.maxTitleLen" formControlName="title" required>
       <mat-hint align="end">
-        {{form.controls.title.value?.length || 0}}/200
+        {{control.value?.length || 0}}/200
       </mat-hint>
       <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
     </mat-form-field>
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
       <!--   Author   -->
-      <mat-form-field *ngIf="form.controls.author as control" fxFlex="42%" appearance="fill">
+      <mat-form-field *ngIf="form.controls['author'] as control" fxFlex="42%" appearance="fill">
         <mat-label>Author</mat-label>
         <input matInput formControlName="author" required>
         <mat-hint align="end">Legal account</mat-hint>
@@ -37,7 +37,7 @@
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
       <!--   Folder   -->
-      <mat-form-field *ngIf="form.controls.folder as control" fxFlex="320px" appearance="fill">
+      <mat-form-field *ngIf="form.controls['folder'] as control" fxFlex="320px" appearance="fill">
         <mat-label>Folder</mat-label>
         <input matInput placeholder="WorkStuff"
                formControlName="folder"
@@ -52,7 +52,7 @@
         <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
       </mat-form-field>
       <!--   Visibility   -->
-      <mat-form-field *ngIf="form.controls.visibility as control" fxFlex="180px" floatLabel="always">
+      <mat-form-field *ngIf="form.controls['visibility'] as control" fxFlex="180px" floatLabel="always">
         <mat-label>Visibility</mat-label>
         <mat-slide-toggle #toggleVisibility formControlName="visibility">
           Being {{toggleVisibility.checked ? "visible" : "invisible"}}
@@ -66,7 +66,7 @@
 
     <div fxLayout="row wrap" fxLayoutGap="12px">
       <!--   Tags   -->
-      <mat-form-field *ngIf="form.controls.tags as control" fxFlex="grow" appearance="fill">
+      <mat-form-field *ngIf="form.controls['tags'] as control" fxFlex="grow" appearance="fill">
         <mat-label>Tags</mat-label>
         <app-form-field-tags formControlName="tags"></app-form-field-tags>
         <mat-hint align="end">Shorter term is preferable ^</mat-hint>
@@ -75,12 +75,12 @@
     </div>
 
     <!--   Abstract   -->
-    <mat-form-field *ngIf="form.controls.abstract as control" appearance="fill">
+    <mat-form-field *ngIf="form.controls['abstract'] as control" appearance="fill">
       <mat-label>Abstract</mat-label>
       <textarea fxFlex="grow" matInput formControlName="abstract"
                 [minlength]="minAbstractLen" [maxlength]="maxAbstractLen"
                 placeholder="Text Here~"
-                autosize minRows="8" required></textarea>
+                autosize [minRows]="8" required></textarea>
       <!--    <textarea matInput></textarea>-->
       <mat-hint align="end">
         {{control.value?.length || 0}} /

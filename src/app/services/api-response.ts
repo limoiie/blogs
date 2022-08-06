@@ -10,7 +10,7 @@ export class ApiError extends Error {
   }
 }
 
-export function toError(response: ApiResponse): ApiError {
+export function toError(response: ApiResponse): ApiError | null {
   if (response.code == 0) return null
   return new ApiError(response.code, response.message)
 }

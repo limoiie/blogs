@@ -1,34 +1,43 @@
 import {HttpClient} from '@angular/common/http'
 import {Injectable} from '@angular/core'
+import {
+  HateoasResourceService,
+  PagedResourceCollection
+} from '@lagoshny/ngx-hateoas-client'
+import {CookieService} from 'ngx-cookie-service'
 import {Observable} from 'rxjs'
-import {map} from "rxjs/operators"
-import {BlogAbbrev} from "../beans/blog-abbrev";
-import {ApiResponse, extractData} from "./api-response";
+import {map} from 'rxjs/operators'
+import {WithHtmlDocumentBlog, WithAbstractBlog} from '../beans/blog'
+import {BlogAbbrev} from '../beans/blog-abbrev'
+import {ApiResponse, extractData} from './api-response'
 import {ApiService} from './api.service'
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlogService {
-
-  private pageIndex: number = 0
-  private pageSize: number = 15
+  private pageOption = {
+    pageIndex: 0,
+    pageSize: 20
+  }
 
   constructor(
+    private api: ApiService,
     private http: HttpClient,
-    private api: ApiService
+    private resourceService: HateoasResourceService,
+    private cookieService: CookieService
   ) {
+    if (cookieService.check('pageOption')) {
+      this.pageOption = JSON.parse(cookieService.get('pageOption'))
+    }
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  loadBlogList() {
-    return this.http.get('/assets/blog-list.fake.json')
+  get pageIndex() {
+    return this.pageOption.pageIndex
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  loadBlog(_id) {
-    return this.http.get('/assets/blog.fake.json')
+  get pageSize() {
+    return this.pageOption.pageSize
   }
 
   loadFolders() {
@@ -39,43 +48,41 @@ export class BlogService {
     return this.http.get('/assets/tags.fake.json')
   }
 
-  publishBlog(blog): Observable<any> {
-    return this.api.apiPost<ApiResponse>(`/blog/publish/`, blog).pipe(
-      map(response => extractData(response))
-    )
+  publishBlog(blog: any): Observable<any> {
+    return this.api
+      .apiPost<ApiResponse>('/blog/publish/', blog)
+      .pipe(map((response) => extractData(response)))
   }
 
-  getBlogList(pageNum, pageSize): Observable<any> {
-    return this.api.apiGet<ApiResponse>(`/blog/list/${pageNum}/${pageSize}`).pipe(
-      map(response => extractData(response))
-    )
+  getBlogList(
+    pageNum: number,
+    pageSize: number,
+    sort: 'ASC' | 'DESC' = 'ASC'
+  ): Observable<PagedResourceCollection<WithAbstractBlog>> {
+    this.pageOption = {
+      pageIndex: pageNum,
+      pageSize: pageSize
+    }
+    // this.cookieService.set('pageOption', JSON.stringify(this.pageOption))
+
+    return this.resourceService.getPage(WithAbstractBlog, {
+      sort: {
+        name: sort
+      },
+      pageParams: {
+        page: pageNum,
+        size: pageSize
+      }
+    })
   }
 
-  getBlogDetail(blogId): Observable<BlogAbbrev> {
-    return this.api.apiGet<ApiResponse<BlogAbbrev>>(`/blog/${blogId}/`).pipe(
-      map(response => extractData(response))
-    )
+  getBlogDetail(blogId: number | string): Observable<WithHtmlDocumentBlog> {
+    return this.resourceService.getResource(WithHtmlDocumentBlog, blogId)
   }
 
   countBlogs(): Observable<number> {
-    return this.api.apiGet<ApiResponse<number>>(`/blog/count/`).pipe(
-      map(response => extractData(response))
-    )
-  }
-
-  readPageIndex(): number {
-    return this.pageIndex
-  }
-
-  readPageSize(): number {
-    return this.pageSize
-  }
-
-  writePageIndex(pageIndex: number) {
-    this.pageIndex = pageIndex
-  }
-
-  writePageSize(pageSize: number) {
-    this.pageSize = pageSize
+    return this.api
+      .apiGet<ApiResponse<number>>('/blog/count/')
+      .pipe(map((response) => extractData(response)))
   }
 }

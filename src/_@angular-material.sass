@@ -1,0 +1,5 @@
+@forward '@angular/material'
+@use '@angular/material' as mat
+
+@function color($palette, $hue: default, $opacity: null)
+  @return mat.get-color-from-palette($palette, $hue, $opacity)

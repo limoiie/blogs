@@ -1,55 +1,42 @@
-@import '~@angular/material/theming'
-// Plus imports for other components in your app.
+@use 'sass:map'
+@use '@angular/material' as mat
 
-$custom-typography: mat-typography-config($font-family: 'Open Sans')
-//@include mat-core($custom-typography);
+// Import mixin for theming app components in the material style
+@use 'theme/app-theme'
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core($custom-typography)
+@include mat.core()
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$light-app-primary: mat-palette($mat-blue)
-$light-app-accent:  mat-palette($mat-amber)
-$light-app-warn: mat-palette($mat-red)  // The warn palette is optional (defaults to red).
-// Create the theme object (a Sass map containing all of the palettes).
-$light-app-theme: mat-light-theme($light-app-primary, $light-app-accent, $light-app-warn)
-$dark-app-theme: mat-dark-theme($light-app-primary, $light-app-accent, $light-app-warn)
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-
-@include angular-material-theme($light-app-theme)
-
-.dark-theme
-  @include angular-material-theme($dark-app-theme)
-
-
-@import 'theme/app-theme'
-
+// Configure typography globally since different color themes have identity typography.
+$typography: mat.define-typography-config($font-family: 'Open Sans')
+@include mat.all-component-themes((color: null, typography: $typography, density: null))
+@include app-theme.theme((color: null, typography: $typography, density: null))
 
 @mixin make_theme($primary, $accent, $warn, $class)
-  $light-primary: mat-palette($primary, 800, 600, 900)
-  $light-accent: mat-palette($accent, 500, 400, 700)
-  $light-warn: mat-palette($warn)
+  // Define the palettes for your theme using the Material Design palettes available in palette.scss
+  // (imported above). For each palette, you can optionally specify a default, lighter, and darker
+  // hue. Available color palettes: https://material.io/design/color/
+  $primary: mat.define-palette($primary, 800, 600, 900)
+  $accent: mat.define-palette($accent, 500, 400, 700)
+  $warn: mat.define-palette($warn)
+  $color: (primary: $primary, accent: $accent, warn: $warn)
 
-  $light-theme: mat-light-theme($light-primary, $light-accent, $light-warn)
-  $dark-theme: mat-dark-theme($light-primary, $light-accent, $light-warn)
+  // Create the theme object (a Sass map containing all of the palettes).
+  $light-theme: mat.define-light-theme((color: $color))
+  $dark-theme: mat.define-dark-theme((color: $color))
 
   .#{$class}
-    @include angular-material-theme($light-theme)
-    @include my-material-app-theme($light-theme)
+    @include mat.all-component-colors($light-theme)
+    @include app-theme.color($light-theme)
 
   .#{$class}.dark-theme
-    @include angular-material-theme($dark-theme)
-    @include my-material-app-theme($dark-theme)
+    @include mat.all-component-colors($dark-theme)
+    @include app-theme.color($dark-theme)
 
-
-@include make_theme($mat-deep-purple, $mat-amber, $mat-red, theme0)
-@include make_theme($mat-indigo, $mat-pink, $mat-red, theme1)
-@include make_theme($mat-pink, $mat-blue-gray, $mat-red, theme2)
-@include make_theme($mat-purple, $mat-green, $mat-red, theme3)
+// Create themes gallery
+@include make_theme(mat.$indigo-palette, mat.$pink-palette, mat.$red-palette, theme0)
+@include make_theme(mat.$deep-purple-palette, mat.$amber-palette, mat.$red-palette, theme1)
+@include make_theme(mat.$pink-palette, mat.$blue-gray-palette, mat.$red-palette, theme2)
+@include make_theme(mat.$purple-palette, mat.$green-palette, mat.$red-palette, theme3)

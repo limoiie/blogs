@@ -1,16 +1,16 @@
-import {TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing'
 
-import {MainScrollService} from './main-scroll.service';
+import {MainScrollService} from './main-scroll.service'
 
 describe('MainScrollServerService', () => {
-  let service: MainScrollService;
+  let service: MainScrollService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MainScrollService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(MainScrollService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

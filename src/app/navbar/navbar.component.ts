@@ -1,9 +1,16 @@
-import {Component, EventEmitter, Input, NgZone, OnInit, Output} from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnInit,
+  Output
+} from '@angular/core'
 import {animate, style, transition, trigger} from '@angular/animations'
 import {MatDialog} from '@angular/material/dialog'
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {CookieService} from "ngx-cookie-service"
-import {delay, filter, take} from 'rxjs/operators';
+import {MatSnackBar} from '@angular/material/snack-bar'
+import {CookieService} from 'ngx-cookie-service'
+import {delay, filter, take} from 'rxjs/operators'
 import {ScrollOut} from '../directives/scroll-out.directive'
 import {Observable} from 'rxjs'
 import {LoginComponent} from '../login/login.component'
@@ -18,22 +25,20 @@ import {ProgressBarService} from '../services/progress-bar.service'
   animations: [
     trigger('navbarInOutTrigger', [
       transition(':enter', [
-        style({ transform: 'translateY(-100%)'}),
-        animate('200ms ease-out',
-          style({ transform: 'translateY(0)'}))
+        style({transform: 'translateY(-100%)'}),
+        animate('200ms ease-out', style({transform: 'translateY(0)'}))
       ]),
       transition(':leave', [
-        animate('200ms ease-out',
-          style({ transform: 'translateY(-100%)' }))
+        animate('200ms ease-out', style({transform: 'translateY(-100%)'}))
       ])
-    ]),
+    ])
   ]
 })
 export class NavbarComponent extends ScrollOut implements OnInit {
-  isDarkMode: boolean = false
-  isLogin: boolean = false
+  isDarkMode = false
+  isLogin = false
 
-  activeThemeIdx: number = 0
+  activeThemeIdx = 0
   themes: string[] = [
     'Deep Purple & Amber',
     'Indigo & Pink',
@@ -41,7 +46,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
     'Purple & Green'
   ]
 
-  @Input() isHandset$: Observable<boolean>
+  @Input() isHandset$!: Observable<boolean>
   @Output() menuClicked = new EventEmitter()
 
   constructor(
@@ -50,19 +55,15 @@ export class NavbarComponent extends ScrollOut implements OnInit {
     private cookieService: CookieService,
     private matDialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    private ngZone: NgZone,
+    private ngZone: NgZone
   ) {
     super()
 
-    this.authService.currentUser.subscribe(
-      user => this.isLogin = !!user
-    )
+    this.authService.currentUser.subscribe((user) => (this.isLogin = !!user))
   }
 
   ngOnInit(): void {
-    this.ngZone.onStable.pipe(
-      take(1)
-    ).subscribe(() => {
+    this.ngZone.onStable.pipe(take(1)).subscribe(() => {
       this.loadStateFromCookie()
       this.syncPrismTheme()
     })
@@ -77,9 +78,10 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   login() {
-    this.matDialog.open(LoginComponent).afterClosed().pipe(
-      filter(res => res)
-    )
+    this.matDialog
+      .open(LoginComponent)
+      .afterClosed()
+      .pipe(filter((res) => res))
   }
 
   logout() {
@@ -88,10 +90,7 @@ export class NavbarComponent extends ScrollOut implements OnInit {
 
   toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode
-    this.ngZone.onStable.pipe(
-      take(1),
-      delay(200),
-    ).subscribe(() => {
+    this.ngZone.onStable.pipe(take(1), delay(200)).subscribe(() => {
       this.syncPrismTheme()
     })
 
@@ -99,13 +98,16 @@ export class NavbarComponent extends ScrollOut implements OnInit {
   }
 
   private syncPrismTheme() {
-    NavbarComponent.loadPrismTheme(!this.isDarkMode ?
-      'assets/prism-theme/prism-one-light.css' : 'assets/prism-theme/prism-one-dark.css')
+    NavbarComponent.loadPrismTheme(
+      !this.isDarkMode
+        ? 'assets/prism-theme/prism-one-light.css'
+        : 'assets/prism-theme/prism-one-dark.css'
+    )
   }
 
   private static loadPrismTheme(bundleStyleName: string) {
     const prismThemeId = 'prism-theme'
-    let themeLink = document.getElementById(prismThemeId) as HTMLLinkElement
+    const themeLink = document.getElementById(prismThemeId) as HTMLLinkElement
     if (themeLink) {
       themeLink.href = bundleStyleName
     } else {
@@ -128,5 +130,4 @@ export class NavbarComponent extends ScrollOut implements OnInit {
     this.isDarkMode = this.cookieService.get('dark-mode') == 'true'
     this.activeThemeIdx = Number(this.cookieService.get('theme-index') || 0)
   }
-
 }

@@ -1,16 +1,23 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
-import {MatDialog} from '@angular/material/dialog';
-import {BlogPublishFormComponent} from '../blog-publish-form/blog-publish-form.component';
-import {MarkdownComponent} from 'ngx-markdown';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {BlogService} from '../services/blog.service';
-
+import {Component, OnInit, ViewChild} from '@angular/core'
+import {MatDialog} from '@angular/material/dialog'
+import {MatSnackBar} from '@angular/material/snack-bar'
+import {MarkdownComponent} from 'ngx-markdown'
+import {Subject} from 'rxjs'
+import {debounceTime} from 'rxjs/operators'
+import {BlogPublishFormComponent} from '../blog-publish-form/blog-publish-form.component'
+import {BlogService} from '../services/blog.service'
 
 export type EditAction =
-  'bold' | 'italic' | 'underline' | 'strikthrough' | 'highlight' | 'quote' |
-  'code' | 'latex' | 'image' | 'link';
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strikthrough'
+  | 'highlight'
+  | 'quote'
+  | 'code'
+  | 'latex'
+  | 'image'
+  | 'link'
 
 @Component({
   selector: 'app-blog-upload',
@@ -18,52 +25,51 @@ export type EditAction =
   styleUrls: ['./blog-publish.component.sass']
 })
 export class BlogPublishComponent implements OnInit {
-  loading = false;
+  loading = false
 
   // Raw content of the original markdown document
-  content = '';
+  content = ''
 
   // Refined markdown document. It will be feed into `MarkdownComponent`
-  mdContent = '';
+  mdContent = ''
 
-  folder = '';
-  tags = [];
+  folder = ''
+  tags = []
 
-  editEventEmitter = new Subject();
-  editEvent = this.editEventEmitter.pipe(
-    debounceTime(1000)
-  );
+  editEventEmitter = new Subject<string>()
+  editEvent = this.editEventEmitter.pipe(debounceTime(1000))
 
-  @ViewChild('markdown') markdownView: MarkdownComponent;
+  @ViewChild('markdown') markdownView!: MarkdownComponent
 
   constructor(
     private blogService: BlogService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.editEvent.subscribe(
       // TODO: refine the raw markdown file
-      (ev: string) => this.mdContent = ev
-    );
+      (ev: string) => (this.mdContent = ev)
+    )
   }
 
-  onEdit($event) {
-    this.editEventEmitter.next($event);
-    this.getHtmlDocument();
+  onEdit($event: any) {
+    this.editEventEmitter.next($event)
+    this.getHtmlDocument()
   }
 
   onPublish() {
     if (this.content.trim().length === 0) {
-      const msg = 'The content is empty! Try writing something.';
-      const action = 'Ok';
-      this.snackBar.open(msg, action, {duration: 1500});
-      return;
+      const msg = 'The content is empty! Try writing something.'
+      const action = 'Ok'
+      this.snackBar.open(msg, action, {duration: 1500})
+      return
     }
 
     const dialogRef = this.dialog.open(BlogPublishFormComponent, {
-      height: '400px', width: '600px',
+      height: '400px',
+      width: '600px',
       data: {
         title: this.getTitle(),
         author: this.getAuthor(),
@@ -73,131 +79,137 @@ export class BlogPublishComponent implements OnInit {
         folder: this.folder,
         tags: this.tags
       }
-    });
+    })
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (result.title) {
-          this.updateTitle(result.title);
+          this.updateTitle(result.title)
         }
-        this.folder = result.folder || this.folder;
-        this.tags = result.tags || this.tags;
+        this.folder = result.folder || this.folder
+        this.tags = result.tags || this.tags
       }
-    });
+    })
   }
 
   getAuthor() {
-    return 'limo';
+    return 'limo'
   }
 
   getTitle() {
-    const r = /^# .*/.exec(this.content.trim());
-    return r ? r[0].slice(2) : '';
+    const r = /^# .*/.exec(this.content.trim())
+    return r ? r[0].slice(2) : ''
   }
 
   getAbstract() {
-    const r = /^# .*\n/.exec(this.content);
-    const r2 = /\n## /.exec(this.content);
+    const r = /^# .*\n/.exec(this.content)
+    const r2 = /\n## /.exec(this.content)
     if (r) {
-      const start = r.index + r[0].length;
-      const end = r2 ? r2.index : -1;
-      return this.content.slice(start, end).trim();
+      const start = r.index + r[0].length
+      const end = r2 ? r2.index : -1
+      return this.content.slice(start, end).trim()
     }
-    return '';
+    return ''
   }
 
   getMdDocument() {
-    return this.content;
+    return this.content
   }
 
   getHtmlDocument() {
-    return this.markdownView.element.nativeElement.innerHTML;
+    return this.markdownView.element.nativeElement.innerHTML
   }
 
   updateTitle(updatedTitle: string) {
     // update content editor
-    this.content = this.content.trim()
-      .replace(/^# .*/, `# ${updatedTitle}`);
+    this.content = this.content.trim().replace(/^# .*/, `# ${updatedTitle}`)
 
     // update markdown preview
-    this.onEdit(this.content);
+    this.onEdit(this.content)
   }
 
-  onEditAction(event, action: EditAction) {
+  onEditAction(event: Event, action: EditAction) {
     // prevent losing the focus on textarea
-    event.preventDefault();
-    const editArea = document.getElementById('edit-area');
+    event.preventDefault()
+    const editArea = document.getElementById('edit-area')
     switch (action) {
-      case 'bold':
-        this.content = insertTextAtCursor(editArea, '**', '**');
-        break;
-      case 'italic':
-        this.content = insertTextAtCursor(editArea, '*', '*');
-        break;
-      case 'underline':
-        this.content = insertTextAtCursor(editArea, '<u>', '</u>');
-        break;
-      case 'strikthrough':
-        this.content = insertTextAtCursor(editArea, '~~', '~~');
-        break;
-      case 'highlight':
-        this.content = insertTextAtCursor(editArea, '`', '`');
-        break;
-      case 'quote':
-        this.content = insertTextBeforeLine(editArea, '> ');
-        break;
-      case 'code':
-        this.content = insertTextAtCursor(editArea, '\n```\n', '\n```');
-        break;
-      case 'latex':
-        this.content = insertTextAtCursor(editArea, '$', '$');
-        break;
-      case 'image':
-        this.content = insertTextAtCursor(editArea, '![]()');
-        break;
-      case 'link':
-        this.content = insertTextAtCursor(editArea, '[]()');
-        break;
+    case 'bold':
+      this.content = insertTextAtCursor(editArea, '**', '**')
+      break
+    case 'italic':
+      this.content = insertTextAtCursor(editArea, '*', '*')
+      break
+    case 'underline':
+      this.content = insertTextAtCursor(editArea, '<u>', '</u>')
+      break
+    case 'strikthrough':
+      this.content = insertTextAtCursor(editArea, '~~', '~~')
+      break
+    case 'highlight':
+      this.content = insertTextAtCursor(editArea, '`', '`')
+      break
+    case 'quote':
+      this.content = insertTextBeforeLine(editArea, '> ')
+      break
+    case 'code':
+      this.content = insertTextAtCursor(editArea, '\n```\n', '\n```')
+      break
+    case 'latex':
+      this.content = insertTextAtCursor(editArea, '$', '$')
+      break
+    case 'image':
+      this.content = insertTextAtCursor(editArea, '![]()')
+      break
+    case 'link':
+      this.content = insertTextAtCursor(editArea, '[]()')
+      break
     }
 
-    this.onEdit(this.content);
+    this.onEdit(this.content)
   }
 }
 
-function insertTextAtCursor(textarea, left, right: string = '') {
-  const val = textarea.value;
-  if (typeof textarea.selectionStart === 'number'
-    && typeof textarea.selectionEnd === 'number') {
-    const prev = val.slice(0, textarea.selectionStart);
-    const post = val.slice(textarea.selectionEnd);
-    const selected = val.slice(textarea.selectionStart, textarea.selectionEnd);
+function insertTextAtCursor(textarea: any, left: string, right = '') {
+  const val = textarea.value
+  if (
+    typeof textarea.selectionStart === 'number' &&
+    typeof textarea.selectionEnd === 'number'
+  ) {
+    const prev = val.slice(0, textarea.selectionStart)
+    const post = val.slice(textarea.selectionEnd)
+    const selected = val.slice(textarea.selectionStart, textarea.selectionEnd)
 
-    textarea.value = prev + left + selected + right + post;
-    textarea.selectionStart = textarea.selectionEnd
-      = textarea.selectionStart + left.length + selected.length + right.length;
+    textarea.value = prev + left + selected + right + post
+    textarea.selectionStart = textarea.selectionEnd =
+      textarea.selectionStart + left.length + selected.length + right.length
   } else {
-    console.error('cannot insert text into textarea!');
+    console.error('cannot insert text into textarea!')
   }
-  return textarea.value;
+  return textarea.value
 }
 
-function insertTextBeforeLine(textarea, txt) {
-  const val = textarea.value;
-  if (typeof textarea.selectionStart === 'number'
-    && typeof textarea.selectionEnd === 'number') {
-    const prev: string = val.slice(0, textarea.selectionStart);
-    const post: string = val.slice(textarea.selectionEnd);
-    const selected: string = val.slice(textarea.selectionStart, textarea.selectionEnd);
+function insertTextBeforeLine(textarea: any, txt: string) {
+  const val = textarea.value
+  if (
+    typeof textarea.selectionStart === 'number' &&
+    typeof textarea.selectionEnd === 'number'
+  ) {
+    const prev: string = val.slice(0, textarea.selectionStart)
+    const post: string = val.slice(textarea.selectionEnd)
+    const selected: string = val.slice(
+      textarea.selectionStart,
+      textarea.selectionEnd
+    )
 
     const inserted = Array.from(selected.split('\n'))
       .map((line) => txt + line + '\n')
-      .reduce((p, c) => p + c);
+      .reduce((p, c) => p + c)
 
-    textarea.value = prev + inserted + post;
-    textarea.selectionStart = textarea.selectionEnd
-      = textarea.selectionStart + inserted.length;
+    textarea.value = prev + inserted + post
+    textarea.selectionStart = textarea.selectionEnd =
+      textarea.selectionStart + inserted.length
   } else {
-    console.error('cannot insert text into textarea!');
+    console.error('cannot insert text into textarea!')
   }
-  return textarea.value;
+  return textarea.value
 }

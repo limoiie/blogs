@@ -1,12 +1,10 @@
-<mat-card
-  *ngIf="blog"
-  appMaterialElevation defaultElevation="1" raisedElevation="8"
-  @myInsertRemoveTrigger class="card">
+<mat-card *ngIf="blog" class="card" @myInsertRemoveTrigger
+          appMaterialElevation [defaultElevation]="1" [raisedElevation]="8">
 
   <!-- title -->
   <mat-card-title>
     <div class="title">
-      <a [routerLink]="['/blog', blog.id]">{{ blog.title }}</a>
+      <a [routerLink]="['/blogs', blog.id]">{{ blog.title }}</a>
       <div *ngIf="(authService.currentUser | async)">
         <mat-icon *ngIf="blog.visibility" class="icon" fontSet="mso">visibility</mat-icon>
         <mat-icon *ngIf="!blog.visibility" class="icon" fontSet="mso">visibility_off</mat-icon>
