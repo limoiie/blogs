@@ -11,10 +11,8 @@
 
 // Configure typography globally since different color themes have identity typography.
 $typography: mat.define-typography-config($font-family: 'Open Sans')
-@include mat.all-component-themes((color: null, typography: $typography, density: null))
-@include app-theme.theme((color: null, typography: $typography, density: null))
 
-@mixin make_theme($primary, $accent, $warn, $class)
+@mixin make_theme($primary, $accent, $warn, $class: '')
   // Define the palettes for your theme using the Material Design palettes available in palette.scss
   // (imported above). For each palette, you can optionally specify a default, lighter, and darker
   // hue. Available color palettes: https://material.io/design/color/
@@ -24,19 +22,27 @@ $typography: mat.define-typography-config($font-family: 'Open Sans')
   $color: (primary: $primary, accent: $accent, warn: $warn)
 
   // Create the theme object (a Sass map containing all of the palettes).
-  $light-theme: mat.define-light-theme((color: $color))
-  $dark-theme: mat.define-dark-theme((color: $color))
+  $light-theme: mat.define-light-theme((color: $color, typography: $typography))
+  $dark-theme: mat.define-dark-theme((color: $color, typography: $typography))
 
-  .#{$class}
-    @include mat.all-component-colors($light-theme)
-    @include app-theme.color($light-theme)
+  @if($class == '')
+    @include mat.all-component-themes($light-theme)
+    @include app-theme.theme($light-theme)
 
-  .#{$class}.dark-theme
-    @include mat.all-component-colors($dark-theme)
-    @include app-theme.color($dark-theme)
+    .dark-theme
+      @include mat.all-component-colors($dark-theme)
+      @include app-theme.color($dark-theme)
+  @else
+    .#{$class}
+      @include mat.all-component-colors($light-theme)
+      @include app-theme.color($light-theme)
+
+    .#{$class}.dark-theme
+      @include mat.all-component-colors($dark-theme)
+      @include app-theme.color($dark-theme)
 
 // Create themes gallery
-@include make_theme(mat.$indigo-palette, mat.$pink-palette, mat.$red-palette, theme0)
+@include make_theme(mat.$indigo-palette, mat.$pink-palette, mat.$red-palette)
 @include make_theme(mat.$deep-purple-palette, mat.$amber-palette, mat.$red-palette, theme1)
 @include make_theme(mat.$pink-palette, mat.$blue-gray-palette, mat.$red-palette, theme2)
 @include make_theme(mat.$purple-palette, mat.$green-palette, mat.$red-palette, theme3)
