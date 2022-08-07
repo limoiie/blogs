@@ -2,24 +2,18 @@
 @import '../../styles/document-cus'
 
 
-\.host
+\:host
+  display: flex
+  flex-direction: row
   margin: auto
-
-.page-body
-  margin: auto
-  max-width: 1112px
+  padding: 0 16px
 
 .blog-body
-  margin: 24px 0 48px auto
-  padding-top: 32px
-  padding-right: 24px
-  padding-left: 48px
+  flex: calc(100% - 18em)
+  margin: 24px 0 48px 24px
+  padding: 0 24px 0 0
 
 .toc
-  margin: 64px auto auto 16px
+  flex: 18em
+  margin: 32px auto auto 16px
   padding-top: 64px
-
-mat-progress-bar
-  position: fixed
-  left: 0
-  z-index: 3

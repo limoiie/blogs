@@ -1,20 +1,14 @@
-<div class="blog">
-  <div class="page-body" fxLayout="row">
-    <!--  200px for the toc; 48px for the margin of card  -->
-    <div @blogTrigger class="blog-body" fxFlex="calc(100%-18em)"> <!-- full - len(toc) -->
+<div @blogTrigger class="blog-body">
+  <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
 
-      <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
+  <mat-card-actions>
+    <a class="read-more" href="#">Next Blog</a>
+  </mat-card-actions>
 
-      <mat-card-actions>
-        <a class="read-more" href="#">Next Blog</a>
-      </mat-card-actions>
-
-      <!--  tags  -->
-      <mat-chip-list *ngIf="blog.tags.length > 0">
-        <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
-      </mat-chip-list>
-    </div>
-
-    <app-table-of-content #toc class="toc" fxFlex="18em"></app-table-of-content>
-  </div>
+  <!--  tags  -->
+  <mat-chip-list *ngIf="blog.tags.length > 0">
+    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+  </mat-chip-list>
 </div>
+
+<app-table-of-content #toc class="toc"></app-table-of-content>
