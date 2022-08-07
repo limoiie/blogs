@@ -70,7 +70,7 @@ export class BlogDetailComponent implements OnInit {
       next: (blog) => {
         this.blog = blog
         this.ngZone.onStable.pipe(first()).subscribe(() => {
-          this.toc.addHeaders(this.tocTitle, this.content.nativeElement)
+          this.toc.appendSectionTOC(this.tocTitle, this.content.nativeElement)
           Prism.highlightAllUnder(this.content.nativeElement)
         })
       },

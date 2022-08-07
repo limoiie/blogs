@@ -1,0 +1,11 @@
+<a [routerLink]="'./'" [fragment]="node.data.id"
+   class="docs-link docs-level-{{node.data.type}}"
+   [class.docs-active]="node.data.active"
+   [class.docs-inactive]="!node.data.active">
+  {{node.data.name}}
+</a>
+<div *ngIf="node.data.expanded" class="children">
+  <app-table-of-content-link [node]="child"
+                             *ngFor="let child of node.children">
+  </app-table-of-content-link>
+</div>

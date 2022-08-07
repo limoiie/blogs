@@ -45,20 +45,33 @@ import {Blog, WithAbstractBlog} from './beans/blog'
 import {BlogCardComponent} from './blog-card/blog-card.component'
 import {BlogDetailComponent} from './blog-detail/blog-detail.component'
 import {BlogListComponent} from './blog-list/blog-list.component'
-import {BlogPublishFormComponent} from './blog-publish-form/blog-publish-form.component'
+import {
+  BlogPublishFormComponent
+} from './blog-publish-form/blog-publish-form.component'
 import {BlogPublishComponent} from './blog-publish/blog-publish.component'
-import {MaterialElevationDirective} from './directives/material-elevation.directive'
+import {
+  MaterialElevationDirective
+} from './directives/material-elevation.directive'
 import {ParallaxDirective} from './directives/parallax.directive'
 import {ScrollOutDirective} from './directives/scroll-out.directive'
 import {StickyDirective} from './directives/sticky.directive'
-import {WindowHeightTrackingDirective} from './directives/window-height-tracking.directive'
-import {FormFieldTagsComponent} from './form-field-tags/form-field-tags.component'
+import {
+  WindowHeightTrackingDirective
+} from './directives/window-height-tracking.directive'
+import {
+  FormFieldTagsComponent
+} from './form-field-tags/form-field-tags.component'
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component'
 import {LoginComponent} from './login/login.component'
 import {markedOptionsFactory} from './markdown-render-custom'
 import {NavbarComponent} from './navbar/navbar.component'
 import {SafeHtmlPipe} from './pipes/safe-html.pipe'
-import {TableOfContentComponent} from './table-of-content/table-of-content.component'
+import {
+  TableOfContentLinkComponent
+} from './table-of-content-link/table-of-content-link.component'
+import {
+  TableOfContentComponent
+} from './table-of-content/table-of-content.component'
 import {TagComponent} from './tag/tag.component'
 
 @NgModule({
@@ -80,7 +93,8 @@ import {TagComponent} from './tag/tag.component'
     StickyDirective,
     TableOfContentComponent,
     TagComponent,
-    WindowHeightTrackingDirective
+    WindowHeightTrackingDirective,
+    TableOfContentLinkComponent
   ],
   imports: [
     BrowserModule,

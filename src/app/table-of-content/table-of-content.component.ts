@@ -8,27 +8,11 @@ import {
   OnInit
 } from '@angular/core'
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
-import {EMPTY, mergeMap, of, Subject} from 'rxjs'
-import {map, takeUntil} from 'rxjs/operators'
+import {EMPTY, from, mergeMap, of, reduce, Subject} from 'rxjs'
+import {map, pairwise, takeUntil} from 'rxjs/operators'
 import {MainScrollService} from '../services/main-scroll.service'
-
-interface LinkSection {
-  name: string
-  links: Link[]
-}
-
-interface Link {
-  /* id of the section*/
-  id: string
-  /* header type h3/h4 */
-  type: string
-  /* If the anchor is in view of the page */
-  active: boolean
-  /* name of the anchor */
-  name: string
-  /* top offset px of the anchor */
-  top: number
-}
+import {Link} from '../table-of-content-link/link'
+import {TreeNode} from '../utils/tree-node'
 
 @Component({
   selector: 'app-table-of-content',
@@ -36,10 +20,10 @@ interface Link {
   styleUrls: ['./table-of-content.component.sass']
 })
 export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy {
-  linkSections: LinkSection[] = []
-  links: Link[] = []
-  rootUrl = this.router.url.split('#')[0]
+  toc: TreeNode<Link> | null = null
+
   private destroyed$ = new Subject()
+  private rootUrl = this.router.url.split('#')[0]
   private urlFragment = ''
 
   constructor(
@@ -62,35 +46,8 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
       .pipe(takeUntil(this.destroyed$))
       .subscribe((fragment) => {
         this.urlFragment = fragment || ''
-
-        const target = document.getElementById(this.urlFragment)
-        if (target) {
-          target.scrollIntoView()
-        }
+        this.updateScrollPosition()
       })
-  }
-
-  private static isLinkActive(
-    scrollOffset: number,
-    currentLink: Link,
-    nextLink: Link
-  ): boolean {
-    // A link is considered active if the page is scrolled passed the anchor without also
-    // being scrolled passed the next link
-    return (
-      scrollOffset >= currentLink.top &&
-      !(nextLink && nextLink.top <= scrollOffset)
-    )
-  }
-
-  /** Gets the scroll offset of the scroll container */
-  private static getScrollOffset(scrollContainer: {scrollTop?: number, pageYOffset?: number}): number {
-    if (typeof scrollContainer.scrollTop !== 'undefined') {
-      return scrollContainer.scrollTop
-    } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
-      return scrollContainer.pageYOffset
-    }
-    return 0
   }
 
   ngOnInit(): void {
@@ -113,50 +70,77 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.destroyed$.next(null)
+    this.destroyed$.complete()
   }
 
-  updateScrollPosition(): void {
+  appendSectionTOC(sectionName: string, docViewerContent: HTMLElement) {
+    this.toc = this.buildTOC(docViewerContent)
+  }
+
+  private updateScrollPosition(): void {
     document.getElementById(this.urlFragment)?.scrollIntoView()
   }
 
-  addHeaders(sectionName: string, docViewerContent: HTMLElement) {
-    const links = this.extractHeaders(docViewerContent)
-    this.linkSections.push({name: sectionName, links})
-    this.links.push(...links)
-  }
-
-  private extractHeaders(docViewerContent: HTMLElement) {
-    const links: Link[] = []
-    const headers = Array.from<HTMLHeadingElement>(
-      docViewerContent.querySelectorAll('h2, h3')
-    )
-    headers.forEach((header) => {
-      // remove the 'link' icon name from the inner text
-      const name = header.innerText.trim().replace(/^link/, '')
-      const {top} = header.getBoundingClientRect()
-      links.push({
-        name,
-        type: header.tagName.toLowerCase(),
-        top,
-        id: header.id,
-        active: false
+  private buildTOC(docViewerContent: HTMLElement): TreeNode<Link> {
+    let root: TreeNode<Link>
+    from(docViewerContent.querySelectorAll('h1, h2, h3')).pipe(
+      map(header => header as HTMLHeadingElement),
+      map(header => {
+        const name = header.innerText.trim().replace(/^link/, '')
+        const {top} = header.getBoundingClientRect()
+        return new TreeNode<Link>({
+          name,
+          level: +header.tagName.substring(1),
+          type: header.tagName.toLowerCase(),
+          top,
+          id: header.id,
+          active: false,
+          expanded: false
+        })
+      }),
+      reduce((acc, next,) => {
+        let parent: TreeNode<Link> | null = acc
+        while (parent && parent.data.level >= next.data.level) {
+          parent = parent.parent
+        }
+        parent?.appendChild(next)
+        return next
       })
+    ).subscribe(node => {
+      while (node.parent) {
+        node = node.parent
+      }
+      root = node
     })
-    return links
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return root!
   }
 
   /** Update active states */
-  private onScroll(elem: Element): void {
-    if (this.links.length == 0) return
-    const initOffset = this.links[0].top
-    const offset =
-      TableOfContentComponent.getScrollOffset(elem) + initOffset - 96
-    for (let i = 0; i < this.links.length; i++) {
-      this.links[i].active = TableOfContentComponent.isLinkActive(
-        offset,
-        this.links[i],
-        this.links[i + 1]
-      )
+  private onScroll(elem: Element) {
+    if (!this.toc) {
+      return
     }
+
+    const maxTop = Number.MAX_SAFE_INTEGER
+    const pageTop = this.toc.data.top + getScrollOffset(elem) - 40
+
+    from(this.toc.toStream_()).pipe(
+      pairwise()
+    ).subscribe(([curr, next]) => {
+      //todo: expand only active link sections
+      // eslint-disable-next-line
+      curr!.active = curr!.top <= pageTop && pageTop < (next?.top || maxTop)
+    })
   }
+}
+
+/** Gets the scroll offset of the scroll container */
+function getScrollOffset(scrollContainer: {scrollTop?: number, pageYOffset?: number}): number {
+  if (typeof scrollContainer.scrollTop !== 'undefined') {
+    return scrollContainer.scrollTop
+  } else if (typeof scrollContainer.pageYOffset !== 'undefined') {
+    return scrollContainer.pageYOffset
+  }
+  return 0
 }

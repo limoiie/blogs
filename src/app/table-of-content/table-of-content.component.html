@@ -1,12 +1,3 @@
-<div *ngFor="let linkSection of linkSections" class="docs-toc-container">
-  <div class="docs-toc-heading">{{linkSection.name}}</div>
-  <nav [attr.aria-label]="linkSection.name + ' Table of Contents'">
-    <a [routerLink]="'./'" [fragment]="link.id"
-      *ngFor="let link of linkSection.links"
-      class="docs-level-{{link.type}} docs-link"
-       [class.docs-active]="link.active"
-       [class.docs-inactive]="!link.active">
-      {{link.name}}
-    </a>
-  </nav>
-</div>
+<nav *ngIf="toc" class="docs-toc-container" aria-label="Table of Contents">
+  <app-table-of-content-link [node]="toc"></app-table-of-content-link>
+</nav>
