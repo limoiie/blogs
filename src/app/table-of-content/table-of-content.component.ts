@@ -9,7 +9,7 @@ import {
 } from '@angular/core'
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
 import {EMPTY, from, mergeMap, of, reduce, Subject} from 'rxjs'
-import {map, pairwise, takeUntil} from 'rxjs/operators'
+import {map, takeUntil} from 'rxjs/operators'
 import {MainScrollService} from '../services/main-scroll.service'
 import {Link} from '../table-of-content-link/link'
 import {TreeNode} from '../utils/tree-node'
@@ -21,6 +21,8 @@ import {TreeNode} from '../utils/tree-node'
 })
 export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy {
   toc: TreeNode<Link> | null = null
+  private activePath: TreeNode<Link>[] = []
+  private alwaysExpandLevel = 2
 
   private destroyed$ = new Subject()
   private rootUrl = this.router.url.split('#')[0]
@@ -86,19 +88,18 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     from(docViewerContent.querySelectorAll('h1, h2, h3')).pipe(
       map(header => header as HTMLHeadingElement),
       map(header => {
-        const name = header.innerText.trim().replace(/^link/, '')
-        const {top} = header.getBoundingClientRect()
+        const level = +header.tagName.substring(1)
         return new TreeNode<Link>({
-          name,
-          level: +header.tagName.substring(1),
+          name: header.innerText.trim().replace(/^link/, ''),
+          level,
           type: header.tagName.toLowerCase(),
-          top,
+          top: header.getBoundingClientRect().top,
           id: header.id,
           active: false,
-          expanded: false
+          expanded: level < this.alwaysExpandLevel
         })
       }),
-      reduce((acc, next,) => {
+      reduce((acc, next) => {
         let parent: TreeNode<Link> | null = acc
         while (parent && parent.data.level >= next.data.level) {
           parent = parent.parent
@@ -123,15 +124,30 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     const maxTop = Number.MAX_SAFE_INTEGER
-    const pageTop = this.toc.data.top + getScrollOffset(elem) - 40
+    const pageTop = this.toc.data.top + getScrollOffset(elem) - 18
 
-    from(this.toc.toStream_()).pipe(
-      pairwise()
-    ).subscribe(([curr, next]) => {
-      //todo: expand only active link sections
-      // eslint-disable-next-line
-      curr!.active = curr!.top <= pageTop && pageTop < (next?.top || maxTop)
-    })
+    function fn(l: Link, r: Link | undefined = undefined): -1 | 1 | 0 {
+      if (pageTop < l.top) return -1
+      if (pageTop < (r?.top || maxTop)) return 0
+      return 1
+    }
+
+    this.setPathActiveness(false)
+    this.activePath = fn(this.toc.data) == -1 ? [this.toc] : this.toc.find(fn)
+    this.setPathActiveness(true)
+  }
+
+  private setPathActiveness(active: boolean) {
+    if (this.activePath.length != 0) {
+      this.activePath[this.activePath.length - 1].data.active = active
+    }
+
+    for (const link of this.activePath) {
+      if (link.data.level < this.alwaysExpandLevel) {
+        continue
+      }
+      link.data.expanded = active
+    }
   }
 }
 

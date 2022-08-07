@@ -21,7 +21,11 @@ export class TreeNode<T> {
     return this.mChildren
   }
 
-  lastChild(): TreeNode<T> {
+  firstChild(): TreeNode<T> | null {
+    return this.mChildren[0]
+  }
+
+  lastChild(): TreeNode<T> | null {
     return this.mChildren[this.mChildren.length - 1]
   }
 
@@ -54,12 +58,27 @@ export class TreeNode<T> {
     return null
   }
 
-  * toStream_(): Generator<T | null, void> {
-    let curr: TreeNode<T> | null = this
-    while (curr) {
-      yield curr.data
-      curr = curr.next()
+  find(compare: (a: T, b: T | undefined) => -1 | 0 | 1): TreeNode<T>[] {
+    if (this.children.length == 0 ||
+      compare(this.data, this.firstChild()?.data) == 0) {
+      return [this]
     }
-    yield null
+
+    let l = 0, r = this.children.length
+    while (l < r) {
+      const m = (l + r) >> 1
+      switch (compare(this.children[m].data, this.children[m + 1]?.data)) {
+      case 0:
+        return [this, ...this.children[m].find(compare)]
+      case 1:
+        l = m + 1
+        break
+      case -1:
+        r = m
+        break
+      }
+    }
+
+    return this.children[l] ? [this.children[l]] : []
   }
 }
