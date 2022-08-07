@@ -6,12 +6,13 @@
   </app-blog-card>
 
   <mat-paginator
-    [@blogListTrigger]="{value: true, params: {myTime: '400ms'}}"
     [showFirstLastButtons]="true"
     [length]="nTotalBlogs"
     [pageSize]="15"
     [pageSizeOptions]="[10, 15, 20, 25, 50]"
     (page)="onPageOptionChanged($event)"
+    [style.opacity]="blogsInPage.length == 0 ? 0 : 1"
+    [class.mat-elevation-z1]="true"
     aria-label="Select Page">
   </mat-paginator>
 </div>

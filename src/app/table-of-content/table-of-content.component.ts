@@ -124,7 +124,7 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     const maxTop = Number.MAX_SAFE_INTEGER
-    const pageTop = this.toc.data.top + getScrollOffset(elem) - 18
+    const pageTop = this.toc.data.top + getScrollOffset(elem) - 12
 
     function fn(l: Link, r: Link | undefined = undefined): -1 | 1 | 0 {
       if (pageTop < l.top) return -1

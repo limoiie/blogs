@@ -3,6 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core'
 import {MatPaginator, PageEvent} from '@angular/material/paginator'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
+import {delay} from 'rxjs/operators'
 import {WithAbstractBlog} from '../beans/blog'
 import {BlogService} from '../services/blog.service'
 
@@ -20,10 +21,14 @@ import {BlogService} from '../services/blog.service'
             '{{ myTime }} ease-in-out',
             style({opacity: 1, transform: 'translateY(0)'})
           )
-        ],
-        {delay: '300ms'}
+        ]
       ),
-      transition(':leave', [animate('300ms ease-in-out', style({opacity: 0}))])
+      transition(
+        ':leave',
+        [
+          animate('300ms ease-in-out',
+            style({opacity: 0}))
+        ])
     ])
   ]
 })
@@ -44,18 +49,21 @@ export class BlogListComponent implements OnInit {
   }
 
   onPageOptionChanged(ev$: PageEvent) {
+    console.log(`to page ${ev$.pageIndex}, ${ev$.pageSize}`)
     this._loadBlogs(ev$.pageIndex, ev$.pageSize, true)
   }
 
   _loadBlogs(pageIndex: number, pageSize: number, scrollToTop = false) {
     this.loading = true
+    this.blogsInPage = []
 
-    if (scrollToTop) {
-      window.scrollTo({top: 0, behavior: 'smooth'})
-    }
-
-    this.blogService.getBlogList(pageIndex, pageSize).subscribe({
+    this.blogService.getBlogList(pageIndex, pageSize).pipe(
+      delay(400)
+    ).subscribe({
       next: (data) => {
+        if (scrollToTop) {
+          window.scrollTo({top: 0, behavior: 'auto'})
+        }
         this.blogsPager = data
         this.blogsInPage = data.resources
         this.nTotalBlogs = data.totalElements
