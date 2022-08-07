@@ -1,6 +1,8 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout'
+import {OverlayContainer} from '@angular/cdk/overlay'
 import {
-  Component,
+  AfterViewInit,
+  Component, ElementRef,
   HostListener,
   Inject,
   OnDestroy,
@@ -24,15 +26,14 @@ import {ConcreteEvent} from './utils/concrete-event'
   styleUrls: ['./app.component.sass'],
   animations: []
 })
-export class AppComponent implements OnDestroy {
-  @ViewChild(GotoTopBtnComponent)
-    gotoTopBtn!: GotoTopBtnComponent
+export class AppComponent implements AfterViewInit, OnDestroy {
+  @ViewChild(GotoTopBtnComponent) gotoTopBtn!: GotoTopBtnComponent
 
-  @ViewChild(NavbarComponent)
-    navbar!: NavbarComponent
+  @ViewChild('navbar') navbar!: NavbarComponent
 
-  @ViewChild(MatSidenavContent)
-    matSidenavContent!: MatSidenavContent
+  @ViewChild(MatSidenavContent) matSidenavContent!: MatSidenavContent
+
+  @ViewChild('body') body!: ElementRef
 
   title = 'blogs'
 
@@ -48,9 +49,24 @@ export class AppComponent implements OnDestroy {
     private scrollService: MainScrollService,
     private markdownService: MarkdownService,
     private authService: AuthService,
+    private overlayContainer: OverlayContainer,
     @Inject(PLATFORM_ID) private platform: object
   ) {
     fixMarkdownService(markdownService)
+  }
+
+  ngAfterViewInit(): void {
+    this.navbar.themeChanged$.subscribe(([isDarkMode, themeNo]) => {
+      for (const classList of [
+        this.body.nativeElement.classList,
+        this.overlayContainer.getContainerElement().classList,
+      ]) {
+        classList.toggle('dark-theme', isDarkMode)
+        for (const i of [0, 1, 2, 3]) {
+          classList.toggle(`theme${i}`, themeNo == i)
+        }
+      }
+    })
   }
 
   ngOnDestroy(): void {

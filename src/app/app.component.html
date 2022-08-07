@@ -1,9 +1,4 @@
-<div class="mat-body"
-     [class.dark-theme]="navbar.isDarkMode"
-     [class.theme0]="navbar.activeThemeIdx === 0"
-     [class.theme1]="navbar.activeThemeIdx === 1"
-     [class.theme2]="navbar.activeThemeIdx === 2"
-     [class.theme3]="navbar.activeThemeIdx === 3">
+<div #body class="mat-body">
   <app-navbar #navbar [isHandset$]="isHandset$"
               (menuClicked)="drawer.toggle()">
   </app-navbar>

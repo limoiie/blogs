@@ -61,7 +61,7 @@
       </button>
       <mat-menu #themesMenu ngDefaultControl>
         <mat-radio-group fxLayout="column" aria-label="Select an option"
-                         (change)="onThemeChanged($event)"
+                         (change)="onThemeChanged()"
                          [(ngModel)]="activeThemeIdx">
           <mat-radio-button
             *ngFor="let theme of themes" [value]="themes.indexOf(theme)"
