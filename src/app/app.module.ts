@@ -104,7 +104,10 @@ import {TagComponent} from './tag/tag.component'
       {path: 'list', component: BlogListComponent},
       {path: 'blogs/:blogId', component: BlogDetailComponent},
       {path: 'publish', component: BlogPublishComponent}
-    ]),
+    ], {
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled'
+    }),
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',

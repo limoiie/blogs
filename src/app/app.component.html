@@ -6,7 +6,7 @@
   <!-- unset overflow so that the its child can be sticky -->
   <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
   <!--suppress HtmlUnknownAttribute -->
-  <mat-sidenav-container style="overflow: unset">
+  <mat-sidenav-container>
     <mat-sidenav #drawer fixedInViewport
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -19,7 +19,7 @@
     </mat-sidenav>
     <!-- unset overflow so that the its child can be sticky -->
     <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
-    <mat-sidenav-content style="overflow: unset">
+    <mat-sidenav-content>
       <!-- Parallax background -->
 <!--      <div [class.dark-theme]="navbar.isDarkMode"-->
 <!--           class="mat-drawer-container"-->
