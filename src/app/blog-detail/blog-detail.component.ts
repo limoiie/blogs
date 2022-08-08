@@ -3,12 +3,14 @@ import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {ActivatedRoute, Router} from '@angular/router'
 import {MarkdownService} from 'ngx-markdown'
-import {first} from 'rxjs/operators'
+import {delay, first} from 'rxjs/operators'
 import {WithHtmlDocumentBlog} from '../beans/blog'
 import {renderHeading} from '../markdown-render-custom'
 import {BlogService} from '../services/blog.service'
 import {ProgressBarService} from '../services/progress-bar.service'
-import {TableOfContentComponent} from '../table-of-content/table-of-content.component'
+import {
+  TableOfContentComponent
+} from '../table-of-content/table-of-content.component'
 
 declare let Prism: {
   highlightAllUnder: (element: Element | Document) => void
@@ -21,13 +23,18 @@ declare let Prism: {
   animations: [
     trigger('blogTrigger', [
       transition(':enter', [
-        style({opacity: 0, transform: 'translateY(96px)'}),
+        style({opacity: 0, transform: 'translateY(48px)'}),
         animate(
-          '400ms ease-out',
+          '400ms ease-in',
           style({opacity: 1, transform: 'translateY(0)'})
         )
       ]),
-      transition(':leave', [animate('400ms ease-out', style({opacity: 0}))])
+      transition(
+        ':leave',
+        [
+          animate('400ms ease-out',
+            style({opacity: 0}))
+        ])
     ])
   ]
 })
@@ -69,8 +76,10 @@ export class BlogDetailComponent implements OnInit {
       next: (blog) => {
         this.blog = blog
         this.ngZone.onStable.pipe(first()).subscribe(() => {
-          this.toc.appendSectionTOC(this.tocTitle, this.content.nativeElement)
-          Prism.highlightAllUnder(this.content.nativeElement)
+          this.ngZone.run(() => {
+            this.toc.constructTOC(this.content.nativeElement)
+            Prism.highlightAllUnder(this.content.nativeElement)
+          })
         })
       },
       error: (err) => {

@@ -20,7 +20,7 @@ import {TreeNode} from '../utils/tree-node'
   styleUrls: ['./table-of-content.component.sass']
 })
 export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy {
-  toc: TreeNode<Link> | null = null
+  toc: TreeNode<Link> | undefined
   private activePath: TreeNode<Link>[] = []
   private alwaysExpandLevel = 2
 
@@ -75,7 +75,7 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     this.destroyed$.complete()
   }
 
-  appendSectionTOC(sectionName: string, docViewerContent: HTMLElement) {
+  constructTOC(docViewerContent: HTMLElement) {
     this.toc = this.buildTOC(docViewerContent)
   }
 
