@@ -1,11 +1,4 @@
 <nav @navbarInOutTrigger *ngIf="isShown" class="topbar">
-  <mat-progress-bar style="position: fixed"
-    [mode]="progressBarService.mode"
-    [value]="progressBarService.value"
-    [bufferValue]="progressBarService.bufferValue"
-    *ngIf="progressBarService.loading">
-  </mat-progress-bar>
-
   <mat-toolbar fxLayout="row" [class.mat-primary]="!isDarkMode"
                [class.mat-elevation-z8]="true">
     <mat-toolbar-row>
@@ -96,4 +89,11 @@
       </a>
     </mat-toolbar-row>
   </mat-toolbar>
+
+  <mat-progress-bar style="position: fixed"
+                    [mode]="progressBarService.mode"
+                    [value]="progressBarService.value"
+                    [bufferValue]="progressBarService.bufferValue"
+                    *ngIf="progressBarService.loading">
+  </mat-progress-bar>
 </nav>

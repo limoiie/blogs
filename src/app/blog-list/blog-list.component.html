@@ -1,17 +1,15 @@
-<mat-progress-bar mode="indeterminate" *ngIf="loading">
-</mat-progress-bar>
-<div fxLayout="column">
-  <app-blog-card [blog]="blog" *ngFor="let blog of blogsInPage; let blogIndex = index"
+<div *ngIf="blogsPager" fxLayout="column">
+  <app-blog-card [blog]="blog" *ngFor="let blog of blogsPager.resources; let blogIndex = index"
                  [@blogListTrigger]="{value: true, params: {myTime: 400 + 50 * blogIndex + 'ms'}}">
   </app-blog-card>
 
   <mat-paginator
     [showFirstLastButtons]="true"
-    [length]="nTotalBlogs"
+    [length]="blogsPager.totalElements"
     [pageSize]="15"
     [pageSizeOptions]="[10, 15, 20, 25, 50]"
     (page)="onPageOptionChanged($event)"
-    [style.opacity]="blogsInPage.length == 0 ? 0 : 1"
+    [style.opacity]="blogsPager.resources.length == 0 ? 0 : 1"
     [class.mat-elevation-z1]="true"
     aria-label="Select Page">
   </mat-paginator>

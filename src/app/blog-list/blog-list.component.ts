@@ -3,9 +3,10 @@ import {Component, OnInit, ViewChild} from '@angular/core'
 import {MatPaginator, PageEvent} from '@angular/material/paginator'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
-import {delay} from 'rxjs/operators'
+import {delay, tap} from 'rxjs/operators'
 import {WithAbstractBlog} from '../beans/blog'
 import {BlogService} from '../services/blog.service'
+import {ProgressBarService} from '../services/progress-bar.service'
 
 @Component({
   selector: 'app-blog-list',
@@ -34,13 +35,13 @@ import {BlogService} from '../services/blog.service'
 })
 export class BlogListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator
-
-  loading = false
   blogsPager: PagedResourceCollection<WithAbstractBlog> | undefined
-  blogsInPage: WithAbstractBlog[] = []
-  nTotalBlogs = 0
 
-  constructor(private blogService: BlogService, private snackBar: MatSnackBar) {
+  constructor(
+    private blogService: BlogService,
+    private progressBarService: ProgressBarService,
+    private snackBar: MatSnackBar
+  ) {
     this._loadBlogs(this.blogService.pageIndex, this.blogService.pageSize)
   }
 
@@ -54,25 +55,21 @@ export class BlogListComponent implements OnInit {
   }
 
   _loadBlogs(pageIndex: number, pageSize: number, scrollToTop = false) {
-    this.loading = true
-    this.blogsInPage = []
+    this.blogsPager = undefined
 
+    this.progressBarService.indeterminate()
     this.blogService.getBlogList(pageIndex, pageSize).pipe(
-      delay(400)
+      delay(400),
+      tap(() => {
+        if (scrollToTop) window.scrollTo({top: 0, behavior: 'auto'})
+      })
     ).subscribe({
-      next: (data) => {
-        if (scrollToTop) {
-          window.scrollTo({top: 0, behavior: 'auto'})
-        }
-        this.blogsPager = data
-        this.blogsInPage = data.resources
-        this.nTotalBlogs = data.totalElements
-      },
+      next: (data) => (this.blogsPager = data),
       error: (err) => {
-        this.loading = false
         this.snackBar.open(`Err: ${err}`, 'OK')
+        this.progressBarService.stop()
       },
-      complete: () => (this.loading = false)
+      complete: () => (this.progressBarService.stop())
     })
   }
 }

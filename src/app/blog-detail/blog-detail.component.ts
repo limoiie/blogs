@@ -35,10 +35,7 @@ export class BlogDetailComponent implements OnInit {
   @ViewChild('toc') toc!: TableOfContentComponent
   @ViewChild('content') content!: ElementRef
 
-  tocTitle = 'Content'
-  blog = new WithHtmlDocumentBlog()
-
-  markdown = null
+  blog: WithHtmlDocumentBlog | undefined
 
   constructor(
     private route: ActivatedRoute,
@@ -65,8 +62,10 @@ export class BlogDetailComponent implements OnInit {
       return
     }
 
-    this.progressBarService.loading = true
-    this.blogService.getBlogDetail(blogId).subscribe({
+    this.blog = undefined
+
+    this.progressBarService.indeterminate()
+    this.blogService.getBlogDetail(blogId).pipe(delay(400)).subscribe({
       next: (blog) => {
         this.blog = blog
         this.ngZone.onStable.pipe(first()).subscribe(() => {
@@ -76,9 +75,9 @@ export class BlogDetailComponent implements OnInit {
       },
       error: (err) => {
         this.snackBar.open(`Failed to load blog: ${err}`, 'Ok')
-        this.progressBarService.loading = false
+        this.progressBarService.stop()
       },
-      complete: () => (this.progressBarService.loading = false)
+      complete: () => (this.progressBarService.stop())
     })
   }
 }

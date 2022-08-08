@@ -1,4 +1,4 @@
-<div @blogTrigger class="blog-body">
+<div @blogTrigger *ngIf="blog" class="blog-body">
   <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
 
   <mat-card-actions>
@@ -11,4 +11,4 @@
   </mat-chip-list>
 </div>
 
-<app-table-of-content #toc class="toc"></app-table-of-content>
+<app-table-of-content @blogTrigger *ngIf="blog" #toc class="toc"></app-table-of-content>
