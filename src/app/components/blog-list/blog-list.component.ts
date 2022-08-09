@@ -42,7 +42,7 @@ export class BlogListComponent implements OnInit {
     private progressBarService: ProgressBarService,
     private snackBar: MatSnackBar
   ) {
-    this._loadBlogs(this.blogService.pageIndex, this.blogService.pageSize)
+    this._loadBlogs(this.blogService.pageIndex, this.blogService.pageSize, true)
   }
 
   ngOnInit(): void {
@@ -50,12 +50,13 @@ export class BlogListComponent implements OnInit {
   }
 
   onPageOptionChanged(ev$: PageEvent) {
-    console.log(`to page ${ev$.pageIndex}, ${ev$.pageSize}`)
     this._loadBlogs(ev$.pageIndex, ev$.pageSize, true)
   }
 
   _loadBlogs(pageIndex: number, pageSize: number, scrollToTop = false) {
-    this.blogsPager = undefined
+    if (this.blogsPager) {
+      this.blogsPager.resources = []
+    }
 
     this.progressBarService.indeterminate()
     this.blogService.getBlogList(pageIndex, pageSize).pipe(
