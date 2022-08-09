@@ -1,8 +1,7 @@
 import {animate, style, transition, trigger} from '@angular/animations'
 import {Component, Input, OnInit} from '@angular/core'
-import {MatDialog} from '@angular/material/dialog'
-import {WithAbstractBlog} from '../beans/blog'
-import {AuthService} from '../services/auth.service'
+import {WithAbstractBlog} from '../../beans/blog'
+import {AuthService} from '../../services/auth.service'
 
 @Component({
   selector: 'app-blog-card',
@@ -21,7 +20,7 @@ import {AuthService} from '../services/auth.service'
 export class BlogCardComponent implements OnInit {
   @Input() blog?: WithAbstractBlog
 
-  constructor(public authService: AuthService, private matDialog: MatDialog) {}
+  constructor(public authService: AuthService) {}
 
   ngOnInit(): void {
     //  nothing to do

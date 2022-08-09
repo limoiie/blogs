@@ -28,7 +28,7 @@ import {MatChipInputEvent} from '@angular/material/chips'
 import {MatFormFieldControl} from '@angular/material/form-field'
 import {combineLatest, Observable, Subject} from 'rxjs'
 import {map, startWith, takeUntil} from 'rxjs/operators'
-import {BlogService} from '../services/blog.service'
+import {BlogService} from '../../services/blog.service'
 
 @Component({
   selector: 'app-form-field-tags',
@@ -90,7 +90,7 @@ implements
 
     this.allTags$ = this.blogService
       .loadTags()
-      .subscribe((tags: any) => (this.allTags = tags.slice()))
+      .subscribe((tags: string[]) => (this.allTags = tags.slice()))
 
     this.filteredTags = this.fakeCtrl.valueChanges.pipe(
       startWith(null),

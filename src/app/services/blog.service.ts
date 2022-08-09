@@ -7,8 +7,7 @@ import {
 import {CookieService} from 'ngx-cookie-service'
 import {Observable} from 'rxjs'
 import {map} from 'rxjs/operators'
-import {WithHtmlDocumentBlog, WithAbstractBlog} from '../beans/blog'
-import {BlogAbbrev} from '../beans/blog-abbrev'
+import {WithAbstractBlog, WithHtmlDocumentBlog} from '../beans/blog'
 import {ApiResponse, extractData} from './api-response'
 import {ApiService} from './api.service'
 
@@ -44,8 +43,8 @@ export class BlogService {
     return this.http.get<string[]>('/assets/folders.fake.json')
   }
 
-  loadTags() {
-    return this.http.get('/assets/tags.fake.json')
+  loadTags(): Observable<string[]> {
+    return this.http.get<string[]>('/assets/tags.fake.json')
   }
 
   publishBlog(blog: any): Observable<any> {

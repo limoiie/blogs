@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core'
-import {TreeNode} from '../utils/tree-node'
+import {TreeNode} from '../../misc/tree-node'
 import {Link} from './link'
 
 @Component({

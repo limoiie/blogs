@@ -13,12 +13,12 @@ import {MatSidenavContent} from '@angular/material/sidenav'
 import {MarkdownService} from 'ngx-markdown'
 import {Subject} from 'rxjs'
 import {map, shareReplay} from 'rxjs/operators'
-import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component'
+import {GotoTopBtnComponent} from './components/goto-top-btn/goto-top-btn.component'
 import {fixMarkdownService} from './markdown-render-custom'
-import {NavbarComponent} from './navbar/navbar.component'
+import {NavbarComponent} from './components/navbar/navbar.component'
 import {AuthService} from './services/auth.service'
 import {MainScrollService} from './services/main-scroll.service'
-import {ConcreteEvent} from './utils/concrete-event'
+import {ConcreteEvent} from './misc/concrete-event'
 
 @Component({
   selector: 'app-root',

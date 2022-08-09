@@ -12,10 +12,10 @@ import {MatSnackBar} from '@angular/material/snack-bar'
 import {CookieService} from 'ngx-cookie-service'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {delay, filter, take} from 'rxjs/operators'
-import {ScrollOut} from '../directives/scroll-out.directive'
+import {ScrollOut} from '../../directives/scroll-out.directive'
 import {LoginComponent} from '../login/login.component'
-import {AuthService} from '../services/auth.service'
-import {ProgressBarService} from '../services/progress-bar.service'
+import {AuthService} from '../../services/auth.service'
+import {ProgressBarService} from '../../services/progress-bar.service'
 
 @Component({
   selector: 'app-navbar',

@@ -3,7 +3,7 @@ import {FormControl, FormGroup} from '@angular/forms'
 import {MatDialogRef} from '@angular/material/dialog'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {Router} from '@angular/router'
-import {AuthService} from '../services/auth.service'
+import {AuthService} from '../../services/auth.service'
 
 @Component({
   selector: 'app-login',

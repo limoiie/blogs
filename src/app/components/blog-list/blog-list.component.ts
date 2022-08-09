@@ -4,9 +4,9 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
 import {delay, tap} from 'rxjs/operators'
-import {WithAbstractBlog} from '../beans/blog'
-import {BlogService} from '../services/blog.service'
-import {ProgressBarService} from '../services/progress-bar.service'
+import {WithAbstractBlog} from '../../beans/blog'
+import {BlogService} from '../../services/blog.service'
+import {ProgressBarService} from '../../services/progress-bar.service'
 
 @Component({
   selector: 'app-blog-list',

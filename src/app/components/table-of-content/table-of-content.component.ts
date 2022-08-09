@@ -10,9 +10,9 @@ import {
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
 import {EMPTY, from, mergeMap, of, reduce, Subject} from 'rxjs'
 import {map, takeUntil} from 'rxjs/operators'
-import {MainScrollService} from '../services/main-scroll.service'
+import {MainScrollService} from '../../services/main-scroll.service'
 import {Link} from '../table-of-content-link/link'
-import {TreeNode} from '../utils/tree-node'
+import {TreeNode} from '../../misc/tree-node'
 
 @Component({
   selector: 'app-table-of-content',

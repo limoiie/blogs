@@ -3,8 +3,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {Observable} from 'rxjs'
-import {BlogAbbrev} from '../beans/blog-abbrev'
-import {BlogService} from '../services/blog.service'
+import {BlogAbbrev} from '../../beans/blog-abbrev'
+import {BlogService} from '../../services/blog.service'
 
 @Component({
   selector: 'app-blog-publish-form',
@@ -53,7 +53,7 @@ export class BlogPublishFormComponent {
     })
   }
 
-  closeDialog(updated: any) {
+  closeDialog(updated: {title: string, folder: string, tags: string[], visibility: boolean}) {
     // console.log('form tags: ', this.form.controls.tags.value)
     this.dialogRef.close(updated)
   }

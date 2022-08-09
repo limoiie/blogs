@@ -5,7 +5,7 @@ import {MarkdownComponent} from 'ngx-markdown'
 import {Subject} from 'rxjs'
 import {debounceTime} from 'rxjs/operators'
 import {BlogPublishFormComponent} from '../blog-publish-form/blog-publish-form.component'
-import {BlogService} from '../services/blog.service'
+import {BlogService} from '../../services/blog.service'
 
 export type EditAction =
   | 'bold'

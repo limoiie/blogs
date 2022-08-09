@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {EMPTY, mergeMap, Observable, of, Subject} from 'rxjs'
 import {debounceTime, map, pairwise} from 'rxjs/operators'
-import {ConcreteEvent} from '../utils/concrete-event'
+import {ConcreteEvent} from '../misc/concrete-event'
 
 @Injectable({
   providedIn: 'root'

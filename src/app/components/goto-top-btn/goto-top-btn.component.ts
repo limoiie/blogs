@@ -1,6 +1,6 @@
 import {animate, style, transition, trigger} from '@angular/animations'
 import {Component, OnInit} from '@angular/core'
-import {ScrollOut} from '../directives/scroll-out.directive'
+import {ScrollOut} from '../../directives/scroll-out.directive'
 
 @Component({
   selector: 'app-goto-top-btn',

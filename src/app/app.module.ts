@@ -42,13 +42,13 @@ import {NgScrollbarReachedModule} from 'ngx-scrollbar/reached-event'
 
 import {AppComponent} from './app.component'
 import {Blog, WithAbstractBlog} from './beans/blog'
-import {BlogCardComponent} from './blog-card/blog-card.component'
-import {BlogDetailComponent} from './blog-detail/blog-detail.component'
-import {BlogListComponent} from './blog-list/blog-list.component'
+import {BlogCardComponent} from './components/blog-card/blog-card.component'
+import {BlogDetailComponent} from './components/blog-detail/blog-detail.component'
+import {BlogListComponent} from './components/blog-list/blog-list.component'
 import {
   BlogPublishFormComponent
-} from './blog-publish-form/blog-publish-form.component'
-import {BlogPublishComponent} from './blog-publish/blog-publish.component'
+} from './components/blog-publish-form/blog-publish-form.component'
+import {BlogPublishComponent} from './components/blog-publish/blog-publish.component'
 import {
   MaterialElevationDirective
 } from './directives/material-elevation.directive'
@@ -60,20 +60,20 @@ import {
 } from './directives/window-height-tracking.directive'
 import {
   FormFieldTagsComponent
-} from './form-field-tags/form-field-tags.component'
-import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component'
+} from './components/form-field-tags/form-field-tags.component'
+import {GotoTopBtnComponent} from './components/goto-top-btn/goto-top-btn.component'
 import {JwtInterceptor} from './interceptors/jwt.interceptor'
-import {LoginComponent} from './login/login.component'
+import {LoginComponent} from './components/login/login.component'
 import {markedOptionsFactory} from './markdown-render-custom'
-import {NavbarComponent} from './navbar/navbar.component'
+import {NavbarComponent} from './components/navbar/navbar.component'
 import {SafeHtmlPipe} from './pipes/safe-html.pipe'
 import {
   TableOfContentLinkComponent
-} from './table-of-content-link/table-of-content-link.component'
+} from './components/table-of-content-link/table-of-content-link.component'
 import {
   TableOfContentComponent
-} from './table-of-content/table-of-content.component'
-import {TagComponent} from './tag/tag.component'
+} from './components/table-of-content/table-of-content.component'
+import {TagComponent} from './components/tag/tag.component'
 
 @NgModule({
   declarations: [
@@ -102,7 +102,7 @@ import {TagComponent} from './tag/tag.component'
     BrowserAnimationsModule,
     RouterModule.forRoot([
       {path: '', component: BlogListComponent},
-      {path: 'list', component: BlogListComponent},
+      {path: 'blogs', component: BlogListComponent},
       {path: 'blogs/:blogId', component: BlogDetailComponent},
       {path: 'publish', component: BlogPublishComponent}
     ], {
