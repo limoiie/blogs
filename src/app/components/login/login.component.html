@@ -1,30 +1,39 @@
-<div fxLayout="row" fxLayoutAlign="center">
-  <form (ngSubmit)="onSubmit()" [formGroup]="form"
-        class="container" fxLayout="column" fxLayoutGap="12px">
-    <mat-form-field appearance="fill">
-      <mat-label>Username</mat-label>
-      <!--suppress HtmlFormInputWithoutLabel -->
-      <input formControlName="username" matInput required>
-      <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-      <mat-hint>Only number and characters allowed</mat-hint>
-    </mat-form-field>
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Username</mat-label>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input formControlName="username" matInput required>
+    <mat-icon fontSet="mso" class="mat-prefix" matPrefix>
+      sentiment_very_satisfied
+    </mat-icon>
+    <mat-icon fontSet="mso" *ngIf="form.controls.username.value" aria-label="Clear" class="mat-suffix"
+              (click)="form.controls.username.setValue('')" matSuffix>
+      close
+    </mat-icon>
+    <mat-hint>Only number and characters allowed</mat-hint>
+  </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Enter your password</mat-label>
-      <!--suppress HtmlFormInputWithoutLabel -->
-      <input [type]="isPasswordHidden ? 'password' : 'text'" formControlName="password"
-             matInput required>
-      <button (click)="isPasswordHidden = !isPasswordHidden" [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="isPasswordHidden"
-              mat-icon-button
-              matSuffix>
-        <mat-icon>{{isPasswordHidden ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </button>
-    </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Enter your password</mat-label>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input [type]="isPasswordHidden ? 'password' : 'text'" formControlName="password"
+           matInput required>
+    <mat-icon fontSet="mso" aria-label="Clear" class="mat-prefix"
+              (click)="form.controls.username.setValue('')" matPrefix>
+      key
+    </mat-icon>
+    <mat-icon fontSet="mso" [attr.aria-label]="'Hide password'" class="mat-suffix"
+              (click)="isPasswordHidden = !isPasswordHidden" matSuffix>
+      {{isPasswordHidden ? 'visibility_off' : 'visibility'}}
+    </mat-icon>
+  </mat-form-field>
 
-    <button [disabled]="!form.valid" color="accent" mat-raised-button
-            type="submit">
-      Submit
-    </button>
-  </form>
-</div>
+  <mat-slide-toggle [checked]="authService.rememberMe"
+                    (toggleChange)="authService.toggleRememberMe()">
+    Remember me
+  </mat-slide-toggle>
+  <button [disabled]="!form.valid" color="accent" mat-raised-button
+          type="submit">
+    Submit
+  </button>
+</form>

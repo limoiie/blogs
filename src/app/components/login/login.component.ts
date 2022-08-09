@@ -20,7 +20,7 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    public authService: AuthService,
     private snackBar: MatSnackBar,
     private dialogRef: MatDialogRef<LoginComponent>
   ) {
@@ -28,15 +28,19 @@ export class LoginComponent {
 
   onSubmit() {
     const value = Object.assign({}, this.form.value)
-    this.authService.logIn(value.username, value.password).subscribe({
-      next: () => {
-        this.dialogRef.close(true)
-        this.router.navigate(['']).then()
-      },
-      error: (err) => this.snackBar.open(`Failed to login: ${JSON.stringify(err)}`, 'Ok'),
-      complete: () => {
-        this.dialogRef.close(true)
-      }
-    })
+    this.authService.logIn(value.username, value.password)
+      .subscribe({
+        next: () => this.router.navigate(['']).then(),
+        error: (err) => {
+          switch (err.status) {
+          case 403:
+            this.snackBar.open('Failed to login: wrong username or wrong password', 'Ok')
+            break
+          default:
+            this.snackBar.open(`Failed to login: ${err}`, 'Ok')
+          }
+        },
+        complete: () => this.dialogRef.close(true)
+      })
   }
 }

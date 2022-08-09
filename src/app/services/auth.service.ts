@@ -4,6 +4,7 @@ import {tap} from 'rxjs/operators'
 import {TokenAndProfileUser, User, WithFullProfileUser} from '../beans/user'
 import {ApiService} from './api.service'
 
+const REMEMBER_ME_KEY = 'auth-rememberMe'
 const TOKEN_KEY = 'auth-token'
 const USER_KEY = 'auth-user'
 
@@ -11,6 +12,7 @@ const USER_KEY = 'auth-user'
   providedIn: 'root'
 })
 export class AuthService {
+  private mRememberMe = false
   private mTokenUser: TokenAndProfileUser | undefined
 
   private loggedInUser$$ = new BehaviorSubject<WithFullProfileUser | undefined>(undefined)
@@ -35,7 +37,16 @@ export class AuthService {
     return this.mTokenUser?.user
   }
 
-  logIn(username: string, password: string): Observable<TokenAndProfileUser> {
+  get rememberMe(): boolean {
+    return this.mRememberMe
+  }
+
+  get storage(): Storage {
+    return this.mRememberMe ? window.localStorage : window.sessionStorage
+  }
+
+  logIn(username: string, password: string)
+    : Observable<TokenAndProfileUser> {
     return this.api.apiPost<TokenAndProfileUser>('/login', {
       username,
       password
@@ -51,25 +62,35 @@ export class AuthService {
   logout() {
     this.mTokenUser = undefined
     this.loggedInUser$$.next(undefined)
-    window.sessionStorage.clear()
+    this.clear()
   }
 
-  private load(): TokenAndProfileUser | undefined {
-    const token = window.sessionStorage.getItem(TOKEN_KEY)
-    const user = window.sessionStorage.getItem(USER_KEY)
+  toggleRememberMe() {
+    this.mRememberMe = !this.mRememberMe
+    window.localStorage.setItem(REMEMBER_ME_KEY, this.mRememberMe.toString())
+  }
+
+  private load() {
+    this.mRememberMe = window.localStorage.getItem(REMEMBER_ME_KEY) == 'true'
+
+    const token = this.storage.getItem(TOKEN_KEY)
+    const user = this.storage.getItem(USER_KEY)
     if (token && user) {
-      return new TokenAndProfileUser(token, JSON.parse(user))
+      this.mTokenUser = new TokenAndProfileUser(token, JSON.parse(user))
     }
-    return undefined
   }
 
   private save() {
-    window.sessionStorage.removeItem(TOKEN_KEY)
-    window.sessionStorage.removeItem(USER_KEY)
-
     if (this.mTokenUser) {
-      window.sessionStorage.setItem(TOKEN_KEY, this.mTokenUser.token)
-      window.sessionStorage.setItem(USER_KEY, JSON.stringify(this.mTokenUser.user))
+      this.storage.setItem(TOKEN_KEY, this.mTokenUser.token)
+      this.storage.setItem(USER_KEY, JSON.stringify(this.mTokenUser.user))
     }
+  }
+
+  private clear() {
+    window.localStorage.removeItem(TOKEN_KEY)
+    window.sessionStorage.removeItem(TOKEN_KEY)
+    window.localStorage.removeItem(USER_KEY)
+    window.sessionStorage.removeItem(USER_KEY)
   }
 }
