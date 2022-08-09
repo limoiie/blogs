@@ -10,7 +10,7 @@ export class User extends Resource {
   email = ''
   enabled = false
   locked = true
-  // todo: roles:
+  roles: string[] = []
   expiredAt = ''
   credentialExpiredAt = ''
 }
@@ -19,4 +19,23 @@ export class User extends Resource {
 export class WithUsernameEmailUser extends Resource {
   username = ''
   email = ''
+}
+
+@HateoasProjection(User, 'withFullProfile')
+export class WithFullProfileUser extends WithUsernameEmailUser {
+  enabled = false
+  locked = true
+  roles: string[] = []
+  expiredAt = ''
+  credentialExpiredAt = ''
+}
+
+export class TokenAndProfileUser {
+  token: string
+  user: WithFullProfileUser
+
+  constructor(token: string, user: WithFullProfileUser) {
+    this.token = token
+    this.user = user
+  }
 }

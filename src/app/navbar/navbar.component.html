@@ -25,7 +25,7 @@
         mat-icon-button
         type="button"
         aria-label="Upload blog"
-        *ngIf="isLogin"
+        *ngIf="hasLoggedIn"
         class="navbar-button"
         matTooltip="upload blog"
         [routerLink]="['/publish']">
@@ -33,14 +33,14 @@
       </button>
 
       <button
-        (click)="isLogin ? logout() : login()"
+        (click)="hasLoggedIn ? logout() : login()"
         mat-icon-button
         aria-label="Login"
         class="navbar-button"
-        [matTooltip]="isLogin ? 'logout' : 'login'"
+        [matTooltip]="hasLoggedIn ? 'logout' : 'login'"
         type="button">
-        <mat-icon *ngIf="!isLogin">login</mat-icon>
-        <mat-icon *ngIf="isLogin">logout</mat-icon>
+        <mat-icon *ngIf="!hasLoggedIn">login</mat-icon>
+        <mat-icon *ngIf="hasLoggedIn">logout</mat-icon>
       </button>
 
       <button

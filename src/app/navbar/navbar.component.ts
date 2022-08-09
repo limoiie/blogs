@@ -35,8 +35,6 @@ import {ProgressBarService} from '../services/progress-bar.service'
 })
 export class NavbarComponent extends ScrollOut implements OnInit {
   isDarkMode = false
-  isLogin = false
-
   activeThemeIdx = 0
   themes: string[] = [
     'Deep Purple & Amber',
@@ -60,8 +58,10 @@ export class NavbarComponent extends ScrollOut implements OnInit {
     private ngZone: NgZone
   ) {
     super()
+  }
 
-    this.authService.currentUser.subscribe((user) => (this.isLogin = !!user))
+  get hasLoggedIn(): boolean {
+    return this.authService.hasLoggedIn
   }
 
   private static loadPrismTheme(bundleStyleName: string) {

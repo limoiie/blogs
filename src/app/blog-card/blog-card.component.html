@@ -5,14 +5,14 @@
   <mat-card-title>
     <div class="title">
       <a [routerLink]="['/blogs', blog.id]">{{ blog.title }}</a>
-      <div *ngIf="(authService.currentUser | async)">
+      <div *ngIf="authService.loggedInUser$ | async">
         <mat-icon *ngIf="blog.visibility" class="icon" fontSet="mso">visibility</mat-icon>
         <mat-icon *ngIf="!blog.visibility" class="icon" fontSet="mso">visibility_off</mat-icon>
       </div>
     </div>
 
     <!--  author's action bar  -->
-    <div *ngIf="authService.currentUser | async" class="blog-action-bar">
+    <div *ngIf="authService.loggedInUser$ | async" class="blog-action-bar">
       <button mat-icon-button class="title-btn" color="accent" (click)="onEdit()">
         <mat-icon class="icon" fontSet="mso">edit</mat-icon>
       </button>

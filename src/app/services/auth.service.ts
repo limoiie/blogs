@@ -1,58 +1,75 @@
 import {Injectable} from '@angular/core'
-import {MatSnackBar} from '@angular/material/snack-bar'
-import {ApiResponse, extractData} from './api-response'
-import {ApiService} from './api.service'
-import {map, tap} from 'rxjs/operators'
 import {BehaviorSubject, Observable} from 'rxjs'
+import {tap} from 'rxjs/operators'
+import {TokenAndProfileUser, User, WithFullProfileUser} from '../beans/user'
+import {ApiService} from './api.service'
 
-export class User {
-  id = ''
-  name = ''
-  email = ''
-  slogan = ''
-  avatar = ''
-  token = ''
-}
+const TOKEN_KEY = 'auth-token'
+const USER_KEY = 'auth-user'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public currentUser: Observable<User | null>
-  private currentUserSubject: BehaviorSubject<User | null>
-  private userKey = 'currentUser'
+  private mTokenUser: TokenAndProfileUser | undefined
 
-  constructor(private api: ApiService, private matSnackBar: MatSnackBar) {
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      // TODO: JSON.parse(localStorage.getItem(this.userKey) || '')
-      null
+  private loggedInUser$$ = new BehaviorSubject<WithFullProfileUser | undefined>(undefined)
+  loggedInUser$ = this.loggedInUser$$.asObservable()
+
+  constructor(
+    private api: ApiService
+  ) {
+    this.load()
+    this.loggedInUser$$.next(this.mTokenUser?.user)
+  }
+
+  get hasLoggedIn(): boolean {
+    return this.mTokenUser != undefined
+  }
+
+  get token(): string | undefined {
+    return this.mTokenUser?.token
+  }
+
+  get loggedInUser(): User | undefined {
+    return this.mTokenUser?.user
+  }
+
+  logIn(username: string, password: string): Observable<TokenAndProfileUser> {
+    return this.api.apiPost<TokenAndProfileUser>('/login', {
+      username,
+      password
+    }).pipe(
+      tap(tokenAndUser => {
+        this.mTokenUser = tokenAndUser
+        this.loggedInUser$$.next(tokenAndUser.user)
+        this.save()
+      })
     )
-    this.currentUser = this.currentUserSubject.asObservable()
-  }
-
-  public get user(): User | null {
-    return this.currentUserSubject.value
-  }
-
-  logIn(username: string, password: string) {
-    // TODO: hash password
-    return this.api
-      .apiPost<ApiResponse<User>>('/blog/auth/', {username, password})
-      .pipe(
-        map((response) => extractData(response)),
-        tap((user: User) => {
-          this.matSnackBar.open(`Hello, ${user.name}~`, 'Ok', {duration: 2000})
-          localStorage.setItem(this.userKey, JSON.stringify(user))
-          this.currentUserSubject.next(user)
-        })
-      )
   }
 
   logout() {
-    this.matSnackBar.open(`Goodbye, ${this.user?.name}~`, 'Ok', {
-      duration: 2000
-    })
-    localStorage.removeItem(this.userKey)
-    this.currentUserSubject.next(null)
+    this.mTokenUser = undefined
+    this.loggedInUser$$.next(undefined)
+    window.sessionStorage.clear()
+  }
+
+  private load(): TokenAndProfileUser | undefined {
+    const token = window.sessionStorage.getItem(TOKEN_KEY)
+    const user = window.sessionStorage.getItem(USER_KEY)
+    if (token && user) {
+      return new TokenAndProfileUser(token, JSON.parse(user))
+    }
+    return undefined
+  }
+
+  private save() {
+    window.sessionStorage.removeItem(TOKEN_KEY)
+    window.sessionStorage.removeItem(USER_KEY)
+
+    if (this.mTokenUser) {
+      window.sessionStorage.setItem(TOKEN_KEY, this.mTokenUser.token)
+      window.sessionStorage.setItem(USER_KEY, JSON.stringify(this.mTokenUser.user))
+    }
   }
 }

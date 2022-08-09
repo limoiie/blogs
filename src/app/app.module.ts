@@ -1,8 +1,8 @@
 import {LayoutModule} from '@angular/cdk/layout'
 import {
+  HTTP_INTERCEPTORS,
   HttpClient,
-  HttpClientModule,
-  HttpClientXsrfModule
+  HttpClientModule
 } from '@angular/common/http'
 import {NgModule} from '@angular/core'
 import {FlexLayoutModule} from '@angular/flex-layout'
@@ -62,6 +62,7 @@ import {
   FormFieldTagsComponent
 } from './form-field-tags/form-field-tags.component'
 import {GotoTopBtnComponent} from './goto-top-btn/goto-top-btn.component'
+import {JwtInterceptor} from './interceptors/jwt.interceptor'
 import {LoginComponent} from './login/login.component'
 import {markedOptionsFactory} from './markdown-render-custom'
 import {NavbarComponent} from './navbar/navbar.component'
@@ -109,10 +110,6 @@ import {TagComponent} from './tag/tag.component'
       anchorScrolling: 'enabled'
     }),
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'csrftoken',
-      headerName: 'X-CSRFToken'
-    }),
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
@@ -150,7 +147,9 @@ import {TagComponent} from './tag/tag.component'
     NgxHateoasClientModule.forRoot(),
     ReactiveFormsModule
   ],
-  providers: [CookieService],
+  providers: [CookieService, {
+    provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
