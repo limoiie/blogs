@@ -24,7 +24,10 @@ import {MatRadioModule} from '@angular/material/radio'
 import {MatSelectModule} from '@angular/material/select'
 import {MatSidenavModule} from '@angular/material/sidenav'
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'
-import {MatSnackBarModule} from '@angular/material/snack-bar'
+import {
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatSnackBarModule
+} from '@angular/material/snack-bar'
 import {MatToolbarModule} from '@angular/material/toolbar'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {BrowserModule} from '@angular/platform-browser'
@@ -43,12 +46,31 @@ import {NgScrollbarReachedModule} from 'ngx-scrollbar/reached-event'
 import {AppComponent} from './app.component'
 import {Blog, WithAbstractBlog} from './beans/blog'
 import {BlogCardComponent} from './components/blog-card/blog-card.component'
-import {BlogDetailComponent} from './components/blog-detail/blog-detail.component'
+import {
+  BlogDetailComponent
+} from './components/blog-detail/blog-detail.component'
 import {BlogListComponent} from './components/blog-list/blog-list.component'
 import {
   BlogPublishFormComponent
 } from './components/blog-publish-form/blog-publish-form.component'
-import {BlogPublishComponent} from './components/blog-publish/blog-publish.component'
+import {
+  BlogPublishComponent
+} from './components/blog-publish/blog-publish.component'
+import {
+  FormFieldTagsComponent
+} from './components/form-field-tags/form-field-tags.component'
+import {
+  GotoTopBtnComponent
+} from './components/goto-top-btn/goto-top-btn.component'
+import {LoginComponent} from './components/login/login.component'
+import {NavbarComponent} from './components/navbar/navbar.component'
+import {
+  TableOfContentLinkComponent
+} from './components/table-of-content-link/table-of-content-link.component'
+import {
+  TableOfContentComponent
+} from './components/table-of-content/table-of-content.component'
+import {TagComponent} from './components/tag/tag.component'
 import {
   MaterialElevationDirective
 } from './directives/material-elevation.directive'
@@ -58,22 +80,9 @@ import {StickyDirective} from './directives/sticky.directive'
 import {
   WindowHeightTrackingDirective
 } from './directives/window-height-tracking.directive'
-import {
-  FormFieldTagsComponent
-} from './components/form-field-tags/form-field-tags.component'
-import {GotoTopBtnComponent} from './components/goto-top-btn/goto-top-btn.component'
 import {JwtInterceptor} from './interceptors/jwt.interceptor'
-import {LoginComponent} from './components/login/login.component'
 import {markedOptionsFactory} from './markdown-render-custom'
-import {NavbarComponent} from './components/navbar/navbar.component'
 import {SafeHtmlPipe} from './pipes/safe-html.pipe'
-import {
-  TableOfContentLinkComponent
-} from './components/table-of-content-link/table-of-content-link.component'
-import {
-  TableOfContentComponent
-} from './components/table-of-content/table-of-content.component'
-import {TagComponent} from './components/tag/tag.component'
 
 @NgModule({
   declarations: [
@@ -147,9 +156,10 @@ import {TagComponent} from './components/tag/tag.component'
     NgxHateoasClientModule.forRoot(),
     ReactiveFormsModule
   ],
-  providers: [CookieService, {
-    provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true
-  }],
+  providers: [CookieService,
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

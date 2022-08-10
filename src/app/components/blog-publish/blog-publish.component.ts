@@ -62,8 +62,7 @@ export class BlogPublishComponent implements OnInit {
   onPublish() {
     if (this.content.trim().length === 0) {
       const msg = 'The content is empty! Try writing something.'
-      const action = 'Ok'
-      this.snackBar.open(msg, action, {duration: 1500})
+      this.snackBar.open(msg, 'Ok')
       return
     }
 
