@@ -1,7 +1,12 @@
 import {animate, style, transition, trigger} from '@angular/animations'
 import {Component, Input, OnInit} from '@angular/core'
+import {MatDialog} from '@angular/material/dialog'
+import {filter} from 'rxjs/operators'
 import {WithAbstractBlog} from '../../beans/blog'
 import {AuthService} from '../../services/auth.service'
+import {
+  BlogPublishFormComponent
+} from '../blog-publish-form/blog-publish-form.component'
 
 @Component({
   selector: 'app-blog-card',
@@ -18,27 +23,30 @@ import {AuthService} from '../../services/auth.service'
   ]
 })
 export class BlogCardComponent implements OnInit {
-  @Input() blog?: WithAbstractBlog
+  @Input() blog!: WithAbstractBlog
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private matDialog: MatDialog
+  ) {
+  }
 
   ngOnInit(): void {
     //  nothing to do
   }
 
   onEdit(): void {
-    // todo
-    // const dialogRef = this.matDialog.open(BlogPublishFormComponent, {
-    //   height: '400px', width: '600px', data: this.blog
-    // })
-    // dialogRef.afterClosed().pipe(
-    //   filter(val => val as boolean)
-    // ).subscribe((data: { title, folder, tags, visibility }) => {
-    //   this.blog.title = data.title
-    //   this.blog.folder = data.folder
-    //   if (data.tags != undefined)
-    //     this.blog.tags = data.tags
-    //   this.blog.visibility = data.visibility
-    // })
+    const dialogRef = this.matDialog.open(BlogPublishFormComponent, {
+      height: '400px', width: '600px', data: this.blog
+    })
+    dialogRef.afterClosed().pipe(
+      filter(val => val as boolean)
+    ).subscribe((data: {title: string, folder: string, tags: string[], visibility: boolean}) => {
+      this.blog.title = data.title
+      this.blog.folder = data.folder
+      if (data.tags != undefined)
+        this.blog.tags = data.tags
+      this.blog.visibility = data.visibility
+    })
   }
 }

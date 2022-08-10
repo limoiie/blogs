@@ -17,7 +17,6 @@ import {
   ControlValueAccessor,
   FormBuilder,
   FormControl,
-  FormGroup,
   NgControl
 } from '@angular/forms'
 import {
@@ -35,48 +34,38 @@ import {BlogService} from '../../services/blog.service'
   templateUrl: './form-field-tags.component.html',
   styleUrls: ['./form-field-tags.component.css'],
   providers: [
-    {
+    {  // todo: comment this?
       provide: MatFormFieldControl,
       useExisting: FormFieldTagsComponent
     }
   ]
 })
-export class FormFieldTagsComponent
-implements
-    AfterViewInit,
-    OnDestroy,
-    MatFormFieldControl<string[]>,
-    ControlValueAccessor
-{
-  static nextId = 0
-  parts: FormGroup
-  @ViewChild('fruitInput') tagInput!: ElementRef<HTMLInputElement>
+export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
+  MatFormFieldControl<string[]>, ControlValueAccessor {
+  ctrl: FormControl<string[]> = this.formBuilder.nonNullable.control<string[]>([])
+  inputCtrl: FormControl<string> = this.formBuilder.nonNullable.control<string>('')
+  @HostBinding() id = `tags-input-${Date.now()}`
+  @HostBinding('attr.aria-describedby') describedBy = ''
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>
   @ViewChild('auto') matAutocomplete!: MatAutocomplete
-  fakeCtrl = new FormControl('')
-  filteredTags: Observable<string[]>
+  filteredTags$: Observable<string[]>
   separatorKeysCodes: number[] = [ENTER, COMMA]
-  @HostBinding() id = `tags-input-${FormFieldTagsComponent.nextId++}`
   stateChanges = new Subject<void>()
   destroy = new Subject<void>()
   focused = false
   controlType = 'tags-input'
   autofilled = false
   isTouched = false
-  allTags$
   allTags: string[] = []
-  @HostBinding('attr.aria-describedby') describedBy = ''
 
   constructor(
-    formBuilder: FormBuilder,
+    private formBuilder: FormBuilder,
     @Optional() @Self() public ngControl: NgControl,
     private fm: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
     private autofillMonitor: AutofillMonitor,
     private blogService: BlogService
   ) {
-    this.parts = formBuilder.group({
-      tags: []
-    })
     if (this.ngControl != null) {
       // Setting the value accessor directly (instead of using
       // the providers) to avoid running into a circular import.
@@ -88,24 +77,22 @@ implements
       this.stateChanges.next()
     })
 
-    this.allTags$ = this.blogService
-      .loadTags()
+    //todo: load from cloud
+    this.blogService.loadTags()
       .subscribe((tags: string[]) => (this.allTags = tags.slice()))
 
-    this.filteredTags = this.fakeCtrl.valueChanges.pipe(
+    this.filteredTags$ = this.inputCtrl.valueChanges.pipe(
       startWith(null),
       map((x) => this._filterCandidateTags(x))
     )
   }
 
   @Input()
-  get value() {
-    return this.parts.value.tags || []
+  get value(): string[] {
+    return this.ctrl.value || []
   }
-
-  set value(val) {
-    val = val || []
-    this.parts.setValue({tags: val})
+  set value(val: string[] | null) {
+    this.ctrl.setValue(val || [])
     this.stateChanges.next()
   }
 
@@ -113,49 +100,39 @@ implements
     return this.ngControl.errors !== null && this.isTouched
   }
 
-  // tslint:disable-next-line:variable-name
-  private _placeholder = ''
-
   @Input()
   get placeholder() {
     return this._placeholder
   }
-
   set placeholder(plh) {
     this._placeholder = plh
     this.stateChanges.next()
   }
-
-  // tslint:disable-next-line:variable-name
-  private _required = false
+  private _placeholder = 'Tag...'
 
   @Input()
   get required() {
     return this._required
   }
-
   set required(req) {
     this._required = coerceBooleanProperty(req)
     this.stateChanges.next()
   }
-
-  // tslint:disable-next-line:variable-name
-  private _disabled = false
+  private _required = false
 
   @Input()
   get disabled(): boolean {
     return this._disabled
   }
-
   set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value)
-    this._disabled ? this.parts.disable() : this.parts.enable()
+    this._disabled ? this.ctrl.disable() : this.ctrl.enable()
     this.stateChanges.next()
   }
+  private _disabled = false
 
   get empty() {
-    const tags = this.parts.value.tags
-    return !tags || tags.length === 0
+    return !this.ctrl.value || this.ctrl.value.length === 0
   }
 
   @HostBinding('class.floating')
@@ -205,7 +182,7 @@ implements
   }
 
   registerOnChange(onChange: (value: string[] | null) => void): void {
-    this.parts.valueChanges.pipe(takeUntil(this.destroy)).subscribe(onChange)
+    this.ctrl.valueChanges.pipe(takeUntil(this.destroy)).subscribe(onChange)
   }
 
   registerOnTouched(onTouched: () => void): void {
@@ -218,61 +195,44 @@ implements
 
   setDisabledState(shouldDisable: boolean): void {
     if (shouldDisable) {
-      this.parts.disable()
+      this.ctrl.disable()
     } else {
-      this.parts.enable()
+      this.ctrl.enable()
     }
 
     this.disabled = shouldDisable
   }
 
   writeValue(value: string[] | null): void {
-    value = value || []
-
-    this.parts.setValue({tags: value}, {emitEvent: false})
+    this.ctrl.setValue(value || [], {emitEvent: false})
   }
 
   // noinspection DuplicatedCode
   add(event: MatChipInputEvent): void {
-    const input = event.input
-    const value = event.value.toLowerCase()
-
-    const tags = this.value
-
-    // Add our fruit
-    if ((value || '').trim()) {
-      if (tags.indexOf(value.trim()) === -1) {
-        tags.push(value.trim())
-        this.value = tags
-      }
+    const tag = trimTag(event.value)
+    console.log(`add ${tag}`)
+    if (tag && this.value.indexOf(tag) === -1) {
+      this.value.push(tag)
     }
 
     // Reset the input value
-    if (input) {
-      input.value = ''
+    if (event.chipInput.inputElement) {
+      event.chipInput.inputElement.value = ''
     }
   }
 
   remove(tag: string): void {
-    const value = tag.toLowerCase()
-    const index = this.value.indexOf(value)
-
-    const tags = this.value
-
+    const index = this.value.indexOf(trimTag(tag))
     if (index >= 0) {
-      tags.splice(index, 1)
-      this.value = tags
+      this.value.splice(index, 1)
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    const value = event.option.viewValue.toLowerCase()
-
-    const tags = this.value
-
-    if (tags.indexOf(value) === -1) {
-      tags.push(value)
-      this.value = tags
+    const tag = trimTag(event.option.viewValue)
+    console.log(`select ${tag}`)
+    if (tag && this.value.indexOf(tag) === -1) {
+      this.value.push(tag)
     }
 
     this.tagInput.nativeElement.value = ''
@@ -289,12 +249,13 @@ implements
     if (this.allTags.length == 0) {
       return []
     }
-
-    const tags = this.value
-    const input = (value || '').toLowerCase()
     return this.allTags
-      .map((tag) => tag.toLowerCase())
-      .filter((tag) => tag.startsWith(input))
-      .filter((tag) => tags.indexOf(tag) === -1)
+      .map(trimTag)
+      .filter((tag) => tag.startsWith(trimTag(value)))
+      .filter((tag) => this.value.indexOf(tag) === -1)
   }
+}
+
+function trimTag(tag: string | null): string {
+  return (tag || '').toLowerCase().trim()
 }

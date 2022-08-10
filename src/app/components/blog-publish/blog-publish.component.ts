@@ -27,10 +27,10 @@ export type EditAction =
 export class BlogPublishComponent implements OnInit {
   loading = false
 
-  // Raw content of the original markdown document
+  // Raw content of the original Markdown document
   content = ''
 
-  // Refined markdown document. It will be feed into `MarkdownComponent`
+  // Refined Markdown document. It will be feed into `MarkdownComponent`
   mdContent = ''
 
   folder = ''
@@ -54,7 +54,7 @@ export class BlogPublishComponent implements OnInit {
     )
   }
 
-  onEdit($event: any) {
+  onEdit($event: string) {
     this.editEventEmitter.next($event)
     this.getHtmlDocument()
   }
@@ -131,7 +131,7 @@ export class BlogPublishComponent implements OnInit {
   onEditAction(event: Event, action: EditAction) {
     // prevent losing the focus on textarea
     event.preventDefault()
-    const editArea = document.getElementById('edit-area')
+    const editArea = document.getElementById('edit-area') as HTMLTextAreaElement
     switch (action) {
     case 'bold':
       this.content = insertTextAtCursor(editArea, '**', '**')
@@ -169,47 +169,30 @@ export class BlogPublishComponent implements OnInit {
   }
 }
 
-function insertTextAtCursor(textarea: any, left: string, right = '') {
+function insertTextAtCursor(textarea: HTMLTextAreaElement, left: string, right = '') {
   const val = textarea.value
-  if (
-    typeof textarea.selectionStart === 'number' &&
-    typeof textarea.selectionEnd === 'number'
-  ) {
-    const prev = val.slice(0, textarea.selectionStart)
-    const post = val.slice(textarea.selectionEnd)
-    const selected = val.slice(textarea.selectionStart, textarea.selectionEnd)
-
-    textarea.value = prev + left + selected + right + post
-    textarea.selectionStart = textarea.selectionEnd =
-      textarea.selectionStart + left.length + selected.length + right.length
-  } else {
-    console.error('cannot insert text into textarea!')
-  }
+  const prev = val.slice(0, textarea.selectionStart)
+  const post = val.slice(textarea.selectionEnd)
+  const selected = val.slice(textarea.selectionStart, textarea.selectionEnd)
+  textarea.value = prev + left + selected + right + post
+  textarea.selectionStart = textarea.selectionEnd =
+    textarea.selectionStart + left.length + selected.length + right.length
   return textarea.value
 }
 
-function insertTextBeforeLine(textarea: any, txt: string) {
+function insertTextBeforeLine(textarea: HTMLTextAreaElement, txt: string) {
   const val = textarea.value
-  if (
-    typeof textarea.selectionStart === 'number' &&
-    typeof textarea.selectionEnd === 'number'
-  ) {
-    const prev: string = val.slice(0, textarea.selectionStart)
-    const post: string = val.slice(textarea.selectionEnd)
-    const selected: string = val.slice(
-      textarea.selectionStart,
-      textarea.selectionEnd
-    )
-
-    const inserted = Array.from(selected.split('\n'))
-      .map((line) => txt + line + '\n')
-      .reduce((p, c) => p + c)
-
-    textarea.value = prev + inserted + post
-    textarea.selectionStart = textarea.selectionEnd =
-      textarea.selectionStart + inserted.length
-  } else {
-    console.error('cannot insert text into textarea!')
-  }
+  const prev: string = val.slice(0, textarea.selectionStart)
+  const post: string = val.slice(textarea.selectionEnd)
+  const selected: string = val.slice(
+    textarea.selectionStart,
+    textarea.selectionEnd
+  )
+  const inserted = Array.from(selected.split('\n'))
+    .map((line) => txt + line + '\n')
+    .reduce((p, c) => p + c)
+  textarea.value = prev + inserted + post
+  textarea.selectionStart = textarea.selectionEnd =
+    textarea.selectionStart + inserted.length
   return textarea.value
 }

@@ -30,7 +30,7 @@ export class WithAbstractBlog extends Resource {
     author?: ProjectionRelType<WithUsernameEmailUser>
   folder = ''
   tags: string[] = [] // todo
-  visibility = ''
+  visibility = false
   createTime = ''
   editTime = ''
   abstract = ''
@@ -44,7 +44,7 @@ export class WithHtmlDocumentBlog extends Resource {
     author?: ProjectionRelType<WithUsernameEmailUser>
   folder = ''
   tags: string[] = [] // todo
-  visibility = ''
+  visibility = false
   createTime = ''
   editTime = ''
   htmlDocument = ''
