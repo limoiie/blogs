@@ -9,6 +9,7 @@ import {User, WithUsernameEmailUser} from './user'
 
 @HateoasResource('blogs')
 export class Blog extends Resource {
+  id = ''
   title = ''
   author?: User
   folder = ''
@@ -22,7 +23,7 @@ export class Blog extends Resource {
   originDocumentExt = ''
 }
 
-@HateoasProjection(Blog, 'withAbstractDocument')
+@HateoasProjection(Blog, 'withAbstract')
 export class WithAbstractBlog extends Resource {
   id = ''
   title = ''

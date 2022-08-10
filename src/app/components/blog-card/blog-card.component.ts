@@ -40,13 +40,10 @@ export class BlogCardComponent implements OnInit {
       height: '400px', width: '600px', data: this.blog
     })
     dialogRef.afterClosed().pipe(
-      filter(val => val as boolean)
-    ).subscribe((data: {title: string, folder: string, tags: string[], visibility: boolean}) => {
-      this.blog.title = data.title
-      this.blog.folder = data.folder
-      if (data.tags != undefined)
-        this.blog.tags = data.tags
-      this.blog.visibility = data.visibility
+      filter(val => val != undefined),
+    ).subscribe((data) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.blog = data!
     })
   }
 }

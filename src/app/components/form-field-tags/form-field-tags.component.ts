@@ -33,12 +33,10 @@ import {BlogService} from '../../services/blog.service'
   selector: 'app-form-field-tags',
   templateUrl: './form-field-tags.component.html',
   styleUrls: ['./form-field-tags.component.css'],
-  providers: [
-    {  // todo: comment this?
-      provide: MatFormFieldControl,
-      useExisting: FormFieldTagsComponent
-    }
-  ]
+  providers: [{
+    provide: MatFormFieldControl,
+    useExisting: FormFieldTagsComponent
+  }]
 })
 export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   MatFormFieldControl<string[]>, ControlValueAccessor {
@@ -52,11 +50,14 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   separatorKeysCodes: number[] = [ENTER, COMMA]
   stateChanges = new Subject<void>()
   destroy = new Subject<void>()
-  focused = false
   controlType = 'tags-input'
   autofilled = false
-  isTouched = false
-  allTags: string[] = []
+  focused = false
+  touched = false
+
+  // eslint-disable-next-line
+  onChange = (_: any) => {/**/}
+  onTouched = () => {/**/}
 
   constructor(
     private formBuilder: FormBuilder,
@@ -77,10 +78,6 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
       this.stateChanges.next()
     })
 
-    //todo: load from cloud
-    this.blogService.loadTags()
-      .subscribe((tags: string[]) => (this.allTags = tags.slice()))
-
     this.filteredTags$ = this.inputCtrl.valueChanges.pipe(
       startWith(null),
       map((x) => this._filterCandidateTags(x))
@@ -91,45 +88,52 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   get value(): string[] {
     return this.ctrl.value || []
   }
+
   set value(val: string[] | null) {
     this.ctrl.setValue(val || [])
     this.stateChanges.next()
   }
 
   get errorState() {
-    return this.ngControl.errors !== null && this.isTouched
+    return this.ngControl.errors !== null && this.touched
   }
+
+  private _placeholder = 'Tag...'
 
   @Input()
   get placeholder() {
     return this._placeholder
   }
+
   set placeholder(plh) {
     this._placeholder = plh
     this.stateChanges.next()
   }
-  private _placeholder = 'Tag...'
+
+  private _required = false
 
   @Input()
   get required() {
     return this._required
   }
+
   set required(req) {
     this._required = coerceBooleanProperty(req)
     this.stateChanges.next()
   }
-  private _required = false
+
+  private _disabled = false
 
   @Input()
   get disabled(): boolean {
     return this._disabled
   }
+
   set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value)
     this._disabled ? this.ctrl.disable() : this.ctrl.enable()
     this.stateChanges.next()
   }
-  private _disabled = false
 
   get empty() {
     return !this.ctrl.value || this.ctrl.value.length === 0
@@ -167,6 +171,23 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
     this.autofillMonitor.stopMonitoring(this.tagInput)
   }
 
+  // eslint-disable-next-line
+  onFocusIn(_event: FocusEvent) {
+    if (!this.focused) {
+      this.focused = true
+      this.stateChanges.next()
+    }
+  }
+
+  onFocusOut(event: FocusEvent) {
+    if (!this.elRef.nativeElement.contains(event.relatedTarget as Element)) {
+      this.touched = true
+      this.focused = false
+      this.onTouched()
+      this.stateChanges.next()
+    }
+  }
+
   setDescribedByIds(ids: string[]) {
     this.describedBy = ids.join(' ')
   }
@@ -177,12 +198,8 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
     }
   }
 
-  onTouched(): void {
-    //  nothing to do
-  }
-
   registerOnChange(onChange: (value: string[] | null) => void): void {
-    this.ctrl.valueChanges.pipe(takeUntil(this.destroy)).subscribe(onChange)
+    this.onChange = onChange
   }
 
   registerOnTouched(onTouched: () => void): void {
@@ -190,7 +207,7 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   }
 
   onBlur() {
-    this.isTouched = true
+    this.touched = true
   }
 
   setDisabledState(shouldDisable: boolean): void {
@@ -210,9 +227,9 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   // noinspection DuplicatedCode
   add(event: MatChipInputEvent): void {
     const tag = trimTag(event.value)
-    console.log(`add ${tag}`)
     if (tag && this.value.indexOf(tag) === -1) {
       this.value.push(tag)
+      this.onChange(this.value)
     }
 
     // Reset the input value
@@ -225,14 +242,15 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
     const index = this.value.indexOf(trimTag(tag))
     if (index >= 0) {
       this.value.splice(index, 1)
+      this.onChange(this.value)
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     const tag = trimTag(event.option.viewValue)
-    console.log(`select ${tag}`)
     if (tag && this.value.indexOf(tag) === -1) {
       this.value.push(tag)
+      this.onChange(this.value)
     }
 
     this.tagInput.nativeElement.value = ''
@@ -246,11 +264,11 @@ export class FormFieldTagsComponent implements AfterViewInit, OnDestroy,
   }
 
   private _filterCandidateTags(value: string | null): string[] {
-    if (this.allTags.length == 0) {
+    if (this.blogService.tags.length == 0) {
       return []
     }
-    return this.allTags
-      .map(trimTag)
+    return this.blogService.tags
+      .map(tag => trimTag(tag.name))
       .filter((tag) => tag.startsWith(trimTag(value)))
       .filter((tag) => this.value.indexOf(tag) === -1)
   }

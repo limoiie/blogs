@@ -1,8 +1,12 @@
 import {Component, Inject} from '@angular/core'
-import {FormControl, FormGroup, Validators} from '@angular/forms'
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 import {MatSnackBar} from '@angular/material/snack-bar'
-import {Observable} from 'rxjs'
 import {WithAbstractBlog} from '../../beans/blog'
 import {BlogService} from '../../services/blog.service'
 
@@ -12,8 +16,6 @@ import {BlogService} from '../../services/blog.service'
   styleUrls: ['./blog-publish-form.component.css']
 })
 export class BlogPublishFormComponent {
-  folders$: Observable<string[]>
-
   form: FormGroup
 
   maxTitleLen = 200
@@ -26,7 +28,6 @@ export class BlogPublishFormComponent {
     private blogService: BlogService,
     private snackBar: MatSnackBar
   ) {
-    this.folders$ = this.blogService.loadFolders()
     this.form = new FormGroup({
       id: new FormControl(data.id),
       title: new FormControl(data.title, [
@@ -47,39 +48,41 @@ export class BlogPublishFormComponent {
         Validators.required,
         Validators.minLength(this.minAbstractLen),
         Validators.maxLength(this.maxAbstractLen)
-      ]),
-      // mdDocument: new FormControl(data.mdDocument),
-      // htmlDocument: new FormControl(data.htmlDocument)
+      ])
     })
   }
 
-  closeDialog(updated: {title: string, folder: string, tags: string[], visibility: boolean}) {
-    // console.log('form tags: ', this.form.controls.tags.value)
+  closeDialog(updated: WithAbstractBlog) {
     this.dialogRef.close(updated)
   }
 
   onSubmit() {
-    console.log(this.form.value)
-    // const value = this.packageData(Object.assign({}, this.form.value))
-    // this.blogService.publishBlog(value).subscribe({
-    //   next: (blogId: string) => {
-    //     this.snackBar.open(`Succeed to publish: ${blogId}`, 'Ok', {
-    //       duration: 5000
-    //     })
-    //     this.closeDialog({
-    //       title: this.form.controls['title'].value,
-    //       folder: this.form.controls['folder'].value,
-    //       tags: this.form.controls['tags'].value.tags,
-    //       visibility: this.form.controls['visibility'].value
-    //     })
-    //   },
-    //   error: (err) => this.snackBar.open(`Failed to publish: ${err}`, 'Ok')
-    // })
+    this.blogService.patchBlogById(WithAbstractBlog, this.data.id, {
+      body: getDirtyFormValue(this.form)
+    })
+      .subscribe({
+        next: (blog) => {
+          this.snackBar.open(`Succeed to patch: ${blog.title}`, 'Ok')
+          this.closeDialog(blog)
+        },
+        error: (err) => this.snackBar.open(`Failed to publish: ${err}`, 'Ok')
+      })
   }
+}
 
-  private packageData(data: any) {
-    data.createTime = (data.createTime as Date).getTime()
-    data.editTime = (data.editTime as Date).getTime()
-    return data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getDirtyFormValue(form: AbstractControl<any, any>) {
+  if (form instanceof FormGroup) {
+    const dirtyValue: {[key: string]: object} = {}
+    Object.keys(form.controls).forEach(
+      (controlName) => {
+        const control = form.controls[controlName]
+        if (control.dirty) {
+          dirtyValue[controlName] = getDirtyFormValue(control)
+        }
+      }
+    )
+    return dirtyValue
   }
+  return form.value
 }

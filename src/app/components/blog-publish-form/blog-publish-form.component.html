@@ -43,8 +43,7 @@
                formControlName="folder"
                [matAutocomplete]="autoFolder" required>
         <mat-autocomplete #autoFolder>
-          <mat-option *ngFor="let folder of folders$ | async"
-                      [value]="folder" class="tag-option">
+          <mat-option *ngFor="let folder of []" [value]="folder" class="tag-option">
             {{ folder }}
           </mat-option>
         </mat-autocomplete>

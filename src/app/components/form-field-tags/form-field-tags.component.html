@@ -1,4 +1,6 @@
-<mat-chip-list #chipList aria-label="Tags selection">
+<mat-chip-list #chipList aria-label="Tags selection"
+               (focusin)="onFocusIn($event)"
+               (focusout)="onFocusOut($event)">
   <mat-chip *ngFor="let tag of value" [selectable]="true"
             [removable]="true" (removed)="remove(tag)">
     <mat-icon fontSet="mso" class="icon">local_offer</mat-icon>

@@ -2,14 +2,21 @@ import {HttpClient} from '@angular/common/http'
 import {Injectable} from '@angular/core'
 import {
   HateoasResourceService,
-  PagedResourceCollection
+  PagedResourceCollection,
+  RequestOption,
+  Resource
 } from '@lagoshny/ngx-hateoas-client'
+import {RequestBody} from '@lagoshny/ngx-hateoas-client/lib/model/declarations'
 import {CookieService} from 'ngx-cookie-service'
-import {Observable} from 'rxjs'
-import {map} from 'rxjs/operators'
+import {BehaviorSubject, Observable, of} from 'rxjs'
 import {WithAbstractBlog, WithHtmlDocumentBlog} from '../beans/blog'
-import {ApiResponse, extractData} from './api-response'
+import {Tag} from '../beans/tag'
+import {
+  fillProjectionNameFromResourceType
+} from '../misc/ngx-hateoas-client-utils'
 import {ApiService} from './api.service'
+
+const PAGE_OPTION_KEY = 'pageOption'
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +27,30 @@ export class BlogService {
     pageSize: 20
   }
 
+  private tagResCol: PagedResourceCollection<Tag> | undefined
+  private tagsSubject = new BehaviorSubject<Tag[]>([])
+
   constructor(
     private api: ApiService,
     private http: HttpClient,
     private resourceService: HateoasResourceService,
     private cookieService: CookieService
   ) {
-    if (cookieService.check('pageOption')) {
-      this.pageOption = JSON.parse(cookieService.get('pageOption'))
+    if (cookieService.check(PAGE_OPTION_KEY)) {
+      this.pageOption = JSON.parse(cookieService.get(PAGE_OPTION_KEY))
     }
+
+    // preload all the tags
+    this.resourceService.getPage(Tag).subscribe(
+      (tags) => {
+        this.tagResCol = tags
+        this.tagsSubject.next(tags.resources)
+      }
+    )
+  }
+
+  get tags(): Tag[] {
+    return this.tagResCol?.resources || []
   }
 
   get pageIndex() {
@@ -37,20 +59,6 @@ export class BlogService {
 
   get pageSize() {
     return this.pageOption.pageSize
-  }
-
-  loadFolders() {
-    return this.http.get<string[]>('/assets/folders.fake.json')
-  }
-
-  loadTags(): Observable<string[]> {
-    return this.http.get<string[]>('/assets/tags.fake.json')
-  }
-
-  publishBlog(blog: any): Observable<any> {
-    return this.api
-      .apiPost<ApiResponse>('/blog/publish/', blog)
-      .pipe(map((response) => extractData(response)))
   }
 
   getBlogList(
@@ -62,7 +70,7 @@ export class BlogService {
       pageIndex: pageNum,
       pageSize: pageSize
     }
-    // this.cookieService.set('pageOption', JSON.stringify(this.pageOption))
+    this.cookieService.set(PAGE_OPTION_KEY, JSON.stringify(this.pageOption))
 
     return this.resourceService.getPage(WithAbstractBlog, {
       sort: {
@@ -79,9 +87,17 @@ export class BlogService {
     return this.resourceService.getResource(WithHtmlDocumentBlog, blogId)
   }
 
-  countBlogs(): Observable<number> {
-    return this.api
-      .apiGet<ApiResponse<number>>('/blog/count/')
-      .pipe(map((response) => extractData(response)))
+  patchBlogById<T extends Resource, B = never>(
+    blogType: new () => T,
+    blogId: string,
+    requestBody: RequestBody<B>,
+    options?: RequestOption | undefined
+  ): Observable<T> {
+    options = fillProjectionNameFromResourceType(blogType, options)
+    return this.resourceService.patchResourceById(blogType, blogId, requestBody, options)
+  }
+
+  loadFolders(): Observable<string[]> {
+    return of([])
   }
 }
