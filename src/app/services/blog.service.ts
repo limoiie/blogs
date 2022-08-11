@@ -4,7 +4,8 @@ import {
   HateoasResourceService,
   PagedResourceCollection,
   RequestOption,
-  Resource
+  Resource,
+  ResourceCollection
 } from '@lagoshny/ngx-hateoas-client'
 import {RequestBody} from '@lagoshny/ngx-hateoas-client/lib/model/declarations'
 import {CookieService} from 'ngx-cookie-service'
@@ -27,7 +28,7 @@ export class BlogService {
     pageSize: 20
   }
 
-  private tagResCol: PagedResourceCollection<Tag> | undefined
+  private tagResCol: ResourceCollection<Tag> | undefined
   private tagsSubject = new BehaviorSubject<Tag[]>([])
 
   constructor(
@@ -41,7 +42,7 @@ export class BlogService {
     }
 
     // preload all the tags
-    this.resourceService.getPage(Tag).subscribe(
+    this.resourceService.getCollection(Tag).subscribe(
       (tags) => {
         this.tagResCol = tags
         this.tagsSubject.next(tags.resources)
