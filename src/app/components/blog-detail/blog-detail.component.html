@@ -1,9 +1,21 @@
 <div @blogTrigger *ngIf="blog" class="blog-body">
-  <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
+  <!-- abbrev info -->
+  <div class="blog-info-bar">
+    <label>
+      <mat-icon fontSet="mso">edit</mat-icon>
+      {{blog.createTime | date: 'fullDate' }}</label>
+    <a href="#"><label>
+      <mat-icon fontSet="mso">folder</mat-icon>
+      {{ blog.folder }}</label></a>
+  </div>
 
-  <mat-card-actions>
-    <a class="read-more" href="#">Next Blog</a>
-  </mat-card-actions>
+  <!--  tags  -->
+  <mat-chip-list *ngIf="blog.tags.length > 0">
+    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+  </mat-chip-list>
+
+  <!-- main document -->
+  <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
 
   <!--  tags  -->
   <mat-chip-list *ngIf="blog.tags.length > 0">

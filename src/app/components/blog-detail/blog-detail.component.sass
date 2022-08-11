@@ -1,6 +1,4 @@
-@import '../../../styles/mat-card-cus'
-@import '../../../styles/document-cus'
-
+@import 'src/styles/cus/document-cus'
 
 \:host
   display: flex
@@ -9,9 +7,15 @@
   padding: 0 16px
 
 .blog-body
+  display: flex
+  flex-direction: column
+  gap: 8px
   width: calc(100% - 18em)
   margin: 24px 0 32px 24px
   padding: 0 24px 0 0
+
+  .document
+    margin-top: 16px
 
 .toc
   width: 18em

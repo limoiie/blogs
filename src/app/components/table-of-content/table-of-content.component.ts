@@ -10,9 +10,9 @@ import {
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
 import {EMPTY, from, mergeMap, of, reduce, Subject} from 'rxjs'
 import {map, takeUntil} from 'rxjs/operators'
+import {TreeNode} from '../../misc/tree-node'
 import {MainScrollService} from '../../services/main-scroll.service'
 import {Link} from '../table-of-content-link/link'
-import {TreeNode} from '../../misc/tree-node'
 
 @Component({
   selector: 'app-table-of-content',
@@ -24,6 +24,7 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
   private activePath: TreeNode<Link>[] = []
   private alwaysExpandLevel = 2
 
+  private relativeTopOfDoc = 0
   private destroyed$ = new Subject()
   private rootUrl = this.router.url.split('#')[0]
   private urlFragment = ''
@@ -89,6 +90,11 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
       map(header => header as HTMLHeadingElement),
       map(header => {
         const level = +header.tagName.substring(1)
+        if (level == 1) {
+          this.relativeTopOfDoc = header.getBoundingClientRect().top
+            + document.documentElement.scrollTop
+            - 64  // height of the top toolbar
+        }
         return new TreeNode<Link>({
           name: header.innerText.trim().replace(/^link/, ''),
           level,
@@ -122,9 +128,8 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.toc) {
       return
     }
-
     const maxTop = Number.MAX_SAFE_INTEGER
-    const pageTop = this.toc.data.top + getScrollOffset(elem) - 12
+    const pageTop = this.toc.data.top + getScrollOffset(elem) - this.relativeTopOfDoc
 
     function fn(l: Link, r: Link | undefined = undefined): -1 | 1 | 0 {
       if (pageTop < l.top) return -1

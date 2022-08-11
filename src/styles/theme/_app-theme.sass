@@ -1,9 +1,10 @@
 @use 'sass:map'
-@use 'src/@angular-material' as mat
+@use '@angular-material' as mat
 
 @use 'code-theme'
 @use 'link-theme'
 @use 'markdown-theme'
+@use 'mat-theme'
 @use 'scrollbar-theme'
 
 @use '../../app/components/table-of-content/table-of-content.component-theme'
@@ -16,6 +17,7 @@
     @include code-theme.color($color-config)
     @include link-theme.color($color-config)
     @include markdown-theme.color($color-config)
+    @include mat-theme.color($color-config)
     @include scrollbar-theme.color($color-config)
     // app components
     @include table-of-content.color($color-config)

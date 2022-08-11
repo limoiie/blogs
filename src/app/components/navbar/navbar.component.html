@@ -13,11 +13,9 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
 
-      <h1 id="logo"
-          aria-label="Home Page"
-          class="navbar-button">
-        <a routerLink="/" style="color: unset">LiMo's Blog</a>
-      </h1>
+      <a id="logo" class="navbar-button" routerLink="/" aria-label="Home Page">
+        <label>LiMo's Blog</label>
+      </a>
 
       <div fxFlex="grow"></div>
 
@@ -39,8 +37,8 @@
         class="navbar-button"
         [matTooltip]="hasLoggedIn ? 'logout' : 'login'"
         type="button">
-        <mat-icon *ngIf="!hasLoggedIn">login</mat-icon>
-        <mat-icon *ngIf="hasLoggedIn">logout</mat-icon>
+        <mat-icon fontSet="mso" *ngIf="!hasLoggedIn">login</mat-icon>
+        <mat-icon fontSet="mso" *ngIf="hasLoggedIn">logout</mat-icon>
       </button>
 
       <button
@@ -50,7 +48,7 @@
         aria-label="Palette"
         class="navbar-button"
         matTooltip="Palette">
-        <mat-icon>palette</mat-icon>
+        <mat-icon fontSet="mso">palette</mat-icon>
       </button>
       <mat-menu #themesMenu ngDefaultControl>
         <mat-radio-group fxLayout="column" aria-label="Select an option"

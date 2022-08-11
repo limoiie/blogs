@@ -1,0 +1,6 @@
+@use 'sass:map'
+@use '@angular-material' as mat
+
+@mixin color($color-config)
+  .mat-radio-label-content
+    color: map.get($color-config, foreground, text)

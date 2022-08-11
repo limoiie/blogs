@@ -1,7 +1,12 @@
-#logo
-  font-family: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace
-  font-size: x-large!important
-  font-weight: bolder!important
+@use 'src/styles/conf'
+
+a#logo
+  color: unset
+
+  label
+    //font-family: conf.$logo-font-family
+    font-size: x-large!important
+    font-weight: bolder!important
 
 
 mat-progress-bar

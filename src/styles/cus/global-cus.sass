@@ -1,0 +1,29 @@
+@use 'src/styles/conf'
+
+code
+  font-family: conf.$code-font-family!important
+
+
+p
+  code
+    padding: 3px
+    border-radius: 5px
+
+
+.blog-info-bar
+  display: flex!important
+  flex-direction: row
+  align-items: flex-start
+  gap: 12px
+
+  label
+    font-style: italic
+    display: flex
+    flex-direction: row
+    align-items: center
+    gap: 4px
+
+    mat-icon
+      font-size: conf.$label-icon-size!important
+      width: conf.$label-icon-size!important
+      height: conf.$label-icon-size!important

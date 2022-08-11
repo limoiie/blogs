@@ -1,5 +1,5 @@
-@forward '@angular/material'
-@use '@angular/material' as mat
+@forward 'node_modules/@angular/material/index'
+@use 'node_modules/@angular/material/index' as mat
 
 @function color($palette, $hue: default, $opacity: null)
   @return mat.get-color-from-palette($palette, $hue, $opacity)

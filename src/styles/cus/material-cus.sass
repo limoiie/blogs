@@ -1,0 +1,24 @@
+@use 'src/styles/conf'
+
+mat-chip
+  display: flex
+  flex-direction: row
+  align-items: center
+  gap: 4px
+
+  &.mat-chip
+    font-size: 12px
+    font-family: conf.$code-font-family
+    cursor: pointer
+
+  mat-icon
+    font-size: conf.$label-icon-size!important
+    width: conf.$label-icon-size!important
+    height: conf.$label-icon-size!important
+
+
+mat-option
+  &.tag-option
+    font-size: 12px
+    font-family: conf.$code-font-family
+    height: 24px

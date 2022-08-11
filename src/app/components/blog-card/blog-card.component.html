@@ -20,11 +20,9 @@
   </mat-card-title>
 
   <!-- labels -->
-  <mat-card-subtitle>
-    <mat-icon fontSet="mso">edit</mat-icon>
-    <label>{{blog.createTime | date: 'fullDate' }}</label>
-    <mat-icon fontSet="mso">folder</mat-icon>
-    <label><a href="#">{{ blog.folder }}</a></label>
+  <mat-card-subtitle class="blog-info-bar">
+    <label><mat-icon fontSet="mso">edit</mat-icon>{{blog.createTime | date: 'fullDate' }}</label>
+    <a href="#"><label><mat-icon fontSet="mso">folder</mat-icon>{{ blog.folder }}</label></a>
   </mat-card-subtitle>
 
   <!-- tags -->
