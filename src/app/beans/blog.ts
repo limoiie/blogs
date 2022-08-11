@@ -21,6 +21,14 @@ export class Blog extends Resource {
   htmlDocument = ''
   originDocument = ''
   originDocumentExt = ''
+
+  get createDate(): Date {
+    return this.createTime ? new Date(this.createTime) : new Date()
+  }
+
+  get editDate(): Date {
+    return this.editTime ? new Date(this.editTime) : new Date()
+  }
 }
 
 @HateoasProjection(Blog, 'withAbstract')
@@ -35,6 +43,14 @@ export class WithAbstractBlog extends Resource {
   createTime = ''
   editTime = ''
   abstract = ''
+
+  get createDate(): Date {
+    return this.createTime ? new Date(this.createTime) : new Date()
+  }
+
+  get editDate(): Date {
+    return this.editTime ? new Date(this.editTime) : new Date()
+  }
 }
 
 @HateoasProjection(Blog, 'withHtmlDocument')
@@ -49,4 +65,12 @@ export class WithHtmlDocumentBlog extends Resource {
   createTime = ''
   editTime = ''
   htmlDocument = ''
+
+  get createDate(): Date {
+    return this.createTime ? new Date(this.createTime) : new Date()
+  }
+
+  get editDate(): Date {
+    return this.editTime ? new Date(this.editTime) : new Date()
+  }
 }

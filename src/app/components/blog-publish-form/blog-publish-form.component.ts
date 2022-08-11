@@ -35,12 +35,8 @@ export class BlogPublishFormComponent {
         Validators.maxLength(this.maxTitleLen)
       ]),
       author: new FormControl(data.author?.username),
-      createTime: new FormControl(
-        data.createTime ? new Date(data.createTime) : new Date()
-      ),
-      editTime: new FormControl(
-        data.editTime ? new Date(data.editTime) : new Date()
-      ),
+      createTime: new FormControl(data.createDate),
+      editTime: new FormControl(data.editDate),
       folder: new FormControl(data.folder || ''),
       tags: new FormControl([...data.tags] || []),
       visibility: new FormControl(data.visibility),
