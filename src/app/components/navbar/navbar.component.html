@@ -1,4 +1,4 @@
-<nav @navbarInOutTrigger *ngIf="isShown" class="topbar">
+<nav @navbarInOutTrigger *ngIf="isShown">
   <mat-toolbar fxLayout="row" [class.mat-primary]="!isDarkMode"
                [class.mat-elevation-z8]="true">
     <mat-toolbar-row>
@@ -10,7 +10,7 @@
         mat-icon-button
         (click)="onMenuClicked()">
         <!--      *ngIf="isHandset$ | async"-->
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        <mat-icon fontSet="mso" aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
 
       <a id="logo" class="navbar-button" routerLink="/" aria-label="Home Page">
@@ -21,25 +21,42 @@
 
       <button
         mat-icon-button
+        [matMenuTriggerFor]="userActionsMenu"
+        class="navbar-button"
         type="button"
-        aria-label="Upload blog"
-        *ngIf="hasLoggedIn"
-        class="navbar-button"
-        matTooltip="upload blog"
-        [routerLink]="['/publish']">
-        <mat-icon fontSet="mso">cloud_upload</mat-icon>
+        matTooltip="User Actions">
+        <mat-icon *ngIf="hasLoggedIn" fontSet="mso">face_5</mat-icon>
+        <mat-icon *ngIf="!hasLoggedIn" fontSet="mso">no_accounts</mat-icon>
       </button>
+      <mat-menu #userActionsMenu ngDefaultControl>
+        <button
+          mat-menu-item
+          *ngIf="hasLoggedIn"
+          (click)="logout()"
+          aria-label="Logout">
+          <mat-icon fontSet="mso">logout</mat-icon>
+          <span>Logout</span>
+        </button>
 
-      <button
-        (click)="hasLoggedIn ? logout() : login()"
-        mat-icon-button
-        aria-label="Login"
-        class="navbar-button"
-        [matTooltip]="hasLoggedIn ? 'logout' : 'login'"
-        type="button">
-        <mat-icon fontSet="mso" *ngIf="!hasLoggedIn">login</mat-icon>
-        <mat-icon fontSet="mso" *ngIf="hasLoggedIn">logout</mat-icon>
-      </button>
+        <button
+          mat-menu-item
+          *ngIf="!hasLoggedIn"
+          (click)="login()"
+          aria-label="Login">
+          <mat-icon fontSet="mso">login</mat-icon>
+          <span>Login</span>
+        </button>
+
+        <button
+          mat-menu-item
+          *ngIf="hasLoggedIn"
+          aria-label="Upload blog"
+          [routerLink]="['/publish']"
+          type="button">
+          <mat-icon fontSet="mso">cloud_upload</mat-icon>
+          <span>Upload blog</span>
+        </button>
+      </mat-menu>
 
       <button
         mat-icon-button
@@ -54,11 +71,11 @@
         <mat-radio-group fxLayout="column" aria-label="Select an option"
                          (change)="onThemeChanged()"
                          [(ngModel)]="activeThemeIdx">
-          <mat-radio-button
-            *ngFor="let theme of themes" [value]="themes.indexOf(theme)"
-            class="radio-button">
-            {{theme}}
-          </mat-radio-button>
+          <div mat-menu-item *ngFor="let theme of themes">
+            <mat-radio-button [value]="themes.indexOf(theme)" class="radio-button">
+              {{theme}}
+            </mat-radio-button>
+          </div>
         </mat-radio-group>
       </mat-menu>
 
