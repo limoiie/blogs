@@ -14,7 +14,13 @@ import {
 
 declare let Prism: {
   highlightAllUnder: (element: Element | Document) => void
+  plugins: {
+    autoloader: {
+      languages_path: string
+    }
+  }
 }
+Prism.plugins.autoloader.languages_path = '/assets/js/prismjs@1.28.0/components/'
 
 @Component({
   selector: 'app-blog-detail',

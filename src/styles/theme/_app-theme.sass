@@ -9,6 +9,7 @@
 
 @use '../../app/components/table-of-content/table-of-content.component-theme'
 @use '../../app/components/blog-detail/blog-detail.component-theme'
+@use '../../app/app.component-theme'
 
 @mixin color($theme)
   $color-config: mat.get-color-config($theme)
@@ -20,6 +21,7 @@
     @include mat-theme.color($color-config)
     @include scrollbar-theme.color($color-config)
     // app components
+    @include app.color($color-config)
     @include table-of-content.color($color-config)
     @include blog-detail.color($color-config)
 

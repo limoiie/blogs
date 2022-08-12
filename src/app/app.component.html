@@ -21,12 +21,12 @@
     <!-- see also: https://university.webflow.com/lesson/create-a-sticky-sidebar -->
     <mat-sidenav-content>
       <!-- Parallax background -->
-<!--      <div [class.dark-theme]="navbar.isDarkMode"-->
-<!--           class="mat-drawer-container"-->
-<!--                id="parallax-background"></div>-->
-<!--      <mat-card appParallax [ratio]="0.04" [scrollbar]="scrollContent"-->
-<!--                [class.dark-theme]="navbar.isDarkMode"-->
-<!--                id="parallax-background"></mat-card>-->
+      <!--      <div [class.dark-theme]="navbar.isDarkMode"-->
+      <!--           class="mat-drawer-container"-->
+      <!--                id="parallax-background"></div>-->
+      <!--      <mat-card appParallax [ratio]="0.04" [scrollbar]="scrollContent"-->
+      <!--                [class.dark-theme]="navbar.isDarkMode"-->
+      <!--                id="parallax-background"></mat-card>-->
 
       <div class="content">
         <router-outlet></router-outlet>
@@ -37,4 +37,15 @@
     </mat-sidenav-content>
 
   </mat-sidenav-container>
+
+  <footer class="mat-toolbar">
+    <div class="content">
+      <div id="copyright">Copyright
+        <mat-icon fontSet="mso">copyright</mat-icon>
+        2022-2023 limo, <i>limo.iie4@gmail.com</i>
+      </div>
+      <div id="driven-by">Driven by <a href="https://github.com/angular/components">Angular Material</a> and
+        <a href="https://github.com/jfcere/ngx-markdown">ngx-markdown</a></div>
+    </div>
+  </footer>
 </div>
