@@ -1,9 +1,10 @@
 @use 'sass:map'
 @use '@angular-material' as mat
+@use 'src/styles/conf'
 
 @mixin color($color-config)
   code
-    font-family: "JetBrains Mono", "Fira Code", monospace!important
+    font-family: conf.$code-font-family
 
   p
     code

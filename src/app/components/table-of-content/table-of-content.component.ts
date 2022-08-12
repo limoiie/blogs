@@ -9,7 +9,7 @@ import {
 } from '@angular/core'
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
 import {EMPTY, from, mergeMap, of, reduce, Subject} from 'rxjs'
-import {map, takeUntil} from 'rxjs/operators'
+import {map, takeUntil, tap} from 'rxjs/operators'
 import {TreeNode} from '../../misc/tree-node'
 import {MainScrollService} from '../../services/main-scroll.service'
 import {Link} from '../table-of-content-link/link'
@@ -88,13 +88,10 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
     let root: TreeNode<Link>
     from(docViewerContent.querySelectorAll('h1, h2, h3')).pipe(
       map(header => header as HTMLHeadingElement),
+      tap(header => this.computeRelativeTopOfDoc(header)),
+      tap(header => this.fixHref(header)),
       map(header => {
         const level = +header.tagName.substring(1)
-        if (level == 1) {
-          this.relativeTopOfDoc = header.getBoundingClientRect().top
-            + document.documentElement.scrollTop
-            - 64  // height of the top toolbar
-        }
         return new TreeNode<Link>({
           name: header.innerText.trim().replace(/^link/, ''),
           level,
@@ -152,6 +149,22 @@ export class TableOfContentComponent implements OnInit, AfterViewInit, OnDestroy
         continue
       }
       link.data.expanded = active
+    }
+  }
+
+  private computeRelativeTopOfDoc(header: HTMLHeadingElement) {
+    const level = +header.tagName.substring(1)
+    if (level == 1) {
+      this.relativeTopOfDoc = header.getBoundingClientRect().top
+        + document.documentElement.scrollTop
+        - 64  // height of the top toolbar
+    }
+  }
+
+  private fixHref(header: HTMLHeadingElement) {
+    const anchor = header.querySelector('a')
+    if (anchor) {
+      anchor.href = `${this.rootUrl}#${header.id}`
     }
   }
 }
