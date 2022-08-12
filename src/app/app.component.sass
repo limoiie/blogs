@@ -1,3 +1,7 @@
+$topbar-height: 64px
+$footer-height: 128px
+
+
 .content
   width: 1080px
   margin: auto
@@ -6,8 +10,8 @@ mat-sidenav-content
   overflow: unset
 
   .content
-    margin: 64px auto 0
-    min-height: 96vh
+    margin: $topbar-height auto 0
+    min-height: calc(100vh - $topbar-height)
 
 mat-sidenav-container
   overflow: unset
@@ -17,7 +21,7 @@ footer
   font-size: 14px!important
   display: flex
   align-items: center
-  min-height: 128px
+  min-height: $footer-height
 
   .content
     display: flex
