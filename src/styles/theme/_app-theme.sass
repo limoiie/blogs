@@ -3,6 +3,7 @@
 
 @use 'code-theme'
 @use 'link-theme'
+@use 'extending-underline-link-theme'
 @use 'markdown-theme'
 @use 'mat-theme'
 @use 'scrollbar-theme'
@@ -17,6 +18,7 @@
   @if $color-config != null
     @include code-theme.color($color-config)
     @include link-theme.color($color-config)
+    @include extending-underline-link-theme.color($color-config)
     @include markdown-theme.color($color-config)
     @include mat-theme.color($color-config)
     @include scrollbar-theme.color($color-config)

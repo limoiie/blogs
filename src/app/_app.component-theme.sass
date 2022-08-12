@@ -2,5 +2,16 @@
 @use 'src/styles/theme/@angular-material' as mat
 
 @mixin color($color-config)
-  footer
-    color: white
+  @if map.get($color-config, is-dark)
+    footer
+      color: white
+      background-color: #303030 !important
+
+      .container
+        background-color: #212121 !important
+  @else
+    footer
+      background-color: #fafafa !important
+
+      .container
+        background-color: whitesmoke !important
