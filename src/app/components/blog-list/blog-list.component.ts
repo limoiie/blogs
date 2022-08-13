@@ -5,8 +5,10 @@ import {MatSnackBar} from '@angular/material/snack-bar'
 import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
 import {delay, tap} from 'rxjs/operators'
 import {WithAbstractBlog} from '../../beans/blog'
+import {BlogFilter} from '../../beans/blog-filter'
 import {BlogService} from '../../services/blog.service'
 import {ProgressBarService} from '../../services/progress-bar.service'
+import {TagComponent} from '../tag/tag.component'
 
 @Component({
   selector: 'app-blog-list',
@@ -37,12 +39,18 @@ export class BlogListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator
   blogsPager: PagedResourceCollection<WithAbstractBlog> | undefined
 
+  allTagNames: string[] = []
+  filteredTags: Set<string> = new Set<string>([])
+
   constructor(
     private blogService: BlogService,
     private progressBarService: ProgressBarService,
     private snackBar: MatSnackBar
   ) {
-    this._loadBlogs(this.blogService.pageIndex, this.blogService.pageSize, true)
+    this.loadBlogs(undefined, undefined, true)
+    this.blogService.tags$.subscribe(allTags => {
+      this.allTagNames = allTags.map(tag => tag.name)
+    })
   }
 
   ngOnInit(): void {
@@ -50,16 +58,41 @@ export class BlogListComponent implements OnInit {
   }
 
   onPageOptionChanged(ev$: PageEvent) {
-    this._loadBlogs(ev$.pageIndex, ev$.pageSize, true)
+    this.loadBlogs(ev$.pageIndex, ev$.pageSize, true)
   }
 
-  _loadBlogs(pageIndex: number, pageSize: number, scrollToTop = false) {
+  toggleTag(tag: TagComponent) {
+    tag.toggleSelected()
+    if (tag.selected) {
+      this.filteredTags.add(tag.tagName)
+    } else {
+      this.filteredTags.delete(tag.tagName)
+    }
+  }
+
+  applyFilter() {
+    this.loadBlogs(0, undefined, true)
+  }
+
+  private loadBlogs(
+    page: number | undefined = undefined,
+    size: number | undefined = undefined,
+    scrollToTop = false
+  ) {
+    const pageable = {
+      pageParams: {
+        page: page === undefined ? this.blogService.page : page,
+        size: size === undefined ? this.blogService.size : size
+      }
+      //  todo: sort
+    }
+
     if (this.blogsPager) {
       this.blogsPager.resources = []
     }
 
     this.progressBarService.indeterminate()
-    this.blogService.getBlogList(pageIndex, pageSize).pipe(
+    this.blogService.getBlogList(pageable, this.buildFilter()).pipe(
       delay(400),
       tap(() => {
         if (scrollToTop) window.scrollTo({top: 0, behavior: 'auto'})
@@ -72,5 +105,14 @@ export class BlogListComponent implements OnInit {
       },
       complete: () => (this.progressBarService.stop())
     })
+  }
+
+  private buildFilter(): BlogFilter | undefined {
+    if (this.filteredTags.size !== 0) {
+      return {
+        tags: [...this.filteredTags]
+      }
+    }
+    return undefined
   }
 }

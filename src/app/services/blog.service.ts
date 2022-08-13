@@ -9,8 +9,10 @@ import {
 } from '@lagoshny/ngx-hateoas-client'
 import {RequestBody} from '@lagoshny/ngx-hateoas-client/lib/model/declarations'
 import {CookieService} from 'ngx-cookie-service'
-import {BehaviorSubject, Observable, of} from 'rxjs'
+import {BehaviorSubject, Observable} from 'rxjs'
 import {WithAbstractBlog, WithHtmlDocumentBlog} from '../beans/blog'
+import {BlogFilter, blogFilterToParams} from '../beans/blog-filter'
+import {Pageable} from '../beans/pageable'
 import {Tag} from '../beans/tag'
 import {
   fillProjectionNameFromResourceType
@@ -23,13 +25,16 @@ const PAGE_OPTION_KEY = 'pageOption'
   providedIn: 'root'
 })
 export class BlogService {
-  private pageOption = {
-    pageIndex: 0,
-    pageSize: 20
+  private pageOption: Pageable = {
+    pageParams: {
+      page: 0,
+      size: 20
+    }
   }
 
   private tagResCol: ResourceCollection<Tag> | undefined
   private tagsSubject = new BehaviorSubject<Tag[]>([])
+  tags$ = this.tagsSubject.asObservable()
 
   constructor(
     private api: ApiService,
@@ -54,34 +59,31 @@ export class BlogService {
     return this.tagResCol?.resources || []
   }
 
-  get pageIndex() {
-    return this.pageOption.pageIndex
+  get page() {
+    return this.pageOption.pageParams.page
   }
 
-  get pageSize() {
-    return this.pageOption.pageSize
+  get size() {
+    return this.pageOption.pageParams.size
   }
 
   getBlogList(
-    pageNum: number,
-    pageSize: number,
-    sort: 'ASC' | 'DESC' = 'ASC'
+    pageable: Pageable,
+    filter: BlogFilter | undefined = undefined
   ): Observable<PagedResourceCollection<WithAbstractBlog>> {
-    this.pageOption = {
-      pageIndex: pageNum,
-      pageSize: pageSize
-    }
+    this.pageOption = pageable
     this.cookieService.set(PAGE_OPTION_KEY, JSON.stringify(this.pageOption))
 
-    return this.resourceService.getPage(WithAbstractBlog, {
-      sort: {
-        name: sort
-      },
-      pageParams: {
-        page: pageNum,
-        size: pageSize
-      }
-    })
+    if (filter !== undefined) {
+      return this.resourceService.searchPage(WithAbstractBlog, 'findByTagNamesContaining', {
+        ...pageable,
+        params: {
+          ...blogFilterToParams(filter)
+        }
+      })
+    }
+
+    return this.resourceService.getPage(WithAbstractBlog, pageable)
   }
 
   getBlogDetail(blogId: number | string): Observable<WithHtmlDocumentBlog> {
@@ -96,9 +98,5 @@ export class BlogService {
   ): Observable<T> {
     options = fillProjectionNameFromResourceType(blogType, options)
     return this.resourceService.patchResourceById(blogType, blogId, requestBody, options)
-  }
-
-  loadFolders(): Observable<string[]> {
-    return of([])
   }
 }

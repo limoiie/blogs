@@ -1,4 +1,18 @@
 <div *ngIf="blogsPager" fxLayout="column">
+  <div id="filter-board">
+    <!-- candidate tags -->
+    <div id="doneList">
+      <app-tag #tag *ngFor="let tagName of allTagNames" [tagName]="tagName"
+               [icon]="tag.selected ? 'close' : 'local_offer'"
+               (click)="toggleTag(tag)">
+      </app-tag>
+    </div>
+    <button id="apply" mat-mini-fab color="primary" matTooltip="Apply filter"
+            (click)="applyFilter()">
+      <mat-icon fontSet="mso">play_arrow</mat-icon>
+    </button>
+  </div>
+
   <app-blog-card [blog]="blog" *ngFor="let blog of blogsPager.resources; let blogIndex = index"
                  [@blogListTrigger]="{value: true, params: {myTime: 400 + 50 * blogIndex + 'ms'}}">
   </app-blog-card>
