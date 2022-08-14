@@ -115,6 +115,7 @@ import {SafeHtmlPipe} from './pipes/safe-html.pipe'
     RouterModule.forRoot([
       {path: '', component: BlogListComponent},
       {path: 'blogs', component: BlogListComponent},
+      {path: 'blogs/tags/:tags', component: BlogListComponent},
       {path: 'blogs/:blogId', component: BlogDetailComponent},
       {path: 'publish', component: BlogPublishComponent}
     ], {

@@ -24,6 +24,7 @@ import {
 })
 export class BlogCardComponent implements OnInit {
   @Input() blog!: WithAbstractBlog
+  @Input() highlightTags = new Set<string>()
 
   constructor(
     public authService: AuthService,

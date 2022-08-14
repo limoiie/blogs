@@ -4,11 +4,13 @@
     <mat-icon *ngIf="!toggleBoard.checked" fontSet="mso">filter_list</mat-icon>
   </mat-button-toggle>
 
-  <form id="filter-board" [formGroup]="form" [@filterBoardTrigger]="toggleBoard.checked">
+  <form id="filter-board" [formGroup]="form" [@filterBoardTrigger]="toggleBoard.checked"
+        (ngSubmit)="applyFilter()">
     <!-- candidate tags -->
-    <div id="doneList">
+    <div id="doneList" *ngIf="form.controls['tags'] as control" >
       <app-tag #tag *ngFor="let tagName of allTagNames" [tagName]="tagName"
-               [icon]="tag.selected ? 'close' : 'local_offer'"
+               [icon]="control.value.has(tagName) ? 'close' : 'local_offer'"
+               [selected]="control.value.has(tagName)"
                (click)="toggleTag(tag)">
       </app-tag>
     </div>
@@ -27,13 +29,13 @@
       </button>
     </mat-form-field>
 
-    <button id="apply" mat-mini-fab matTooltip="Apply filter"
-            (click)="applyFilter()">
+    <button id="apply" mat-mini-fab matTooltip="Apply filter" type="submit">
       <mat-icon fontSet="mso">play_arrow</mat-icon>
     </button>
   </form>
 
-  <app-blog-card [blog]="blog" *ngFor="let blog of blogsPager.resources; let blogIndex = index"
+  <app-blog-card *ngFor="let blog of blogsPager.resources; let blogIndex = index"
+                 [blog]="blog" [highlightTags]="form.controls['tags'].value"
                  [@blogListTrigger]="{value: true, params: {myTime: 400 + 50 * blogIndex + 'ms'}}">
   </app-blog-card>
 

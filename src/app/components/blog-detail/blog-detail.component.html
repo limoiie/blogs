@@ -11,15 +11,14 @@
 
   <!--  tags  -->
   <mat-chip-list *ngIf="blog.tags.length > 0">
-    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag" [routerLink]="['/blogs', 'tags', tag]"></app-tag>
   </mat-chip-list>
 
   <!-- main document -->
   <div #content class="document" [innerHTML]="blog.htmlDocument | safeHtml"></div>
 
-  <!--  tags  -->
   <mat-chip-list *ngIf="blog.tags.length > 0">
-    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag" [routerLink]="['/blogs', 'tags', tag]"></app-tag>
   </mat-chip-list>
 </div>
 

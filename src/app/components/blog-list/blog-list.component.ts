@@ -3,9 +3,10 @@ import {Component, OnInit, ViewChild} from '@angular/core'
 import {FormControl, FormGroup, Validators} from '@angular/forms'
 import {MatPaginator, PageEvent} from '@angular/material/paginator'
 import {MatSnackBar} from '@angular/material/snack-bar'
+import {ActivatedRoute} from '@angular/router'
 import {PagedResourceCollection} from '@lagoshny/ngx-hateoas-client'
-import {mergeMap, of} from 'rxjs'
-import {delay, tap} from 'rxjs/operators'
+import {combineLatest, mergeMap, of} from 'rxjs'
+import {delay, filter, map, tap} from 'rxjs/operators'
 import {WithAbstractBlog} from '../../beans/blog'
 import {BlogFilter} from '../../beans/blog-filter'
 import {BlogService} from '../../services/blog.service'
@@ -28,6 +29,7 @@ import {TagComponent} from '../tag/tag.component'
       transition(
         ':leave',
         [
+          style({opacity: 0, transform: 'translateY(0)'}),
           animate('300ms ease-in-out')
         ]
       )
@@ -64,21 +66,36 @@ export class BlogListComponent implements OnInit {
     ]),
     tags: new FormControl(new Set<string>())
   })
-  // filteredTags: Set<string> = new Set<string>([])
 
   constructor(
+    private route: ActivatedRoute,
     private blogService: BlogService,
     private progressBarService: ProgressBarService,
     private snackBar: MatSnackBar
   ) {
-    this.loadBlogs(undefined, undefined, true)
-    this.blogService.tags$.subscribe(allTags => {
-      this.allTagNames = allTags.map(tag => tag.name)
-    })
   }
 
   ngOnInit(): void {
-    //  nothing to do
+    combineLatest([
+      this.route.paramMap,
+      this.blogService.tags$.pipe(
+        filter(tags => tags.length != 0),
+        map(tags => tags.map(tag => tag.name)),
+        tap(tags => this.allTagNames = tags)
+      )
+    ]).pipe(
+      tap(([params, allTags]) => {
+        const tags = params.get('tags')
+        if (tags) {
+          for (const tag of tags.split(',')) {
+            if (allTags.indexOf(tag) >= 0) {
+              this.form.controls['tags'].value.add(tag)
+            }
+          }
+        }
+        this.loadBlogs(0, undefined, true)
+      })
+    ).subscribe()
   }
 
   onPageOptionChanged(ev$: PageEvent) {
@@ -86,11 +103,10 @@ export class BlogListComponent implements OnInit {
   }
 
   toggleTag(tag: TagComponent) {
-    tag.toggleSelected()
     if (tag.selected) {
-      this.form.controls['tags'].value.add(tag.tagName)
-    } else {
       this.form.controls['tags'].value.delete(tag.tagName)
+    } else {
+      this.form.controls['tags'].value.add(tag.tagName)
     }
   }
 

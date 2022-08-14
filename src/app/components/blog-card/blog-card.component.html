@@ -21,13 +21,19 @@
 
   <!-- labels -->
   <mat-card-subtitle class="blog-info-bar">
-    <label><mat-icon fontSet="mso">edit</mat-icon>{{blog.createTime | date: 'fullDate' }}</label>
-    <a href="#"><label><mat-icon fontSet="mso">folder</mat-icon>{{ blog.folder }}</label></a>
+    <label>
+      <mat-icon fontSet="mso">edit</mat-icon>
+      {{blog.createTime | date: 'fullDate' }}</label>
+    <a href="#"><label>
+      <mat-icon fontSet="mso">folder</mat-icon>
+      {{ blog.folder }}</label></a>
   </mat-card-subtitle>
 
   <!-- tags -->
   <mat-chip-list *ngIf="blog.tags.length > 0">
-    <app-tag *ngFor="let tag of blog.tags" [tagName]="tag"></app-tag>
+    <app-tag *ngFor="let tag of blog.tags" [routerLink]="['/blogs', 'tags', tag]"
+             [tagName]="tag" [selected]="highlightTags.has(tag)">
+    </app-tag>
   </mat-chip-list>
 
 </mat-card>
