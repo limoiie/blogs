@@ -1,5 +1,10 @@
 <div *ngIf="blogsPager" fxLayout="column">
-  <div id="filter-board">
+  <mat-button-toggle #toggleBoard>
+    <mat-icon *ngIf="toggleBoard.checked" fontSet="mso">filter_list_off</mat-icon>
+    <mat-icon *ngIf="!toggleBoard.checked" fontSet="mso">filter_list</mat-icon>
+  </mat-button-toggle>
+
+  <form id="filter-board" [formGroup]="form" [@filterBoardTrigger]="toggleBoard.checked">
     <!-- candidate tags -->
     <div id="doneList">
       <app-tag #tag *ngFor="let tagName of allTagNames" [tagName]="tagName"
@@ -7,11 +12,26 @@
                (click)="toggleTag(tag)">
       </app-tag>
     </div>
-    <button id="apply" mat-mini-fab color="primary" matTooltip="Apply filter"
+
+    <mat-form-field id="search" *ngIf="form.controls['query'] as control" appearance="fill"
+                    [@searchTrigger]="control.value ? 'focused' : (searchInput.var || 'unfocused')">
+      <mat-label>Search</mat-label>
+      <input #searchInput="appVar" appVar="unfocused" matInput formControlName="query"
+             (focus)="searchInput.var = 'focused'" (blur)="searchInput.var = 'unfocused'">
+      <mat-hint align="start">Search in title and content.</mat-hint>
+      <mat-error *ngIf="control.errors">{{control.errors | json}}</mat-error>
+
+      <button *ngIf="control.value" matSuffix mat-icon-button aria-label="Clear"
+              (click)="control.setValue('')">
+        <mat-icon fontSet="mso">close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button id="apply" mat-mini-fab matTooltip="Apply filter"
             (click)="applyFilter()">
       <mat-icon fontSet="mso">play_arrow</mat-icon>
     </button>
-  </div>
+  </form>
 
   <app-blog-card [blog]="blog" *ngFor="let blog of blogsPager.resources; let blogIndex = index"
                  [@blogListTrigger]="{value: true, params: {myTime: 400 + 50 * blogIndex + 'ms'}}">

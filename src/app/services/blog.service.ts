@@ -75,7 +75,7 @@ export class BlogService {
     this.cookieService.set(PAGE_OPTION_KEY, JSON.stringify(this.pageOption))
 
     if (filter !== undefined) {
-      return this.resourceService.searchPage(WithAbstractBlog, 'findByTagNamesContaining', {
+      return this.resourceService.searchPage(WithAbstractBlog, 'findByFilter', {
         ...pageable,
         params: {
           ...blogFilterToParams(filter)

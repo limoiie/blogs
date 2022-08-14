@@ -9,6 +9,7 @@ import {FlexLayoutModule} from '@angular/flex-layout'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'
 import {MatAutocompleteModule} from '@angular/material/autocomplete'
 import {MatButtonModule} from '@angular/material/button'
+import {MatButtonToggleModule} from '@angular/material/button-toggle'
 import {MatCardModule} from '@angular/material/card'
 import {MatChipsModule} from '@angular/material/chips'
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core'
@@ -77,6 +78,7 @@ import {
 import {ParallaxDirective} from './directives/parallax.directive'
 import {ScrollOutDirective} from './directives/scroll-out.directive'
 import {StickyDirective} from './directives/sticky.directive'
+import {VarDirective} from './directives/var.directive'
 import {
   WindowHeightTrackingDirective
 } from './directives/window-height-tracking.directive'
@@ -104,7 +106,8 @@ import {SafeHtmlPipe} from './pipes/safe-html.pipe'
     TableOfContentComponent,
     TagComponent,
     WindowHeightTrackingDirective,
-    TableOfContentLinkComponent
+    TableOfContentLinkComponent,
+    VarDirective
   ],
   imports: [
     BrowserModule,
@@ -154,7 +157,8 @@ import {SafeHtmlPipe} from './pipes/safe-html.pipe'
     MatSnackBarModule,
     MatPaginatorModule,
     NgxHateoasClientModule.forRoot(),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonToggleModule
   ],
   providers: [CookieService,
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

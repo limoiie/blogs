@@ -6,18 +6,26 @@
   #filter-board
     display: flex
     flex-direction: column
-    margin-top: 24px
+    gap: 12px
 
-    div
+    #doneList
+      padding-top: 24px
       display: flex
       flex-direction: row
       flex-wrap: wrap
 
-    app-tag
-      margin: 4px
+      app-tag
+        margin: 4px
+
+    #search
+      align-self: stretch
 
     #apply
       align-self: flex-end
+      transition: scale ease-out 320ms
+
+      &:hover
+        scale: 1.2
 
   mat-paginator
     //background-color: transparent
